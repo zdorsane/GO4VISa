@@ -1,0 +1,187 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   Go4Visa brand tokens — single source of truth for the palette.
+   Change a value here and it propagates to every Tailwind utility
+   (bg-midnight, text-gold, border-teal, …) and to raw CSS via var().
+   ------------------------------------------------------------------ */
+:root {
+  /* Core palette */
+  --g4v-midnight: #0b2d5b; /* trust · professionalism · stability */
+  --g4v-teal: #00a8cb; /* growth · opportunity · renewal */
+  --g4v-gold: #f5b301; /* hope · achievement — accents & CTAs only */
+  --g4v-cloud: #f8fafc; /* clarity · breathing space */
+
+  /* Supporting tones from the symbol */
+  --g4v-navy: #012149;
+  --g4v-ocean: #0176b1;
+  --g4v-sky: #03b3e2;
+  --g4v-amber: #e39c2a;
+
+  /* Neutrals derived for text & lines */
+  --g4v-ink: #0b2d5b;
+  --g4v-slate: #475569; /* body text on light — AA on white & cloud */
+  --g4v-mist: #cbd5e1; /* body text on midnight — AA */
+  --g4v-line: #e2e8f0;
+
+  /* Layout */
+  --g4v-radius: 1rem;
+  --g4v-radius-lg: 1.5rem;
+  --g4v-header-h: 4.5rem;
+}
+
+@theme inline {
+  --color-midnight: var(--g4v-midnight);
+  --color-teal: var(--g4v-teal);
+  --color-gold: var(--g4v-gold);
+  --color-cloud: var(--g4v-cloud);
+  --color-navy: var(--g4v-navy);
+  --color-ocean: var(--g4v-ocean);
+  --color-sky: var(--g4v-sky);
+  --color-amber: var(--g4v-amber);
+  --color-ink: var(--g4v-ink);
+  --color-slate: var(--g4v-slate);
+  --color-mist: var(--g4v-mist);
+  --color-line: var(--g4v-line);
+
+  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-brand: var(--g4v-radius);
+  --radius-brand-lg: var(--g4v-radius-lg);
+
+  /* Brand type scale: H1 Bold 40 · H2 SemiBold 28 · Body 16 */
+  --text-h1: 2.5rem;
+  --text-h1--line-height: 1.15;
+  --text-h2: 1.75rem;
+  --text-h2--line-height: 1.25;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--g4v-header-h);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  background: var(--g4v-cloud);
+  color: var(--g4v-ink);
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: var(--g4v-gold);
+  color: var(--g4v-midnight);
+}
+
+/* Visible keyboard focus everywhere */
+:focus-visible {
+  outline: 3px solid var(--g4v-gold);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+@layer components {
+  /* "DREAM · STUDY · GO FURTHER" — SemiBold spaced capitals */
+  .label-caps {
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    font-size: 0.75rem;
+  }
+
+  .container-brand {
+    margin-inline: auto;
+    width: 100%;
+    max-width: 80rem;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 768px) {
+    .container-brand {
+      padding-inline: 2rem;
+    }
+  }
+
+  /* Gold dotted flight paths on Midnight (brand pattern) */
+  .pattern-flight {
+    background-color: var(--g4v-midnight);
+    background-image: url("/patterns/flight-paths.svg");
+    background-size: 520px 520px;
+  }
+
+  /* G-rings repeat (brand pattern) */
+  .pattern-grings {
+    background-color: var(--g4v-midnight);
+    background-image: url("/patterns/g-rings.svg");
+    background-size: 120px 120px;
+  }
+
+  /* Line-icon field on Cloud White (brand pattern) */
+  .pattern-icons {
+    background-color: var(--g4v-cloud);
+    background-image: url("/patterns/icon-field.svg");
+    background-size: 360px 360px;
+  }
+}
+
+/* Services diagram: a dot travelling along a connector */
+@keyframes g4v-flow-x {
+  0% { left: 0; opacity: 0; }
+  15%, 85% { opacity: 1; }
+  100% { left: calc(100% - 6px); opacity: 0; }
+}
+@keyframes g4v-flow-y {
+  0% { top: 0; opacity: 0; }
+  15%, 85% { opacity: 1; }
+  100% { top: calc(100% - 6px); opacity: 0; }
+}
+
+/* Floating CTA */
+@keyframes g4v-halo {
+  0% { transform: scale(1); opacity: 0.55; }
+  80%, 100% { transform: scale(1.18, 1.45); opacity: 0; }
+}
+@keyframes g4v-shine {
+  0%, 55% { transform: translateX(0) skewX(-12deg); }
+  100% { transform: translateX(520%) skewX(-12deg); }
+}
+@keyframes g4v-fly {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(2px, -2px) rotate(-6deg); }
+}
+
+/* Hero background */
+@keyframes g4v-drift-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(12%, 8%) scale(1.15); }
+}
+@keyframes g4v-drift-b {
+  0%, 100% { transform: translate(0, 0) scale(1.05); }
+  50% { transform: translate(-10%, 12%) scale(0.92); }
+}
+@keyframes g4v-drift-c {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-14%, -10%) scale(1.2); }
+}
+@keyframes g4v-twinkle {
+  0%, 100% { opacity: 0.15; transform: scale(0.8); }
+  50% { opacity: 0.95; transform: scale(1.2); }
+}
+@keyframes g4v-dash {
+  to { stroke-dashoffset: -140; }
+}
+@keyframes g4v-wheel {
+  0% { transform: translateY(0); opacity: 1; }
+  70% { transform: translateY(12px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 0; }
+}
+
+/* Gallery ribbon */
+@keyframes g4v-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="360" viewBox="0 0 360 360">
+  <g fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <g stroke="#94A3B8" stroke-opacity=".2">
+      <g transform="translate(40 50)"><path d="M-14-2 0-8 14-2 0 4Z"/><path d="M-8 1v6c4 3 12 3 16 0V1"/></g>
+      <g transform="translate(220 40)"><circle r="12"/><path d="M-12 0h24M0-12c-6 6-6 18 0 24M0-12c6 6 6 18 0 24"/></g>
+      <g transform="translate(130 160)"><path d="M10-6A12 12 0 1 0 12 2H2"/></g>
+      <g transform="translate(300 200)"><rect x="-14" y="-9" width="28" height="18" rx="3"/><circle cx="-6" cy="-1" r="3"/><path d="M-10 6c1-3 7-3 8 0M3-3h7M3 2h7"/></g>
+      <g transform="translate(60 290)"><path d="M-12 8C-2 4 6-2 12-10"/></g>
+      <g transform="translate(250 320)"><circle r="12"/><path d="M-12 0h24M0-12c-6 6-6 18 0 24M0-12c6 6 6 18 0 24"/></g>
+    </g>
+    <g stroke="#F5B301" stroke-opacity=".3">
+      <g transform="translate(320 80)"><path d="M10-6A12 12 0 1 0 12 2H2"/></g>
+      <g transform="translate(50 180)"><rect x="-14" y="-9" width="28" height="18" rx="3"/><circle cx="-6" cy="-1" r="3"/><path d="M-10 6c1-3 7-3 8 0M3-3h7M3 2h7"/></g>
+      <g transform="translate(200 250)"><path d="M-14-2 0-8 14-2 0 4Z"/><path d="M-8 1v6c4 3 12 3 16 0V1"/></g>
+      <g transform="translate(140 330)"><path d="M10-6A12 12 0 1 0 12 2H2"/></g>
+    </g>
+  </g>
+  <g fill="#94A3B8" fill-opacity=".2">
+    <path transform="translate(130 70) rotate(-30) scale(.45)" d="M18 0C18-1.5 16-2 14-2L4-2-6-16H-9.5L-4-2H-12L-16.5-8H-19L-16.5-1-17 0-16.5 1-19 8H-16.5L-12 2H-4L-9.5 16H-6L4 2H14C16 2 18 1.5 18 0Z"/>
+    <path transform="translate(330 300) rotate(-30) scale(.45)" d="M18 0C18-1.5 16-2 14-2L4-2-6-16H-9.5L-4-2H-12L-16.5-8H-19L-16.5-1-17 0-16.5 1-19 8H-16.5L-12 2H-4L-9.5 16H-6L4 2H14C16 2 18 1.5 18 0Z"/>
+  </g>
+  <path fill="#F5B301" fill-opacity=".3" transform="translate(220 140) rotate(-30) scale(.45)" d="M18 0C18-1.5 16-2 14-2L4-2-6-16H-9.5L-4-2H-12L-16.5-8H-19L-16.5-1-17 0-16.5 1-19 8H-16.5L-12 2H-4L-9.5 16H-6L4 2H14C16 2 18 1.5 18 0Z"/>
+</svg>

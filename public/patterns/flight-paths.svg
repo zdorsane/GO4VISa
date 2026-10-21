@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="520" viewBox="0 0 520 520">
+  <g fill="none" stroke="#F5B301" stroke-opacity=".32" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="0.1 7">
+    <path d="M0 104L520 0"/><path d="M0 208L520 104"/><path d="M0 312L520 208"/><path d="M0 416L520 312"/><path d="M0 520L520 416"/>
+  </g>
+  <g fill="#F5B301" fill-opacity=".85">
+    <path transform="translate(150 74) rotate(-11.3) scale(.32)" d="M18 0C18-1.5 16-2 14-2L4-2-6-16H-9.5L-4-2H-12L-16.5-8H-19L-16.5-1-17 0-16.5 1-19 8H-16.5L-12 2H-4L-9.5 16H-6L4 2H14C16 2 18 1.5 18 0Z"/>
+    <path transform="translate(390 234) rotate(-11.3) scale(.32)" d="M18 0C18-1.5 16-2 14-2L4-2-6-16H-9.5L-4-2H-12L-16.5-8H-19L-16.5-1-17 0-16.5 1-19 8H-16.5L-12 2H-4L-9.5 16H-6L4 2H14C16 2 18 1.5 18 0Z"/>
+    <path transform="translate(240 368) rotate(-11.3) scale(.32)" d="M18 0C18-1.5 16-2 14-2L4-2-6-16H-9.5L-4-2H-12L-16.5-8H-19L-16.5-1-17 0-16.5 1-19 8H-16.5L-12 2H-4L-9.5 16H-6L4 2H14C16 2 18 1.5 18 0Z"/>
+    <path transform="translate(460 420) rotate(-11.3) scale(.32)" d="M18 0C18-1.5 16-2 14-2L4-2-6-16H-9.5L-4-2H-12L-16.5-8H-19L-16.5-1-17 0-16.5 1-19 8H-16.5L-12 2H-4L-9.5 16H-6L4 2H14C16 2 18 1.5 18 0Z"/>
+  </g>
+</svg>

@@ -1,0 +1,9 @@
+# Not needed to build or run the site
+presentation-client
+node_modules
+.next
+out
+build
+data
+.env*
+*.tsbuildinfo
