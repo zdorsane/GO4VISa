@@ -3,15 +3,13 @@ import { Hero } from "@/components/Hero";
 import { Stats } from "@/components/Stats";
 import { About } from "@/components/About";
 import { Founder } from "@/components/Founder";
-import { Destinations } from "@/components/Destinations";
 import { Services } from "@/components/Services";
-import { Steps } from "@/components/Steps";
 import { Gallery } from "@/components/Gallery";
-import { FAQ } from "@/components/FAQ";
+import { Feedback } from "@/components/Feedback";
 import { Contact } from "@/components/Contact";
 import { FloatingCta } from "@/components/FloatingCta";
-import { faqAnswerText, getDictionary, site } from "@/lib/content";
-import { getDestinations } from "@/lib/destinations";
+import { getDictionary, site } from "@/lib/content";
+import { getFeedback } from "@/lib/feedback";
 import { getPhotos } from "@/lib/gallery";
 import { hasLocale } from "@/lib/i18n";
 
@@ -19,7 +17,6 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
   const { lang } = await params;
   if (!hasLocale(lang)) notFound();
   const t = getDictionary(lang);
-  const destinations = getDestinations(lang);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -32,15 +29,6 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         logo: `${site.url}/assets/go4visa-logo.jpg`,
         slogan: site.tagline,
         description: t.meta.description,
-      },
-      {
-        "@type": "FAQPage",
-        inLanguage: lang,
-        mainEntity: t.faq.items.map((f) => ({
-          "@type": "Question",
-          name: f.q,
-          acceptedAnswer: { "@type": "Answer", text: faqAnswerText(f) },
-        })),
       },
     ],
   };
@@ -55,12 +43,10 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
       <Stats t={t.stats} />
       <About lang={lang} t={t.about} />
       <Founder lang={lang} t={t.founder} start={t.ui.getStarted} />
-      <Destinations lang={lang} t={t.destinations} destinations={destinations} />
       <Services lang={lang} t={t.services} />
-      <Steps t={t.steps} />
       <Gallery lang={lang} t={t.gallery} start={t.ui.getStarted} photos={getPhotos(lang)} />
-      <FAQ t={t.faq} />
-      <Contact lang={lang} t={t.contact} services={t.services.items} destinations={destinations} />
+      <Feedback lang={lang} t={t.feedback} viewer={t.gallery} start={t.ui.getStarted} items={getFeedback(lang)} />
+      <Contact lang={lang} t={t.contact} />
       <FloatingCta lang={lang} t={t.floatingCta} />
     </>
   );

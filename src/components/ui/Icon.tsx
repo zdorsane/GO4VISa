@@ -18,6 +18,9 @@ export type IconName =
   | "phone"
   | "web"
   | "arrow"
+  | "chevron"
+  | "sun"
+  | "moon"
   | "plus"
   | "close"
   | "menu"
@@ -153,6 +156,25 @@ export function Icon({ name, ...props }: { name: IconName } & SVGProps<SVGSVGEle
       return (
         <svg {...common} className={`rtl:-scale-x-100 ${props.className ?? ""}`}>
           <path d="M5 12h14M13 6l6 6-6 6" />
+        </svg>
+      );
+    case "chevron":
+      return (
+        <svg {...common}>
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      );
+    case "sun":
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+        </svg>
+      );
+    case "moon":
+      return (
+        <svg {...common}>
+          <path d="M20.5 13.2A8.5 8.5 0 1 1 10.8 3.5a6.6 6.6 0 0 0 9.7 9.7Z" />
         </svg>
       );
     case "external":

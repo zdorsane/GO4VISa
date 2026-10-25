@@ -1,7 +1,9 @@
 "use client";
 
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import Image from "next/image";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useReducedMotion } from "@/lib/motion";
+import { useEffect, useRef } from "react";
 import { LogoSymbol, PLANE_PATH } from "./brand/Logo";
 import { GlobeHorizon } from "./brand/GlobeHorizon";
 import { HeroBackground } from "./brand/HeroBackground";
@@ -53,6 +55,96 @@ function Orbit({ animate }: { animate: boolean }) {
   );
 }
 
+/** Community photos travelling on the same tilted orbit as the plane. */
+const ORBIT_PHOTOS = [
+  "/experiences/celebration.webp",
+  "/experiences/eu-flag.webp",
+  "/experiences/norway-snow.webp",
+  "/experiences/sunset.webp",
+  "/experiences/certificates.webp",
+  "/experiences/airport-usa.webp",
+];
+
+// Matches the gold orbit drawn in <Orbit>: rx 240 / ry 96 on a 520 box, tilted -18°.
+const RX = (240 / 520) * 100;
+const RY = (96 / 520) * 100;
+const TILT = (-18 * Math.PI) / 180;
+const LAP_MS = 48000;
+
+/** Position on the orbit for a given angle, in % of the square container, plus a 0 (back) → 1 (front) depth. */
+function orbitPoint(theta: number) {
+  const px = RX * Math.cos(theta);
+  const py = RY * Math.sin(theta);
+  return {
+    x: px * Math.cos(TILT) - py * Math.sin(TILT),
+    y: px * Math.sin(TILT) + py * Math.cos(TILT),
+    depth: (Math.sin(theta) + 1) / 2,
+  };
+}
+
+function photoStyle(i: number, time: number) {
+  const theta = (i / ORBIT_PHOTOS.length) * 2 * Math.PI + (time / LAP_MS) * 2 * Math.PI;
+  const { x, y, depth } = orbitPoint(theta);
+  // Rounded so the server HTML matches what the browser keeps (avoids hydration warnings).
+  const round = (v: number, d: number) => String(Math.round(v * 10 ** d) / 10 ** d);
+  return {
+    left: `${round(50 + x, 2)}%`,
+    top: `${round(50 + y, 2)}%`,
+    transform: `translate(-50%, -50%) scale(${round(0.62 + depth * 0.43, 3)})`,
+    opacity: round(0.55 + depth * 0.45, 2),
+    zIndex: depth > 0.5 ? 20 : 0,
+  };
+}
+
+/**
+ * Photos glide along the orbit without ever rotating (rotated bitmaps look
+ * blurry): they grow and come in front of the symbol on the near side, and
+ * shrink and fade behind it on the far side, for a soft 3D feel.
+ */
+function PhotoOrbit({ animate }: { animate: boolean }) {
+  const items = useRef<(HTMLSpanElement | null)[]>([]);
+
+  useEffect(() => {
+    if (!animate) return;
+    const place = (time: number) => {
+      items.current.forEach((el, i) => {
+        if (el) Object.assign(el.style, photoStyle(i, time));
+      });
+    };
+    let frame = 0;
+    const start = performance.now();
+    const loop = (now: number) => {
+      place(now - start);
+      frame = requestAnimationFrame(loop);
+    };
+    frame = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(frame);
+  }, [animate]);
+
+  return (
+    <>
+      {ORBIT_PHOTOS.map((src, i) => (
+        <span
+          key={src}
+          ref={(el) => {
+            items.current[i] = el;
+          }}
+          aria-hidden
+          style={photoStyle(i, 0)}
+          className="pointer-events-none absolute block h-14 w-14 sm:h-[4.5rem] sm:w-[4.5rem] lg:h-20 lg:w-20"
+        >
+          {/* gold gradient border + white inner ring */}
+          <span className="block h-full w-full rounded-full bg-linear-to-br from-gold via-amber to-sky p-[3px] shadow-[0_18px_35px_-12px_rgba(0,0,0,0.7)]">
+            <span className="relative block h-full w-full overflow-hidden rounded-full bg-midnight ring-2 ring-white">
+              <Image src={src} alt="" fill loading="eager" sizes="(min-width: 1024px) 160px, 144px" className="object-cover" />
+            </span>
+          </span>
+        </span>
+      ))}
+    </>
+  );
+}
+
 export function Hero({ lang, t }: { lang: Locale; t: Dict["hero"] }) {
   const reduce = useReducedMotion();
   const ref = useRef<HTMLElement>(null);
@@ -77,7 +169,7 @@ export function Hero({ lang, t }: { lang: Locale; t: Dict["hero"] }) {
     <section
       ref={ref}
       aria-labelledby="hero-title"
-      className="pattern-flight relative isolate flex min-h-svh items-center overflow-hidden pb-40 pt-[calc(var(--g4v-header-h)+2rem)] md:pb-48"
+      className="pattern-flight relative isolate flex min-h-[min(100svh,46rem)] items-center overflow-hidden pb-28 pt-[calc(var(--g4v-header-h)+1.5rem)] md:pb-32"
     >
       {/* depth: sky glow behind the symbol */}
       <div
@@ -94,36 +186,37 @@ export function Hero({ lang, t }: { lang: Locale; t: Dict["hero"] }) {
           <motion.h1
             id="hero-title"
             {...fade(0.2)}
-            className="mt-5 text-4xl font-bold leading-[1.1] text-white sm:text-5xl lg:text-6xl"
+            className="mt-4 text-[2rem] font-bold leading-[1.1] text-white sm:text-[2.6rem] lg:text-5xl"
           >
             {t.titleA}{" "}
             <span className="bg-linear-to-r from-sky to-teal bg-clip-text text-transparent">
               {t.titleB}
             </span>
           </motion.h1>
-          <motion.p {...fade(0.35)} className="mx-auto mt-6 max-w-xl text-lg text-mist lg:mx-0">
+          <motion.p {...fade(0.35)} className="mx-auto mt-4 max-w-xl text-sm text-mist sm:text-base lg:mx-0">
             {t.subline}
           </motion.p>
-          <motion.div {...fade(0.5)} className="mt-10 flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
-            <ButtonLink href={`/${lang}#destinations`} arrow>
+          <motion.div {...fade(0.5)} className="mt-8 flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
+            <ButtonLink href={`/${lang}/how-it-works#destinations`} arrow>
               {t.primaryCta}
             </ButtonLink>
             <ButtonLink href={`/${lang}#services`} variant="outline-light">
               {t.secondaryCta}
             </ButtonLink>
           </motion.div>
-          <motion.p {...fade(0.65)} className="label-caps mt-12 text-white/70">
+          <motion.p {...fade(0.65)} className="label-caps mt-8 text-white/70">
             {site.tagline}
           </motion.p>
         </motion.div>
 
-        <motion.div style={{ y: symbolY }} className="relative mx-auto aspect-square w-full max-w-[26rem] lg:max-w-[32rem]">
+        <motion.div style={{ y: symbolY }} className="relative mx-auto aspect-square w-full max-w-[19rem] sm:max-w-[23rem] lg:max-w-[27rem]">
           <Orbit animate={!reduce} />
+          <PhotoOrbit animate={!reduce} />
           <motion.div
             initial={reduce ? false : { opacity: 0, scale: 0.85 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 0.3, ease }}
-            className="absolute inset-[14%] flex items-center justify-center"
+            className="absolute inset-[14%] z-10 flex items-center justify-center"
           >
             <motion.div
               animate={reduce ? undefined : { y: [0, -10, 0] }}

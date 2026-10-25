@@ -21,6 +21,9 @@ function entry(path: string, priority: number): MetadataRoute.Sitemap {
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     ...entry("", 1),
+    ...entry("/how-it-works", 0.9),
+    ...entry("/faq", 0.8),
+    ...entry("/apply", 0.9),
     ...destinationSlugs.flatMap((slug) => entry(`/destinations/${slug}`, 0.8)),
   ];
 }

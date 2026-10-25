@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import { Fragment, useRef } from "react";
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useReducedMotion } from "@/lib/motion";
 import type { Dict } from "@/lib/content";
 import type { Locale } from "@/lib/i18n";
 import { Reveal } from "./ui/Reveal";
@@ -36,14 +37,25 @@ function Badge({
       <motion.div
         animate={reduce ? undefined : { y: [0, -float, 0] }}
         transition={{ duration: 4 + float / 4, repeat: Infinity, ease: "easeInOut", delay }}
-        className="flex items-center gap-3 rounded-2xl bg-white/90 py-2.5 pe-4 ps-2.5 shadow-[0_20px_45px_-15px_rgba(11,45,91,0.45)] ring-1 ring-white backdrop-blur-md"
+        className="flex items-center gap-2.5 whitespace-nowrap rounded-2xl bg-white/95 py-2 pe-3.5 ps-2 shadow-[0_20px_45px_-15px_rgba(11,45,91,0.45)] ring-1 ring-white backdrop-blur-md"
       >
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-midnight text-gold">
-          <Icon name={icon} className="h-4.5 w-4.5" />
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-midnight text-gold">
+          <Icon name={icon} className="h-4 w-4" />
         </span>
         {children}
       </motion.div>
     </motion.div>
+  );
+}
+
+function CountriesLabel({ t }: { t: Dict["founder"] }) {
+  return (
+    <span className="flex items-baseline gap-1.5">
+      <span className="bg-linear-to-r from-ocean to-teal bg-clip-text text-lg font-bold leading-none text-transparent">
+        {t.badges.countries.value}
+      </span>
+      <span className="text-xs font-medium text-slate">{t.badges.countries.label}</span>
+    </span>
   );
 }
 
@@ -57,17 +69,18 @@ export function Founder({ lang, t, start }: { lang: Locale; t: Dict["founder"]; 
   const words = t.quote.split(" ");
 
   return (
-    <section ref={ref} id="founder" aria-labelledby="founder-title" className="relative overflow-x-clip bg-white py-24 md:py-32">
+    <section ref={ref} id="founder" aria-labelledby="founder-title" className="relative overflow-x-clip bg-white py-12 md:py-16">
       <div aria-hidden className="pointer-events-none absolute -start-40 top-1/4 h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,rgba(0,168,203,0.12),transparent_65%)]" />
       <div aria-hidden className="pointer-events-none absolute -end-32 bottom-0 h-[26rem] w-[26rem] rounded-full bg-[radial-gradient(circle,rgba(245,179,1,0.12),transparent_65%)]" />
 
-      <div className="container-brand relative grid grid-cols-[minmax(0,1fr)] items-center gap-16 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-24">
+      <div className="container-brand relative grid grid-cols-[minmax(0,1fr)] items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-12">
         {/* Portrait */}
+        <div className="min-w-0">
         <motion.div
           initial={reduce ? false : "hidden"}
           whileInView="show"
           viewport={{ once: true, amount: 0.2 }}
-          className="relative mx-auto w-full max-w-[22rem] sm:max-w-[25rem]"
+          className="relative mx-auto w-full max-w-[16rem] sm:max-w-[17.5rem]"
         >
           {/* orbit */}
           <svg
@@ -100,37 +113,50 @@ export function Founder({ lang, t, start }: { lang: Locale; t: Dict["founder"]; 
                 src="/founder/mahdi-sedira.webp"
                 alt={t.photoAlt}
                 fill
-                sizes="(min-width: 640px) 25rem, 22rem"
+                sizes="(min-width: 640px) 17.5rem, 16rem"
                 className="object-cover object-[50%_30%]"
               />
             </motion.div>
-            <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-midnight/90 via-midnight/40 to-transparent px-6 pb-6 pt-20">
-              <p className="text-lg font-semibold text-white">{t.name}</p>
+            <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-midnight/90 via-midnight/40 to-transparent px-5 pb-5 pt-16">
+              <p className="font-semibold text-white">{t.name}</p>
               <p className="text-sm text-gold">{t.role}</p>
             </div>
           </motion.div>
 
-          <Badge icon="globe" float={8} delay={0.5} className="-start-4 top-8 sm:-start-12">
-            <span>
-              <span className="block bg-linear-to-r from-ocean to-teal bg-clip-text text-xl font-bold leading-none text-transparent">
-                {t.badges.countries.value}
-              </span>
-              <span className="mt-0.5 block text-xs font-medium text-slate">{t.badges.countries.label}</span>
-            </span>
+          {/* Floating badges (sm and up): they sit beside the photo and only overlap
+              its outer edge, which is plain background, so the face stays clear. */}
+          <Badge icon="globe" float={8} delay={0.5} className="end-[calc(100%-2.25rem)] top-[7%] hidden sm:block">
+            <CountriesLabel t={t} />
           </Badge>
-          <Badge icon="pulse" float={10} delay={0.7} className="-end-4 top-[42%] sm:-end-14">
+          <Badge icon="pulse" float={10} delay={0.7} className="start-[calc(100%-2.25rem)] top-[46%] hidden sm:block">
             <span className="text-sm font-semibold text-midnight">{t.badges.doctor}</span>
           </Badge>
-          <Badge icon="plane" float={7} delay={0.9} className="-start-4 bottom-28 sm:-start-10">
+          <Badge icon="plane" float={7} delay={0.9} className="end-[calc(100%-2.25rem)] bottom-[30%] hidden sm:block">
             <span className="text-sm font-semibold text-midnight">{t.badges.traveler}</span>
           </Badge>
         </motion.div>
+        {/* Phones: no room beside the photo, so the badges line up underneath */}
+        <ul className="relative mt-9 flex flex-wrap justify-center gap-2 sm:hidden">
+          {[
+            { icon: "globe" as const, label: <CountriesLabel t={t} /> },
+            { icon: "pulse" as const, label: <span className="text-xs font-semibold text-midnight">{t.badges.doctor}</span> },
+            { icon: "plane" as const, label: <span className="text-xs font-semibold text-midnight">{t.badges.traveler}</span> },
+          ].map((b) => (
+            <li key={b.icon} className="flex items-center gap-2 rounded-full bg-white py-1.5 pe-3 ps-1.5 shadow-[0_10px_25px_-12px_rgba(11,45,91,0.45)] ring-1 ring-line">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-midnight text-gold">
+                <Icon name={b.icon} className="h-3.5 w-3.5" />
+              </span>
+              {b.label}
+            </li>
+          ))}
+        </ul>
+        </div>
 
         {/* Story */}
         <div>
           <Reveal>
             <p className="label-caps text-ocean">{t.eyebrow}</p>
-            <h2 id="founder-title" className="mt-3 text-4xl font-bold leading-tight text-midnight md:text-6xl">
+            <h2 id="founder-title" className="mt-2 text-2xl font-bold leading-tight text-midnight md:text-[2.1rem]">
               {t.name}
             </h2>
             <p className="mt-3 flex items-center gap-3 font-semibold text-ocean">
@@ -139,16 +165,16 @@ export function Founder({ lang, t, start }: { lang: Locale; t: Dict["founder"]; 
             </p>
           </Reveal>
           <Reveal delay={0.1}>
-            <p className="mt-8 text-xl font-medium leading-relaxed text-midnight md:text-2xl">{t.lead}</p>
-            <p className="mt-5 text-lg leading-relaxed text-slate">{t.body}</p>
+            <p className="mt-6 text-lg font-medium leading-relaxed text-midnight md:text-xl">{t.lead}</p>
+            <p className="mt-3 text-sm leading-relaxed text-slate md:text-base">{t.body}</p>
           </Reveal>
 
           <Reveal delay={0.15}>
-            <figure className="pattern-grings relative mt-10 overflow-hidden rounded-brand-lg p-7 text-white md:p-9">
+            <figure className="pattern-grings relative mt-8 overflow-hidden rounded-brand-lg p-6 text-white md:p-8">
               <div aria-hidden className="absolute inset-0 bg-linear-to-br from-midnight via-midnight/95 to-navy/95" />
               <div aria-hidden className="absolute -end-16 -top-16 h-48 w-48 rounded-full bg-[radial-gradient(circle,rgba(245,179,1,0.3),transparent_65%)]" />
               <Icon name="quote" className="relative h-9 w-9 text-gold" />
-              <blockquote className="relative mt-4 text-xl font-semibold leading-snug md:text-2xl">
+              <blockquote className="relative mt-4 text-lg font-semibold leading-snug md:text-xl">
                 <p>
                   {words.map((w, i) => (
                     <Fragment key={i}>
@@ -174,8 +200,8 @@ export function Founder({ lang, t, start }: { lang: Locale; t: Dict["founder"]; 
             </figure>
           </Reveal>
 
-          <Reveal delay={0.2} className="mt-10">
-            <ButtonLink href={`/${lang}#contact`} arrow>
+          <Reveal delay={0.2} className="mt-7">
+            <ButtonLink href={`/${lang}/apply`} arrow>
               {start}
             </ButtonLink>
           </Reveal>

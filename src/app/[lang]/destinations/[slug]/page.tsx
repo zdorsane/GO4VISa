@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { destinationSlugs, getDestination, getDestinations } from "@/lib/destinations";
 import { getDictionary } from "@/lib/content";
-import { hasLocale, locales } from "@/lib/i18n";
+import { hasLocale, languageAlternates, locales } from "@/lib/i18n";
 import { DestinationFacts } from "@/components/DestinationFacts";
 import { GlobeHorizon } from "@/components/brand/GlobeHorizon";
 import { ButtonLink } from "@/components/ui/Button";
@@ -26,11 +26,7 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/destinatio
     description,
     alternates: {
       canonical: `/${lang}/destinations/${d.slug}`,
-      languages: {
-        en: `/en/destinations/${d.slug}`,
-        fr: `/fr/destinations/${d.slug}`,
-        "x-default": `/en/destinations/${d.slug}`,
-      },
+      languages: languageAlternates(`/destinations/${d.slug}`),
     },
     openGraph: { title: `${d.country}: ${d.programme} · Go4Visa`, description, url: `/${lang}/destinations/${d.slug}` },
   };
@@ -52,7 +48,7 @@ export default async function DestinationPage({ params }: PageProps<"/[lang]/des
 
   return (
     <>
-      <section className="pattern-flight relative isolate overflow-hidden pb-40 pt-[calc(var(--g4v-header-h)+3rem)] md:pb-52">
+      <section className="pattern-flight relative isolate overflow-hidden pb-32 pt-[calc(var(--g4v-header-h)+2rem)] md:pb-40">
         <div aria-hidden className="absolute inset-0 -z-10 bg-linear-to-b from-navy/70 via-midnight/30 to-midnight/90" />
         <GlobeHorizon className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-36 w-full md:h-48" />
         <div className="container-brand">
@@ -63,7 +59,7 @@ export default async function DestinationPage({ params }: PageProps<"/[lang]/des
               </li>
               <li aria-hidden>/</li>
               <li>
-                <Link href={`${home}#destinations`} className="hover:text-gold">{dict.footer.destinations}</Link>
+                <Link href={`${home}/how-it-works#destinations`} className="hover:text-gold">{dict.footer.destinations}</Link>
               </li>
               <li aria-hidden>/</li>
               <li aria-current="page" className="text-white">{d.country}</li>
@@ -71,15 +67,15 @@ export default async function DestinationPage({ params }: PageProps<"/[lang]/des
           </nav>
 
           <Reveal className="mt-10 flex flex-col gap-6 sm:flex-row sm:items-center">
-            <span className="relative flex h-28 w-28 shrink-0 items-center justify-center rounded-full bg-gold text-4xl font-semibold text-midnight">
+            <span className="relative flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-gold text-2xl font-semibold text-midnight md:h-24 md:w-24 md:text-3xl">
               {d.code}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={`/flags/${d.flag}.svg`} alt="" width={40} height={40} className="absolute -bottom-1 -end-1 h-10 w-10 rounded-full ring-4 ring-midnight" />
             </span>
             <div>
               <p className="label-caps text-gold">{dict.destinations.eyebrow}</p>
-              <h1 className="mt-2 text-4xl font-bold text-white md:text-6xl">{d.country}</h1>
-              <p className="mt-2 text-xl text-mist">{d.programme}</p>
+              <h1 className="mt-2 text-3xl font-bold text-white md:text-[2.6rem]">{d.country}</h1>
+              <p className="mt-1 text-base text-mist md:text-lg">{d.programme}</p>
             </div>
           </Reveal>
         </div>

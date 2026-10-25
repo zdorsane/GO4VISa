@@ -2,26 +2,24 @@
 
 import type { MouseEvent } from "react";
 import { useRouter } from "next/navigation";
-import { LOCALE_COOKIE, locales, type Locale } from "@/lib/i18n";
+import { LOCALE_COOKIE, localeNames, locales, type Locale } from "@/lib/i18n";
 
 function rememberLocale(locale: Locale) {
   document.cookie = `${LOCALE_COOKIE}=${locale}; path=/; max-age=31536000; samesite=lax`;
 }
 
 /**
- * EN | FR pill. Swaps the locale segment of the current URL (keeping the rest
+ * EN | FR | AR pill. Swaps the locale segment of the current URL (keeping the rest
  * of the path, the query and the #section) and remembers the choice in a cookie
  * so src/proxy.ts sends the visitor to the same language next time.
  */
 export function LanguageSwitch({
   lang,
   label,
-  switchTo,
   tone,
 }: {
   lang: Locale;
   label: string;
-  switchTo: string;
   tone: "light" | "dark";
 }) {
   const router = useRouter();
@@ -31,7 +29,7 @@ export function LanguageSwitch({
     if (target === lang) return;
     rememberLocale(target);
     const { pathname, search, hash } = window.location;
-    const rest = pathname.replace(/^\/(en|fr)(?=\/|$)/, "");
+    const rest = pathname.replace(new RegExp(`^/(${locales.join("|")})(?=/|$)`), "");
     router.push(`/${target}${rest}${search}${hash}`);
   }
 
@@ -53,8 +51,8 @@ export function LanguageSwitch({
             lang={l}
             onClick={(e) => go(e, l)}
             aria-current={active ? "true" : undefined}
-            title={active ? undefined : switchTo}
-            className={`rounded-full px-2.5 py-2 uppercase tracking-wider transition-colors ${
+            title={localeNames[l]}
+            className={`rounded-full px-2.5 py-1.5 uppercase tracking-wider transition-colors ${
               active
                 ? "bg-gold text-midnight"
                 : tone === "dark"

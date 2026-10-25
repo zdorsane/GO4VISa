@@ -1,6 +1,6 @@
 /**
  * Flagship scholarship per destination — sourced from the Go4Visa brand book
- * ("Scholarships Worldwide"), in English and French. Calls change every year:
+ * ("Scholarships Worldwide"), in English, French and Arabic. Calls change every year:
  * always confirm on the official site before publishing new dates.
  */
 import type { Locale } from "./i18n";
@@ -53,6 +53,15 @@ const sources: DestinationSource[] = [
       howToApply: "Candidature en ligne sur le portail du MAECI",
       when: "L'appel 2026–27 a fermé le 11 mai. Les bourses régionales DSU (selon les revenus) sont une deuxième option.",
     },
+    ar: {
+      country: "إيطاليا",
+      programme: "Invest Your Talent in Italy",
+      fundedBy: "وزارة الخارجية الإيطالية (MAECI)",
+      levels: "ماستر وتكوينات ما بعد التدرج باللغة الإنجليزية: الهندسة، العمارة والتصميم، الاقتصاد والتسيير",
+      covers: "منحة لمدة تسعة أشهر مع تربص في شركة إيطالية",
+      howToApply: "التسجيل عبر الإنترنت على منصة MAECI",
+      when: "أُغلق نداء 2026–27 في 11 ماي. منح DSU الجهوية (حسب الدخل) خيار ثانٍ.",
+    },
   },
   {
     slug: "hungary",
@@ -78,6 +87,15 @@ const sources: DestinationSource[] = [
       howToApply:
         "Les étudiants algériens postulent via le ministère de l'Enseignement supérieur et la plateforme en ligne SH",
       when: "Pour 2026–27, la date limite en ligne était le 15 janvier 2026 : prévoir une période similaire chaque hiver",
+    },
+    ar: {
+      country: "المجر",
+      programme: "Stipendium Hungaricum",
+      fundedBy: "الحكومة المجرية (Tempus Public Foundation)",
+      levels: "ليسانس، ماستر، ماستر متكامل ودكتوراه",
+      covers: "دراسة دون رسوم، منحة شهرية، دعم للسكن وتأمين صحي",
+      howToApply: "يترشح الطلبة الجزائريون عبر وزارة التعليم العالي ومنصة SH الإلكترونية",
+      when: "بالنسبة لـ 2026–27 كان آخر أجل للتسجيل الإلكتروني 15 جانفي 2026: توقّع فترة مماثلة كل شتاء",
     },
   },
   {
@@ -105,6 +123,15 @@ const sources: DestinationSource[] = [
       howToApply: "Candidature gratuite en ligne sur le portail officiel",
       when: "Ouvre généralement en début d'année civile : consultez le calendrier officiel",
     },
+    ar: {
+      country: "تركيا",
+      programme: "Türkiye Bursları",
+      fundedBy: "رئاسة أتراك المهجر والمجتمعات ذات القربى (YTB)",
+      levels: "دبلوم مشارك، ليسانس، ماستر، دكتوراه وبرامج بحثية",
+      covers: "رسوم الدراسة، منحة شهرية، السكن، تأمين صحي، دورة في اللغة التركية وتذكرة طيران واحدة",
+      howToApply: "ترشح مجاني عبر الإنترنت على البوابة الرسمية",
+      when: "يُفتح عادة في بداية السنة الميلادية: راجع الرزنامة الرسمية",
+    },
   },
   {
     slug: "united-kingdom",
@@ -128,6 +155,15 @@ const sources: DestinationSource[] = [
       covers: "Entièrement financée : frais de scolarité, allocation de subsistance et voyage",
       howToApply: "Candidature en ligne ; l'Algérie fait partie des pays participants",
       when: "Cycle 2027–28 : ouvert en août 2026, clôture en octobre 2026, résultats à partir de mi-juin 2027",
+    },
+    ar: {
+      country: "المملكة المتحدة",
+      programme: "Chevening Scholarships",
+      fundedBy: "وزارة الخارجية والكومنولث والتنمية البريطانية (FCDO)",
+      levels: "ماستر لمدة سنة واحدة في المملكة المتحدة",
+      covers: "ممولة بالكامل: رسوم الدراسة، منحة معيشة والسفر",
+      howToApply: "الترشح عبر الإنترنت؛ الجزائر من الدول المشاركة",
+      when: "دورة 2027–28: فُتحت في أوت 2026، تُغلق في أكتوبر 2026، والنتائج ابتداءً من منتصف جوان 2027",
     },
   },
   {
@@ -153,6 +189,15 @@ const sources: DestinationSource[] = [
       howToApply: "Candidature via l'ambassade des États-Unis à Alger",
       when: "Annoncé chaque année via les universités algériennes et l'ambassade",
     },
+    ar: {
+      country: "الولايات المتحدة",
+      programme: "Fulbright Foreign Student Program",
+      fundedBy: "وزارة الخارجية الأمريكية، ويديره معهد IIE",
+      levels: "دراسات عليا وبحث للطلبة والمهنيين الشباب والفنانين",
+      covers: "تمويل للدراسة والبحث في الولايات المتحدة؛ تحدد التفاصيل حسب برنامج كل بلد",
+      howToApply: "الترشح عبر سفارة الولايات المتحدة بالجزائر",
+      when: "يُعلن عنه سنويًا عبر الجامعات الجزائرية والسفارة",
+    },
   },
   {
     slug: "germany",
@@ -176,6 +221,15 @@ const sources: DestinationSource[] = [
       covers: "En général une allocation mensuelle, une assurance maladie et une aide au voyage",
       howToApply: "Recherchez votre programme dans la base de bourses du DAAD",
       when: "Les dates limites varient selon le programme : vérifiez chaque annonce",
+    },
+    ar: {
+      country: "ألمانيا",
+      programme: "منح DAAD",
+      fundedBy: "الهيئة الألمانية للتبادل الأكاديمي (DAAD)",
+      levels: "ماستر، دكتوراه وإقامات بحثية",
+      covers: "عادة منحة شهرية، تأمين صحي ومنحة سفر",
+      howToApply: "ابحث عن برنامجك في قاعدة بيانات منح DAAD",
+      when: "تختلف الآجال حسب البرنامج: راجع كل إعلان",
     },
   },
   {
@@ -201,6 +255,15 @@ const sources: DestinationSource[] = [
       howToApply: "Ce sont les universités françaises qui présentent la candidature de l'étudiant",
       when: "Généralement en début d'année civile : renseignez-vous auprès de votre université cible",
     },
+    ar: {
+      country: "فرنسا",
+      programme: "منحة التميز إيفل (Eiffel)",
+      fundedBy: "وزارة أوروبا والشؤون الخارجية الفرنسية، عبر Campus France",
+      levels: "ماستر ودكتوراه",
+      covers: "عادة منحة شهرية، تذكرة ذهاب وإياب وتأمين صحي",
+      howToApply: "الجامعات الفرنسية هي التي تقدّم ترشح الطالب",
+      when: "عادة في بداية السنة الميلادية: استفسر لدى جامعتك المستهدفة",
+    },
   },
   {
     slug: "canada",
@@ -225,6 +288,15 @@ const sources: DestinationSource[] = [
       howToApply: "Nomination par l'établissement scolaire de l'élève, puis candidature",
       when: "De l'automne à l'hiver pour l'année suivante : consultez le site de l'université",
     },
+    ar: {
+      country: "كندا",
+      programme: "منحة ليستر ب. بيرسون الدولية",
+      fundedBy: "جامعة تورنتو",
+      levels: "ليسانس (بكالوريوس)",
+      covers: "رسوم الدراسة، الكتب، المصاريف الإضافية والسكن الجامعي كاملًا لمدة أربع سنوات",
+      howToApply: "ترشيح من مؤسسة الطالب الدراسية، ثم تقديم الطلب",
+      when: "من الخريف إلى الشتاء للسنة الموالية: راجع موقع الجامعة",
+    },
   },
   {
     slug: "china",
@@ -248,6 +320,15 @@ const sources: DestinationSource[] = [
       covers: "En général frais de scolarité, logement, allocation mensuelle et assurance maladie",
       howToApply: "Via l'ambassade de Chine ou directement auprès des universités d'accueil",
       when: "Ouvre généralement en hiver et se poursuit jusqu'au printemps",
+    },
+    ar: {
+      country: "الصين",
+      programme: "منحة الحكومة الصينية (CSC)",
+      fundedBy: "China Scholarship Council",
+      levels: "ليسانس، ماستر، دكتوراه وباحثون زائرون",
+      covers: "عادة رسوم الدراسة، السكن، منحة شهرية وتأمين صحي",
+      howToApply: "عبر سفارة الصين أو مباشرة لدى الجامعات المستقبِلة",
+      when: "يُفتح عادة في الشتاء ويستمر إلى الربيع",
     },
   },
   {
@@ -275,6 +356,15 @@ const sources: DestinationSource[] = [
       howToApply: "Via l'ambassade de Corée ou directement auprès des universités",
       when: "Les volets licence et études supérieures ouvrent à des périodes différentes de l'année",
     },
+    ar: {
+      country: "كوريا الجنوبية",
+      programme: "Global Korea Scholarship (GKS)",
+      fundedBy: "NIIED، وزارة التعليم الكورية",
+      levels: "ليسانس ودراسات عليا",
+      covers: "عادة تذكرة الطيران، رسوم الدراسة، منحة شهرية، سنة من دروس اللغة الكورية وتأمين",
+      howToApply: "عبر سفارة كوريا أو مباشرة لدى الجامعات",
+      when: "مسارا الليسانس والدراسات العليا يُفتحان في فترات مختلفة من السنة",
+    },
   },
   {
     slug: "japan",
@@ -299,13 +389,22 @@ const sources: DestinationSource[] = [
       howToApply: "Via l'ambassade du Japon en Algérie (recommandation de l'ambassade)",
       when: "Généralement annoncé au printemps par l'ambassade",
     },
+    ar: {
+      country: "اليابان",
+      programme: "منحة MEXT",
+      fundedBy: "وزارة التعليم اليابانية (MEXT)",
+      levels: "طلبة باحثون (ماستر/دكتوراه)، ليسانس وغيرها",
+      covers: "عادة رسوم الدراسة، منحة شهرية وتذكرة طيران ذهاب وإياب",
+      howToApply: "عبر سفارة اليابان في الجزائر (توصية السفارة)",
+      when: "يُعلن عنه عادة في الربيع من طرف السفارة",
+    },
   },
 ];
 
 export const destinationSlugs = sources.map((s) => s.slug);
 
 export function getDestinations(lang: Locale): Destination[] {
-  return sources.map(({ en, fr, ...rest }) => ({ ...rest, ...(lang === "fr" ? fr : en) }));
+  return sources.map(({ en, fr, ar, ...rest }) => ({ ...rest, ...{ en, fr, ar }[lang] }));
 }
 
 export function getDestination(slug: string, lang: Locale): Destination | undefined {

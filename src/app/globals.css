@@ -61,6 +61,14 @@ html {
   scroll-padding-top: var(--g4v-header-h);
 }
 
+/* Slightly tighter scale on large screens so sections feel less oversized.
+   Phones keep 16px: smaller form text makes iOS zoom into inputs. */
+@media (min-width: 1024px) {
+  html {
+    font-size: 90%;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -71,6 +79,54 @@ body {
   background: var(--g4v-cloud);
   color: var(--g4v-ink);
   font-family: var(--font-sans);
+}
+
+/* ------------------------------------------------------------------
+   Dark theme (<html data-theme="dark">, set by the navbar toggle).
+   Dark sections (hero, journey, contact, footer) already are dark and keep
+   their look; only the light surfaces and the ink on them are remapped.
+   Gold/sky chips keep their dark text; `.keep-light` opts an element out
+   (logo on white, stars).
+   ------------------------------------------------------------------ */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --g4v-cloud: #081a33;
+  --g4v-line: rgba(255, 255, 255, 0.12);
+  --g4v-slate: #a7b6cb;
+  --g4v-ink: #e7eef8;
+  --g4v-ocean: #4cc6ee;
+  --g4v-surface: #0f2748;
+}
+:root[data-theme="dark"] :is(.bg-white, .focus\:bg-white:focus):not(.keep-light) {
+  background-color: var(--g4v-surface);
+}
+@media (max-width: 47.99rem) {
+  :root[data-theme="dark"] .max-md\:bg-white { background-color: var(--g4v-surface); }
+}
+:root[data-theme="dark"] .bg-white\/95 { background-color: rgb(15 39 72 / 0.95); }
+:root[data-theme="dark"] .bg-white\/90 { background-color: rgb(15 39 72 / 0.9); }
+:root[data-theme="dark"] .bg-white\/80 { background-color: rgb(15 39 72 / 0.8); }
+:root[data-theme="dark"]
+  .text-midnight:not(.keep-light, .keep-light *, .bg-gold, .bg-gold *, .bg-sky, .bg-sky *, [class*="from-gold"], [class*="from-gold"] *) {
+  color: var(--g4v-ink);
+}
+/* hover colours still win over the remapped ink */
+:root[data-theme="dark"] .hover\:text-ocean:hover,
+:root[data-theme="dark"] .group:hover .group-hover\:text-ocean { color: var(--g4v-ocean); }
+:root[data-theme="dark"] .hover\:text-gold:hover { color: var(--g4v-gold); }
+:root[data-theme="dark"] :is(.border-midnight\/20, .border-midnight\/25) { border-color: rgb(255 255 255 / 0.25); }
+:root[data-theme="dark"] .hover\:border-midnight:hover { border-color: rgb(255 255 255 / 0.7); }
+:root[data-theme="dark"] .ring-midnight\/15 { --tw-ring-color: rgb(255 255 255 / 0.2); }
+:root[data-theme="dark"] .hover\:bg-midnight\/5:hover { background-color: rgb(255 255 255 / 0.06); }
+:root[data-theme="dark"] ::selection { color: var(--g4v-midnight); }
+
+/* Arabic: Cairo for the script, and no letter-spacing — it breaks the joins
+   between Arabic letters (the spaced "label-caps" style included). */
+html[lang="ar"] body {
+  font-family: var(--font-arabic), var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+}
+html[lang="ar"] body * {
+  letter-spacing: normal !important;
 }
 
 ::selection {
@@ -128,11 +184,11 @@ body {
   }
 }
 
-/* Services diagram: a dot travelling along a connector */
+/* A dot travelling along a connector (services diagram, contact boarding pass) */
 @keyframes g4v-flow-x {
-  0% { left: 0; opacity: 0; }
+  0% { inset-inline-start: 0; opacity: 0; }
   15%, 85% { opacity: 1; }
-  100% { left: calc(100% - 6px); opacity: 0; }
+  100% { inset-inline-start: calc(100% - 6px); opacity: 0; }
 }
 @keyframes g4v-flow-y {
   0% { top: 0; opacity: 0; }

@@ -20,7 +20,9 @@ export const SERVICE_OPTIONS = [
   "cv",
   "motivation-letter",
   "recommendation-letter",
+  "interview",
   "application-documents",
+  "visa",
 ] as const;
 
 export function isServiceOption(value: unknown): value is (typeof SERVICE_OPTIONS)[number] {
@@ -49,6 +51,17 @@ const messages = {
     messageLong: "Message trop long (2000 caractères maximum).",
     invalidRequest: "Requête invalide.",
     serverFail: "Impossible d'envoyer votre message pour le moment. Écrivez-nous plutôt par e-mail.",
+  },
+  ar: {
+    nameMissing: "يرجى إدخال اسمك الكامل.",
+    nameLong: "الاسم طويل جدًا.",
+    emailMissing: "يرجى إدخال بريدك الإلكتروني.",
+    emailInvalid: "يرجى إدخال بريد إلكتروني صحيح.",
+    phoneInvalid: "يرجى إدخال رقم هاتف صحيح.",
+    messageShort: "يرجى إخبارنا بالمزيد (10 أحرف على الأقل).",
+    messageLong: "الرسالة طويلة جدًا (2000 حرف كحد أقصى).",
+    invalidRequest: "طلب غير صالح.",
+    serverFail: "تعذّر إرسال رسالتك حاليًا. يرجى مراسلتنا عبر البريد الإلكتروني.",
   },
 } satisfies Record<Locale, Record<string, string>>;
 

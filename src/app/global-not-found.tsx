@@ -27,9 +27,11 @@ export default function GlobalNotFound() {
             <p className="label-caps mt-8 text-gold">404</p>
             <h1 className="mt-3 text-4xl font-bold text-white">This page has flown away</h1>
             <p className="mt-2 text-lg text-mist" lang="fr">Cette page s&apos;est envolée</p>
+            <p className="mt-1 text-lg text-mist" lang="ar" dir="rtl">هذه الصفحة طارت بعيدًا</p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Link href="/en" className={buttonClasses("gold")}>Back to home</Link>
               <Link href="/fr" lang="fr" className={buttonClasses("outline-light")}>Retour à l&apos;accueil</Link>
+              <Link href="/ar" lang="ar" dir="rtl" className={buttonClasses("outline-light")}>العودة إلى الرئيسية</Link>
             </div>
           </div>
         </main>

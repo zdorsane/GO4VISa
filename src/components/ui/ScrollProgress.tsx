@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion, useScroll, useSpring } from "framer-motion";
+import { motion, useScroll, useSpring } from "framer-motion";
+import { useReducedMotion } from "@/lib/motion";
 
 /** Thin gold bar at the very top of the page that fills as the visitor scrolls. */
 export function ScrollProgress() {

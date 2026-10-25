@@ -1,148 +1,138 @@
 "use client";
 
-import { Suspense, useCallback, useEffect, useId, useState, type FormEvent } from "react";
-import { useSearchParams } from "next/navigation";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
+import { useReducedMotion } from "@/lib/motion";
 import { site, whatsappHref, type Dict } from "@/lib/content";
-import type { Destination } from "@/lib/destinations";
 import type { Locale } from "@/lib/i18n";
-import { isServiceOption, validateContact, type ContactErrors, type ContactInput } from "@/lib/contact";
 import { GlobeHorizon } from "./brand/GlobeHorizon";
 import { LogoSymbol } from "./brand/Logo";
 import { Reveal } from "./ui/Reveal";
 import { Icon } from "./ui/Icon";
-import { buttonClasses } from "./ui/Button";
-
-const empty: ContactInput = { name: "", email: "", phone: "", destination: "", service: "", message: "", company: "" };
-
-/** Pre-selects the service when arriving from a "Request a quote" button (?service=cv). */
-function ServicePrefill({ onService }: { onService: (s: string) => void }) {
-  const params = useSearchParams();
-  const service = params.get("service");
-  useEffect(() => {
-    if (isServiceOption(service)) onService(service);
-  }, [service, onService]);
-  return null;
-}
+import { ButtonLink } from "./ui/Button";
 
 const channelIcon =
-  "flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/5 text-gold ring-1 ring-white/15 transition-colors group-hover:bg-gold group-hover:text-midnight";
+  "flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/5 text-gold ring-1 ring-white/15 transition-colors group-hover:bg-gold group-hover:text-midnight";
 
-const inputBase =
-  "mt-2 block w-full rounded-xl border bg-white/[0.06] px-4 py-3 text-white placeholder:text-white/40 transition-colors focus:border-gold focus:bg-white/10 focus:outline-none";
-
-function Field({
-  id,
-  label,
-  error,
-  optional,
-  children,
-}: {
-  id: string;
-  label: string;
-  error?: string;
-  optional?: string;
-  children: React.ReactNode;
-}) {
+function PassField({ label, value }: { label: string; value: string }) {
   return (
-    <div>
-      <label htmlFor={id} className="text-sm font-medium text-white">
-        {label} {optional && <span className="font-normal text-mist">{optional}</span>}
-      </label>
-      {children}
-      {error && (
-        <p id={`${id}-error`} className="mt-1.5 text-sm text-gold" role="alert">
-          {error}
-        </p>
-      )}
+    <div className="min-w-0">
+      <p className="text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-slate">{label}</p>
+      <p className="mt-0.5 truncate font-semibold text-midnight">{value}</p>
     </div>
   );
 }
 
-export function Contact({
-  lang,
-  t: contact,
-  services,
-  destinations,
-}: {
-  lang: Locale;
-  t: Dict["contact"];
-  services: Dict["services"]["items"];
-  destinations: Destination[];
-}) {
-  const f = contact.form;
-  const uid = useId();
-  const [values, setValues] = useState<ContactInput>(empty);
-  const [errors, setErrors] = useState<ContactErrors>({});
-  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
-  const [serverError, setServerError] = useState("");
-  const prefillService = useCallback((s: string) => setValues((v) => ({ ...v, service: s })), []);
+/** "Start your journey" call to action, drawn as a boarding pass. */
+function BoardingPass({ lang, t }: { lang: Locale; t: Dict["contact"]["journey"] }) {
+  const reduce = useReducedMotion();
+  return (
+    <div className="relative mx-auto w-full max-w-md">
+      {/* soft gold glow behind the pass */}
+      <div aria-hidden className="absolute -inset-6 rounded-[2rem] bg-[radial-gradient(closest-side,rgba(245,179,1,0.22),transparent)]" />
+
+      <motion.div
+        animate={reduce ? undefined : { y: [0, -6, 0] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        className="relative overflow-hidden rounded-brand-lg bg-white shadow-[0_40px_80px_-30px_rgba(0,0,0,0.6)]"
+      >
+        {/* header strip */}
+        <div className="flex items-center justify-between gap-3 bg-linear-to-r from-gold to-amber px-4 py-2 text-midnight sm:px-5">
+          <span className="flex items-center gap-2.5">
+            <span className="keep-light flex h-7 w-7 items-center justify-center rounded-full bg-white p-1">
+              <LogoSymbol className="h-full w-auto" />
+            </span>
+            <span className="text-sm font-bold">Go4Visa</span>
+          </span>
+          <span className="label-caps !text-[0.6rem] !tracking-[0.22em]">{t.pass}</span>
+        </div>
+
+        {/* route */}
+        <div className="px-4 pt-4 sm:px-5">
+          <div className="flex items-center gap-3">
+            <div className="min-w-0">
+              <p className="text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-slate">{t.from}</p>
+              <p className="mt-0.5 font-bold text-midnight sm:text-lg">{t.fromValue}</p>
+            </div>
+            <div aria-hidden className="relative flex h-8 min-w-12 flex-1 items-center">
+              <span className="absolute inset-x-0 top-1/2 border-t-2 border-dashed border-midnight/20" />
+              <span className="absolute top-1/2 -mt-1.5 h-3 w-3 rounded-full bg-gold motion-safe:animate-[g4v-flow-x_2.4s_ease-in-out_infinite]" />
+              <span className="relative mx-auto flex h-8 w-8 items-center justify-center rounded-full bg-midnight text-gold">
+                <Icon name="plane" className="h-4 w-4 rtl:-scale-x-100" />
+              </span>
+            </div>
+            <div className="min-w-0 text-end">
+              <p className="text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-slate">{t.to}</p>
+              <p className="mt-0.5 font-bold text-midnight sm:text-lg">{t.toValue}</p>
+            </div>
+          </div>
+
+          <div className="mt-4 grid grid-cols-3 gap-2 rounded-xl bg-cloud px-3 py-2 ring-1 ring-line">
+            <PassField label={t.passenger} value={t.passengerValue} />
+            <PassField label={t.session} value={t.sessionValue} />
+            <PassField label={t.gate} value={t.gateValue} />
+          </div>
+        </div>
+
+        {/* perforation */}
+        <div aria-hidden className="relative my-3 h-6">
+          <span className="absolute -start-3 top-0 h-6 w-6 rounded-full bg-midnight" />
+          <span className="absolute -end-3 top-0 h-6 w-6 rounded-full bg-midnight" />
+          <span className="absolute inset-x-5 top-1/2 border-t-2 border-dashed border-line" />
+        </div>
+
+        {/* stub */}
+        <div className="px-4 pb-4 sm:px-5 sm:pb-5">
+          <p className="text-lg font-bold text-midnight sm:text-xl">{t.title}</p>
+          <p className="mt-1.5 text-[0.8rem] leading-relaxed text-slate">{t.text}</p>
+          <ul className="mt-3 grid gap-1.5 sm:grid-cols-3 sm:gap-2">
+            {t.perks.map((perk) => (
+              <li key={perk} className="flex items-start gap-1.5 text-xs font-medium text-midnight">
+                <Icon name="check" className="mt-px h-3.5 w-3.5 shrink-0 text-ocean" />
+                {perk}
+              </li>
+            ))}
+          </ul>
+          <div className="mt-4 flex items-center gap-4">
+            <ButtonLink href={`/${lang}/apply`} arrow className="flex-1 !py-2.5 sm:flex-none">
+              {t.cta}
+            </ButtonLink>
+            {/* decorative barcode */}
+            <span
+              aria-hidden
+              className="ms-auto hidden h-8 w-24 opacity-70 sm:block"
+              style={{
+                background:
+                  "repeating-linear-gradient(90deg,#0b2d5b 0 2px,transparent 2px 4px,#0b2d5b 4px 5px,transparent 5px 8px,#0b2d5b 8px 11px,transparent 11px 12px)",
+              }}
+            />
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
+export function Contact({ lang, t: contact }: { lang: Locale; t: Dict["contact"] }) {
   const whatsapp = whatsappHref();
-
-  const set = (k: keyof ContactInput) => (e: { target: { value: string } }) => {
-    setValues((v) => ({ ...v, [k]: e.target.value }));
-    if (errors[k]) setErrors((er) => ({ ...er, [k]: undefined }));
-  };
-
-  const id = (k: string) => `${uid}-${k}`;
-  const aria = (k: keyof ContactInput) => ({
-    id: id(k),
-    "aria-invalid": errors[k] ? true : undefined,
-    "aria-describedby": errors[k] ? `${id(k)}-error` : undefined,
-  });
-  const border = (k: keyof ContactInput) => (errors[k] ? "border-gold" : "border-white/15");
-
-  async function onSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const found = validateContact(values, lang);
-    setErrors(found);
-    if (Object.keys(found).length > 0) {
-      const first = Object.keys(found)[0];
-      document.getElementById(id(first))?.focus();
-      return;
-    }
-    setStatus("sending");
-    setServerError("");
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...values, lang }),
-      });
-      const json = await res.json();
-      if (!res.ok || !json.ok) {
-        if (json.errors) setErrors(json.errors);
-        throw new Error(json.error ?? f.checkForm);
-      }
-      setStatus("sent");
-      setValues(empty);
-    } catch (err) {
-      setStatus("error");
-      setServerError(err instanceof Error ? err.message : f.genericError);
-    }
-  }
 
   return (
     <section
       id="contact"
       aria-labelledby="contact-title"
-      className="relative isolate overflow-hidden bg-midnight pb-56 pt-24 md:pb-64 md:pt-32"
+      className="relative isolate overflow-hidden bg-midnight pb-24 pt-12 md:pb-32 md:pt-16"
     >
-      <Suspense fallback={null}>
-        <ServicePrefill onService={prefillService} />
-      </Suspense>
       <div aria-hidden className="absolute inset-0 -z-10 bg-[radial-gradient(60%_50%_at_20%_20%,rgba(3,179,226,0.22),transparent_70%)]" />
-      <GlobeHorizon className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-48 w-full md:h-64" />
+      <GlobeHorizon className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-20 w-full md:h-28" />
 
-      <div className="container-brand grid gap-14 lg:grid-cols-[1fr_1.2fr] lg:gap-20">
+      <div className="container-brand grid max-w-6xl items-center gap-10 lg:grid-cols-[1fr_1fr] lg:gap-12">
         <Reveal>
           <p className="label-caps text-gold">{contact.eyebrow}</p>
-          <h2 id="contact-title" className="mt-3 text-4xl font-bold leading-tight text-white md:text-5xl">
+          <h2 id="contact-title" className="mt-3 text-2xl font-bold leading-tight text-white md:text-[2rem]">
             {contact.title}
           </h2>
-          <p className="mt-5 text-lg text-mist">{contact.lead}</p>
+          <p className="mt-3 text-sm text-mist md:text-base">{contact.lead}</p>
 
-          <ul className="mt-10 space-y-4">
+          <ul className="mt-6 space-y-2.5 text-sm">
             <li>
               <a href={`mailto:${site.email}`} className="group inline-flex min-w-0 max-w-full items-center gap-4 text-white">
                 <span className={channelIcon}>
@@ -187,97 +177,7 @@ export function Contact({
         </Reveal>
 
         <Reveal delay={0.1}>
-          <div className="relative rounded-brand-lg bg-white/[0.04] p-6 ring-1 ring-white/15 backdrop-blur-sm md:p-10">
-            {/* A word from Go4Visa, above the form */}
-            <figure className="relative mb-8 overflow-hidden rounded-brand bg-linear-to-br from-white/[0.09] to-white/[0.02] p-5 ring-1 ring-gold/30 md:p-6">
-              <span aria-hidden className="absolute inset-y-0 start-0 w-1 bg-linear-to-b from-gold to-amber" />
-              <Icon name="quote" className="absolute end-4 top-4 h-10 w-10 text-gold/15" />
-              <div className="flex items-center gap-3">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white p-1.5 ring-2 ring-gold">
-                  <LogoSymbol className="h-full w-auto" />
-                </span>
-                <p className="label-caps !text-[0.68rem] text-gold">{contact.welcome.title}</p>
-              </div>
-              <blockquote className="mt-4 text-lg font-medium leading-relaxed text-white md:text-xl">
-                {contact.welcome.message}
-              </blockquote>
-              <figcaption className="mt-3 text-sm text-mist">— {contact.welcome.signature}</figcaption>
-            </figure>
-            <AnimatePresence mode="wait">
-              {status === "sent" ? (
-                <motion.div
-                  key="sent"
-                  initial={{ opacity: 0, scale: 0.96 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="flex min-h-[28rem] flex-col items-center justify-center text-center"
-                  role="status"
-                >
-                  <span className="flex h-16 w-16 items-center justify-center rounded-full bg-gold text-midnight">
-                    <Icon name="plane" className="h-8 w-8" />
-                  </span>
-                  <p className="mt-6 text-2xl font-semibold text-white">{f.sentTitle}</p>
-                  <p className="mt-2 text-mist">{f.sentText}</p>
-                  <button type="button" onClick={() => setStatus("idle")} className={buttonClasses("outline-light", "mt-8")}>
-                    {f.sendAnother}
-                  </button>
-                </motion.div>
-              ) : (
-                <motion.form key="form" noValidate onSubmit={onSubmit} initial={false} exit={{ opacity: 0 }} className="grid gap-5 sm:grid-cols-2">
-                  <Field id={id("name")} label={f.name} error={errors.name}>
-                    <input {...aria("name")} name="name" autoComplete="name" required value={values.name} onChange={set("name")} className={`${inputBase} ${border("name")}`} />
-                  </Field>
-                  <Field id={id("email")} label={f.email} error={errors.email}>
-                    <input {...aria("email")} name="email" type="email" autoComplete="email" required value={values.email} onChange={set("email")} className={`${inputBase} ${border("email")}`} dir="ltr" />
-                  </Field>
-                  <Field id={id("phone")} label={f.phone} error={errors.phone} optional={f.optional}>
-                    <input {...aria("phone")} name="phone" type="tel" autoComplete="tel" value={values.phone} onChange={set("phone")} className={`${inputBase} ${border("phone")}`} placeholder="+213" dir="ltr" />
-                  </Field>
-                  <Field id={id("destination")} label={f.destination} optional={f.optional}>
-                    <select {...aria("destination")} name="destination" value={values.destination} onChange={set("destination")} className={`${inputBase} ${border("destination")} [&>option]:text-midnight`}>
-                      <option value="">{f.notSure}</option>
-                      {destinations.map((d) => (
-                        <option key={d.slug} value={d.country}>
-                          {d.country}
-                        </option>
-                      ))}
-                    </select>
-                  </Field>
-                  <div className="sm:col-span-2">
-                    <Field id={id("service")} label={f.service} optional={f.optional}>
-                      <select {...aria("service")} name="service" value={values.service} onChange={set("service")} className={`${inputBase} ${border("service")} [&>option]:text-midnight`}>
-                        <option value="">{f.chooseService}</option>
-                        {services.map((s) => (
-                          <option key={s.id} value={s.id}>
-                            {s.title}
-                          </option>
-                        ))}
-                      </select>
-                    </Field>
-                  </div>
-                  <div className="sm:col-span-2">
-                    <Field id={id("message")} label={f.message} error={errors.message}>
-                      <textarea {...aria("message")} name="message" rows={5} required value={values.message} onChange={set("message")} className={`${inputBase} ${border("message")} resize-y`} />
-                    </Field>
-                  </div>
-                  {/* honeypot */}
-                  <div aria-hidden className="absolute -start-[9999px] h-0 w-0 overflow-hidden">
-                    <label htmlFor={id("company")}>Company</label>
-                    <input id={id("company")} name="company" tabIndex={-1} autoComplete="off" value={values.company} onChange={set("company")} />
-                  </div>
-
-                  <div className="flex flex-col gap-4 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between">
-                    <p className="text-sm text-mist" aria-live="polite">
-                      {status === "error" ? <span className="text-gold">{serverError}</span> : status === "sending" ? f.sending : ""}
-                    </p>
-                    <button type="submit" disabled={status === "sending"} className={buttonClasses("gold", "disabled:cursor-wait disabled:opacity-70")}>
-                      {status === "sending" ? f.sending : f.send}
-                      <Icon name="arrow" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-                    </button>
-                  </div>
-                </motion.form>
-              )}
-            </AnimatePresence>
-          </div>
+          <BoardingPass lang={lang} t={contact.journey} />
         </Reveal>
       </div>
     </section>

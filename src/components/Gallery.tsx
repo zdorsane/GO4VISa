@@ -2,35 +2,32 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  AnimatePresence,
-  motion,
-  useMotionTemplate,
-  useMotionValue,
-  useReducedMotion,
-  useSpring,
-} from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { useReducedMotion } from "@/lib/motion";
 import type { Dict } from "@/lib/content";
 import type { GalleryPhoto } from "@/lib/gallery";
 import type { Locale } from "@/lib/i18n";
 import { SectionHeading } from "./ui/Section";
 import { Reveal } from "./ui/Reveal";
 import { Icon } from "./ui/Icon";
-import { ButtonLink, buttonClasses } from "./ui/Button";
+import { ButtonLink } from "./ui/Button";
 
-const INITIAL = 8;
 const ease = [0.22, 1, 0.36, 1] as const;
 
-function Lightbox({
+/** Full-screen photo viewer, also used by the student feedback section. */
+export function Lightbox({
   photos,
   index,
   t,
+  label,
   onClose,
   onIndex,
 }: {
   photos: GalleryPhoto[];
   index: number;
   t: Dict["gallery"];
+  /** Small heading above the caption; defaults to the photo's gallery tag. */
+  label?: (photo: GalleryPhoto) => string;
   onClose: () => void;
   onIndex: (i: number, dir: number) => void;
 }) {
@@ -63,8 +60,11 @@ function Lightbox({
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
-      else if (e.key === "ArrowRight") go(1);
-      else if (e.key === "ArrowLeft") go(-1);
+      else if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+        // "next" follows the reading direction
+        const forward = (e.key === "ArrowRight") !== (document.dir === "rtl");
+        go(forward ? 1 : -1);
+      }
       else if (e.key === "Tab" && dialog.current) {
         // keep keyboard focus inside the viewer
         const items = dialog.current.querySelectorAll<HTMLElement>("button");
@@ -171,7 +171,7 @@ function Lightbox({
           <Icon name="arrow" className="h-5 w-5 rotate-180" />
         </button>
         <div className="min-w-0 flex-1 text-center">
-          <span className="label-caps !text-[0.62rem] text-gold">{t.tags[photo.tag]}</span>
+          <span className="label-caps !text-[0.62rem] text-gold">{label ? label(photo) : t.tags[photo.tag]}</span>
           <p className="mt-1 text-sm text-white/90 md:text-base">{photo.alt}</p>
         </div>
         <button
@@ -202,7 +202,7 @@ function Ribbon({
   onOpen: (i: number) => void;
 }) {
   return (
-    <div className="group/ribbon overflow-hidden motion-reduce:overflow-x-auto">
+    <div dir="ltr" className="group/ribbon overflow-hidden motion-reduce:overflow-x-auto">
       <div
         className={`flex w-max motion-safe:animate-[g4v-marquee_var(--dur)_linear_infinite] group-hover/ribbon:[animation-play-state:paused] ${
           reverse ? "[animation-direction:reverse]" : ""
@@ -217,7 +217,7 @@ function Ribbon({
                 tabIndex={copy === 1 ? -1 : undefined}
                 onClick={() => onOpen(i)}
                 aria-label={`${t.open}: ${p.alt}`}
-                className="group/photo relative block h-32 overflow-hidden rounded-2xl shadow-[0_15px_35px_-20px_rgba(11,45,91,0.6)] ring-1 ring-white/60 sm:h-40 md:h-52"
+                className="group/photo relative block h-28 overflow-hidden rounded-2xl shadow-[0_15px_35px_-20px_rgba(11,45,91,0.6)] ring-1 ring-white/60 sm:h-36 md:h-44"
                 style={{ aspectRatio: `${p.width} / ${p.height}` }}
               >
                 <Image
@@ -237,109 +237,6 @@ function Ribbon({
   );
 }
 
-/** Masonry tile: curtain reveal on scroll, 3D tilt and glare following the mouse. */
-function Tile({
-  p,
-  i,
-  t,
-  reduce,
-  onOpen,
-}: {
-  p: GalleryPhoto;
-  i: number;
-  t: Dict["gallery"];
-  reduce: boolean;
-  onOpen: (i: number) => void;
-}) {
-  const rx = useSpring(0, { stiffness: 200, damping: 20 });
-  const ry = useSpring(0, { stiffness: 200, damping: 20 });
-  const gx = useMotionValue(50);
-  const gy = useMotionValue(50);
-  const glare = useMotionTemplate`radial-gradient(circle at ${gx}% ${gy}%, rgba(255,255,255,0.35), transparent 55%)`;
-
-  function onMove(e: React.PointerEvent<HTMLButtonElement>) {
-    if (reduce || e.pointerType !== "mouse") return;
-    const r = e.currentTarget.getBoundingClientRect();
-    const x = (e.clientX - r.left) / r.width;
-    const y = (e.clientY - r.top) / r.height;
-    ry.set((x - 0.5) * 12);
-    rx.set((0.5 - y) * 12);
-    gx.set(x * 100);
-    gy.set(y * 100);
-  }
-  function onLeave() {
-    rx.set(0);
-    ry.set(0);
-  }
-
-  const delay = reduce ? 0 : (i % 4) * 0.1;
-  return (
-    <motion.li
-      initial={reduce ? false : "hidden"}
-      whileInView="show"
-      viewport={{ once: true, margin: "-60px" }}
-      variants={{ hidden: { opacity: 0, y: 40 }, show: { opacity: 1, y: 0, transition: { duration: 0.7, delay, ease } } }}
-      className="mb-3 break-inside-avoid [perspective:1000px] md:mb-5"
-    >
-      <motion.button
-        type="button"
-        onClick={() => onOpen(i)}
-        onPointerMove={onMove}
-        onPointerLeave={onLeave}
-        aria-label={`${t.open}: ${p.alt}`}
-        style={{ rotateX: rx, rotateY: ry }}
-        className="group relative block w-full overflow-hidden rounded-brand-lg bg-midnight/5 shadow-[0_20px_40px_-25px_rgba(11,45,91,0.45)] ring-1 ring-black/5 transition-shadow duration-300 [transform-style:preserve-3d] hover:shadow-[0_35px_60px_-25px_rgba(11,45,91,0.6)]"
-      >
-        <motion.span
-          className="block"
-          variants={{ hidden: { scale: 1.25 }, show: { scale: 1, transition: { duration: 1.2, delay, ease } } }}
-        >
-          <Image
-            src={p.src}
-            alt=""
-            width={p.width}
-            height={p.height}
-            sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
-            className="h-auto w-full transition-transform duration-700 ease-out group-hover:scale-[1.06]"
-          />
-        </motion.span>
-
-        {/* curtain that slides away on reveal */}
-        {!reduce && (
-          <motion.span
-            aria-hidden
-            className="absolute inset-0 origin-top bg-linear-to-b from-midnight to-navy"
-            variants={{ hidden: { scaleY: 1 }, show: { scaleY: 0, transition: { duration: 0.9, delay: delay + 0.1, ease } } }}
-          />
-        )}
-
-        {/* glare following the mouse */}
-        <motion.span
-          aria-hidden
-          style={{ background: glare }}
-          className="pointer-events-none absolute inset-0 opacity-0 mix-blend-soft-light transition-opacity duration-300 group-hover:opacity-100"
-        />
-
-        <span className="label-caps absolute start-2.5 top-2.5 rounded-full bg-white/90 px-2.5 py-1 !text-[0.58rem] !tracking-[0.18em] text-midnight shadow-sm backdrop-blur md:start-3 md:top-3">
-          {t.tags[p.tag]}
-        </span>
-        <span
-          aria-hidden
-          className="absolute end-3 top-3 hidden h-9 w-9 scale-75 items-center justify-center rounded-full bg-gold text-midnight opacity-0 transition-all duration-300 group-hover:scale-100 group-hover:opacity-100 md:flex"
-        >
-          <Icon name="plus" className="h-4 w-4" />
-        </span>
-        <span
-          aria-hidden
-          className="absolute inset-x-0 bottom-0 hidden translate-y-3 bg-linear-to-t from-midnight/90 via-midnight/50 to-transparent px-4 pb-4 pt-12 text-start text-sm font-medium leading-snug text-white opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100 md:block"
-        >
-          {p.alt}
-        </span>
-      </motion.button>
-    </motion.li>
-  );
-}
-
 export function Gallery({
   lang,
   t,
@@ -351,17 +248,14 @@ export function Gallery({
   start: string;
   photos: GalleryPhoto[];
 }) {
-  const reduce = !!useReducedMotion();
-  const [expanded, setExpanded] = useState(false);
   const [open, setOpen] = useState<number | null>(null);
-  const shown = expanded ? photos : photos.slice(0, INITIAL);
   const onIndex = useCallback((i: number) => setOpen(i), []);
   const indexed = photos.map((p, i) => ({ p, i }));
   const rowA = indexed.filter((_, k) => k % 2 === 0);
   const rowB = indexed.filter((_, k) => k % 2 === 1);
 
   return (
-    <section id="experiences" aria-labelledby="experiences-title" className="relative overflow-x-clip bg-cloud py-24 md:py-32">
+    <section id="experiences" aria-labelledby="experiences-title" className="relative overflow-x-clip bg-cloud py-12 md:py-16">
       <div aria-hidden className="pointer-events-none absolute -end-40 top-10 h-[30rem] w-[30rem] rounded-full bg-[radial-gradient(circle,rgba(245,179,1,0.12),transparent_65%)]" />
       <div aria-hidden className="pointer-events-none absolute -start-40 bottom-10 h-[30rem] w-[30rem] rounded-full bg-[radial-gradient(circle,rgba(0,168,203,0.12),transparent_65%)]" />
 
@@ -370,43 +264,20 @@ export function Gallery({
       </div>
 
       {/* endless photo ribbons, full width */}
-      <Reveal className="relative mt-14 -rotate-2 space-y-3 [mask-image:linear-gradient(90deg,transparent,black_8%,black_92%,transparent)] md:space-y-4">
+      <Reveal className="relative mt-8 -rotate-2 space-y-3 [mask-image:linear-gradient(90deg,transparent,black_8%,black_92%,transparent)] md:space-y-4">
         <Ribbon items={rowA} duration="70s" t={t} onOpen={setOpen} />
         <Ribbon items={rowB} duration="80s" reverse t={t} onOpen={setOpen} />
       </Reveal>
 
       <div className="container-brand relative">
-        <ul className="mt-16 columns-2 gap-3 md:mt-20 md:columns-3 md:gap-5 lg:columns-4">
-          {shown.map((p, i) => (
-            <Tile key={p.src} p={p} i={i} t={t} reduce={reduce} onOpen={setOpen} />
-          ))}
-        </ul>
-
-        {photos.length > INITIAL && (
-          <div className="mt-8 flex justify-center">
-            <button
-              type="button"
-              onClick={() => setExpanded((v) => !v)}
-              aria-expanded={expanded}
-              className={buttonClasses("outline-dark", "bg-white")}
-            >
-              {expanded ? t.showLess : t.showMore}
-              {!expanded && (
-                <span className="rounded-full bg-midnight px-2 py-0.5 text-[0.7rem] text-gold">+{photos.length - INITIAL}</span>
-              )}
-              <Icon name="plus" className={`h-4 w-4 transition-transform duration-300 ${expanded ? "rotate-45" : ""}`} />
-            </button>
-          </div>
-        )}
-
-        <Reveal className="mx-auto mt-16 flex max-w-3xl flex-col items-center gap-5 rounded-brand-lg bg-white p-6 text-center shadow-[0_25px_50px_-30px_rgba(11,45,91,0.35)] ring-1 ring-line sm:flex-row sm:justify-between sm:p-8 sm:text-start">
-          <p className="flex items-center gap-3 text-lg font-semibold text-midnight md:text-xl">
+        <Reveal className="mx-auto mt-10 flex max-w-2xl flex-col items-center gap-4 rounded-brand-lg bg-white p-5 text-center shadow-[0_25px_50px_-30px_rgba(11,45,91,0.35)] ring-1 ring-line sm:flex-row sm:justify-between sm:p-6 sm:text-start">
+          <p className="flex items-center gap-3 font-semibold text-midnight md:text-lg">
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-midnight text-gold">
               <Icon name="plane" className="h-5 w-5" />
             </span>
             {t.cta}
           </p>
-          <ButtonLink href={`/${lang}#contact`} arrow className="shrink-0">
+          <ButtonLink href={`/${lang}/apply`} arrow className="shrink-0">
             {start}
           </ButtonLink>
         </Reveal>

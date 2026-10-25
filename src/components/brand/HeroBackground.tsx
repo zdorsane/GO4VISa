@@ -1,14 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import {
-  motion,
-  useMotionValue,
-  useReducedMotion,
-  useSpring,
-  useTransform,
-  type MotionValue,
-} from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform, type MotionValue } from "framer-motion";
+import { useReducedMotion } from "@/lib/motion";
 
 // Deterministic star field so server and client render the same markup.
 function makeStars(count: number, seed: number) {
@@ -87,7 +81,7 @@ export function HeroBackground({ scroll }: { scroll: MotionValue<number> }) {
         {STARS.map((st, i) => (
           <span
             key={i}
-            className="absolute rounded-full bg-white opacity-40 motion-safe:animate-[g4v-twinkle_var(--d)_ease-in-out_infinite]"
+            className="keep-light absolute rounded-full bg-white opacity-40 motion-safe:animate-[g4v-twinkle_var(--d)_ease-in-out_infinite]"
             style={
               {
                 left: `${st.left}%`,

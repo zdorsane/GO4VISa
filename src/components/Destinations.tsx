@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { AnimatePresence, LayoutGroup, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
+import { useReducedMotion } from "@/lib/motion";
 import type { Destination } from "@/lib/destinations";
 import type { Dict } from "@/lib/content";
 import type { Locale } from "@/lib/i18n";
@@ -11,6 +12,7 @@ import { SectionHeading } from "./ui/Section";
 import { Icon } from "./ui/Icon";
 import { Reveal } from "./ui/Reveal";
 
+/** Light section (follows the site theme): one card per country, opening its flagship programme. */
 export function Destinations({
   lang,
   t,
@@ -28,31 +30,29 @@ export function Destinations({
     <section
       id="destinations"
       aria-labelledby="destinations-title"
-      className="relative overflow-hidden bg-navy py-24 md:py-32"
+      className="relative overflow-hidden bg-white py-12 md:py-16"
     >
-      <div aria-hidden className="pattern-grings absolute inset-0 opacity-40 [mask-image:linear-gradient(180deg,black,transparent_45%)]" />
       <div
         aria-hidden
-        className="absolute inset-0 bg-[radial-gradient(50%_40%_at_80%_10%,rgba(0,168,203,0.25),transparent_70%)]"
+        className="pointer-events-none absolute -end-40 top-0 h-[28rem] w-[28rem] rounded-full bg-[radial-gradient(circle,rgba(0,168,203,0.12),transparent_65%)]"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -start-40 bottom-0 h-[24rem] w-[24rem] rounded-full bg-[radial-gradient(circle,rgba(245,179,1,0.10),transparent_65%)]"
       />
 
       <div className="container-brand relative">
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-          <SectionHeading
-            tone="dark"
-            id="destinations-title"
-            eyebrow={t.eyebrow}
-            title={t.title}
-          />
+          <SectionHeading id="destinations-title" eyebrow={t.eyebrow} title={t.title} />
           <Reveal>
-            <p className="max-w-sm text-sm text-mist">
+            <p className="max-w-sm text-sm text-slate">
               {t.select} {t.disclaimer}
             </p>
           </Reveal>
         </div>
 
         <LayoutGroup>
-          <ul className="mt-14 grid grid-flow-dense grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="mt-8 grid grid-flow-dense grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {destinations.map((d, i) => {
               const isOpen = open === d.slug;
               const panelId = `dest-panel-${d.slug}`;
@@ -64,10 +64,10 @@ export function Destinations({
                   initial={reduce ? false : { opacity: 0, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-40px" }}
-                  className={`overflow-hidden rounded-brand-lg ring-1 transition-colors duration-300 ${
+                  className={`overflow-hidden rounded-brand-lg ring-1 transition-[background-color,box-shadow] duration-300 ${
                     isOpen
-                      ? "bg-midnight ring-gold/60 sm:col-span-2 lg:col-span-3"
-                      : "bg-white/[0.04] ring-white/10 hover:bg-white/[0.08] hover:ring-gold/50"
+                      ? "bg-white shadow-[0_25px_50px_-25px_rgba(11,45,91,0.35)] ring-gold/60 sm:col-span-2 lg:col-span-3"
+                      : "bg-cloud ring-line hover:shadow-[0_15px_35px_-25px_rgba(11,45,91,0.4)] hover:ring-teal/40"
                   }`}
                 >
                   <motion.h3 layout={!reduce ? "position" : false}>
@@ -76,7 +76,7 @@ export function Destinations({
                       aria-expanded={isOpen}
                       aria-controls={panelId}
                       onClick={() => setOpen(isOpen ? null : d.slug)}
-                      className="group flex w-full items-center gap-4 p-5 text-start"
+                      className="group flex w-full items-center gap-3.5 p-4 text-start"
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
@@ -84,20 +84,20 @@ export function Destinations({
                         alt=""
                         width={48}
                         height={48}
-                        className={`h-12 w-12 shrink-0 rounded-full object-cover ring-2 transition-transform duration-300 group-hover:scale-110 ${
-                          isOpen ? "ring-gold" : "ring-white/20"
+                        className={`h-10 w-10 shrink-0 rounded-full object-cover ring-2 transition-transform duration-300 group-hover:scale-110 ${
+                          isOpen ? "ring-gold" : "ring-line"
                         }`}
                       />
                       <span className="min-w-0 flex-1">
                         <span className="flex items-center gap-2">
-                          <span className="text-xs font-bold tracking-widest text-gold">{d.code}</span>
-                          <span className="text-lg font-semibold text-white">{d.country}</span>
+                          <span className="text-xs font-bold tracking-widest text-ocean">{d.code}</span>
+                          <span className="text-base font-semibold text-midnight">{d.country}</span>
                         </span>
-                        <span className="mt-0.5 block text-sm text-mist">{d.programme}</span>
+                        <span className="mt-0.5 block text-sm text-slate">{d.programme}</span>
                       </span>
                       <span
                         className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ring-1 transition-all duration-300 ${
-                          isOpen ? "rotate-45 bg-gold text-midnight ring-gold" : "text-white ring-white/20 group-hover:ring-gold/60"
+                          isOpen ? "rotate-45 bg-gold text-midnight ring-gold" : "text-midnight ring-line group-hover:ring-teal"
                         }`}
                         aria-hidden
                       >
@@ -117,15 +117,15 @@ export function Destinations({
                         exit={reduce ? { opacity: 0 } : { opacity: 0, height: 0 }}
                         transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                       >
-                        <div className="border-t border-white/10 p-5 md:p-8">
-                          <p className="label-caps text-gold">{t.flagship}</p>
-                          <p className="mt-2 text-2xl font-semibold text-white">{d.programme}</p>
+                        <div className="border-t border-line p-5 md:p-8">
+                          <p className="label-caps text-ocean">{t.flagship}</p>
+                          <p className="mt-2 text-2xl font-semibold text-midnight">{d.programme}</p>
                           <div className="mt-6">
-                            <DestinationFacts d={d} t={t} tone="dark" />
+                            <DestinationFacts d={d} t={t} />
                           </div>
                           <Link
                             href={`/${lang}/destinations/${d.slug}`}
-                            className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-gold underline-offset-4 hover:underline"
+                            className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-ocean underline-offset-4 hover:underline"
                           >
                             {t.fullDetails} {d.country}
                             <Icon name="arrow" className="h-4 w-4" />
@@ -140,7 +140,7 @@ export function Destinations({
           </ul>
         </LayoutGroup>
 
-        <p className="mt-10 text-center text-sm text-mist">
+        <p className="mt-8 text-center text-xs text-slate">
           {t.footnote} {t.disclaimer}
         </p>
       </div>

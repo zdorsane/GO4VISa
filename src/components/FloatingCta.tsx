@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { useReducedMotion } from "@/lib/motion";
 import type { Dict } from "@/lib/content";
 import type { Locale } from "@/lib/i18n";
 import { Icon } from "./ui/Icon";
@@ -72,7 +73,7 @@ export function FloatingCta({ lang, t }: { lang: Locale; t: Dict["floatingCta"] 
                 className="absolute inset-0 rounded-full bg-gold/60 motion-safe:animate-[g4v-halo_2.6s_ease-out_infinite]"
               />
               <Link
-                href={`/${lang}#destinations`}
+                href={`/${lang}/how-it-works#destinations`}
                 className="group relative flex items-center gap-3 overflow-hidden rounded-full bg-gold py-2 pe-5 ps-2 font-semibold text-midnight shadow-[0_18px_40px_-12px_rgba(245,179,1,0.75),0_8px_20px_-10px_rgba(11,45,91,0.6)] ring-1 ring-white/40 transition-colors hover:bg-amber"
               >
                 {/* light sweep */}
@@ -83,7 +84,7 @@ export function FloatingCta({ lang, t }: { lang: Locale; t: Dict["floatingCta"] 
                 <span className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-midnight text-gold">
                   <Icon
                     name="plane"
-                    className="h-5 w-5 transition-transform duration-500 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 motion-safe:animate-[g4v-fly_3.2s_ease-in-out_infinite]"
+                    className="h-5 w-5 transition-transform duration-500 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 rtl:-scale-x-100 rtl:group-hover:-translate-x-0.5 motion-safe:animate-[g4v-fly_3.2s_ease-in-out_infinite]"
                   />
                 </span>
                 <span className="relative whitespace-nowrap text-sm sm:hidden">{t.short}</span>
