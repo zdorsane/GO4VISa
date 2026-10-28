@@ -1,18 +1,11 @@
 "use client";
 
-import { useId, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { useId, useState, type FormEvent, type ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import type { Dict } from "@/lib/content";
 import type { Locale } from "@/lib/i18n";
-import {
-  HELP_OPTIONS,
-  PAYMENT_OPTIONS,
-  RECEIPT_ACCEPT,
-  payment,
-  validateBooking,
-  type BookingErrors,
-  type BookingInput,
-} from "@/lib/booking";
+import { HELP_OPTIONS, price, validateBooking, type BookingErrors, type BookingInput } from "@/lib/booking";
+import { useReducedMotion } from "@/lib/motion";
 import { ButtonLink, buttonClasses } from "./ui/Button";
 import { Icon } from "./ui/Icon";
 import { Reveal } from "./ui/Reveal";
@@ -29,18 +22,11 @@ const empty: BookingInput = {
   help: "",
   helpOther: "",
   question: "",
-  payment: "",
   company: "",
 };
 
 /** Order of the questions on the page — used to focus the first error. */
-const ORDER: Key[] = ["name", "email", "whatsapp", "opportunity", "reason", "help", "helpOther", "question", "payment", "receipt"];
-
-const paymentLabels: Record<(typeof PAYMENT_OPTIONS)[number], string> = {
-  baridimob: "📱 BaridiMob",
-  ccp: "🏦 Algeria Post (CCP)",
-  binance: "💰 Binance (USDT)",
-};
+const ORDER: Key[] = ["name", "email", "whatsapp", "opportunity", "reason", "help", "helpOther", "question"];
 
 const inputBase =
   "mt-2 block w-full rounded-xl border bg-cloud px-4 py-3 text-midnight placeholder:text-slate/60 transition-colors focus:border-ocean focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky/30";
@@ -89,7 +75,6 @@ function Choices({
   value,
   onChange,
   error,
-  columns = 1,
 }: {
   id: string;
   label: string;
@@ -97,14 +82,13 @@ function Choices({
   value: string;
   onChange: (v: string) => void;
   error?: string;
-  columns?: 1 | 3;
 }) {
   return (
     <div role="radiogroup" aria-labelledby={`${id}-label`} aria-describedby={error ? `${id}-error` : undefined} className="sm:col-span-2">
       <p id={`${id}-label`} className="text-sm font-semibold text-midnight">
         {label} <span className="text-[#B42318]" aria-hidden>*</span>
       </p>
-      <div className={`mt-3 grid gap-2.5 ${columns === 3 ? "sm:grid-cols-3" : ""}`}>
+      <div className="mt-3 grid gap-2.5">
         {options.map((o, i) => {
           const checked = value === o.value;
           return (
@@ -133,89 +117,77 @@ function Choices({
   );
 }
 
-function CopyValue({ value, t }: { value: string; t: T }) {
-  const [copied, setCopied] = useState(false);
-  return (
-    <button
-      type="button"
-      onClick={async () => {
-        try {
-          await navigator.clipboard.writeText(value);
-          setCopied(true);
-          setTimeout(() => setCopied(false), 1800);
-        } catch {
-          /* clipboard unavailable — the value stays selectable */
-        }
-      }}
-      className="group inline-flex items-center gap-2 rounded-lg px-1.5 py-0.5 text-start font-mono text-[0.95rem] font-semibold tracking-wide text-white hover:bg-white/10"
-      aria-label={`${t.copy} ${value}`}
-    >
-      <span dir="ltr" className="break-all">{value}</span>
-      <span className={`shrink-0 rounded-full px-2 py-0.5 font-sans text-[0.65rem] font-semibold uppercase tracking-wider ${copied ? "bg-gold text-midnight" : "bg-white/10 text-mist group-hover:text-white"}`}>
-        {copied ? t.copied : t.copy}
-      </span>
-    </button>
-  );
-}
-
-function PaymentCard({ t, selected }: { t: T; selected: string }) {
-  const methods: { id: (typeof PAYMENT_OPTIONS)[number]; icon: string; name: string; rows: { label: string; value: string; copy?: boolean }[] }[] = [
-    { id: "baridimob", icon: "📱", name: "BaridiMob", rows: [{ label: "RIP", value: payment.baridimob.rip, copy: true }] },
-    {
-      id: "ccp",
-      icon: "🏦",
-      name: "Algeria Post (CCP)",
-      rows: [
-        { label: t.holder, value: payment.ccp.holder },
-        { label: "CCP", value: payment.ccp.account, copy: true },
-        { label: t.key, value: payment.ccp.key },
-      ],
-    },
-    { id: "binance", icon: "💰", name: "Binance (USDT)", rows: [{ label: "Binance ID", value: payment.binance.id, copy: true }] },
-  ];
-
+/** Consultation price — no payment is taken on the site. */
+function PriceCard({ t }: { t: T }) {
   return (
     <div className="overflow-hidden rounded-brand-lg bg-midnight text-white shadow-[0_30px_60px_-25px_rgba(11,45,91,0.5)]">
       <div className="bg-linear-to-br from-ocean/40 to-transparent p-6">
-        <p className="label-caps !text-[0.68rem] text-gold">{t.paymentTitle}</p>
-        <p className="mt-3 text-sm text-mist">{t.price}</p>
-        <p className="mt-1 flex flex-wrap items-baseline gap-x-3 text-white">
-          <span className="text-4xl font-bold">{payment.priceUsd}</span>
-          <span className="text-lg font-semibold text-gold">{payment.priceDzd}</span>
+        <p className="label-caps !text-[0.68rem] text-gold">{t.price}</p>
+        <p className="mt-3 flex flex-wrap items-baseline gap-x-2">
+          <span dir="ltr" className="flex items-baseline gap-2">
+            <span className="text-5xl font-bold tracking-tight">{price.dzd}</span>
+            <span className="text-xl font-semibold text-gold">DA</span>
+          </span>
+          <span dir="ltr" className="ms-1 text-sm text-mist">≈ {price.usd}</span>
         </p>
       </div>
-      <ul className="space-y-3 p-4">
-        {methods.map((m) => (
-          <li
-            key={m.id}
-            className={`rounded-brand p-4 ring-1 transition-colors ${selected === m.id ? "bg-white/10 ring-gold" : "bg-white/[0.03] ring-white/10"}`}
-          >
-            <p className="flex items-center gap-2 font-semibold">
-              <span aria-hidden>{m.icon}</span>
-              {m.name}
-              {selected === m.id && <Icon name="check" className="ms-auto h-4 w-4 text-gold" />}
-            </p>
-            <dl className="mt-2 space-y-1 text-sm">
-              {m.rows.map((r) => (
-                <div key={r.label} className="flex flex-wrap items-center justify-between gap-x-3">
-                  <dt className="text-mist">{r.label}</dt>
-                  <dd>{r.copy ? <CopyValue value={r.value} t={t} /> : <span dir="ltr" className="px-1.5 font-semibold">{r.value}</span>}</dd>
-                </div>
-              ))}
-            </dl>
-          </li>
-        ))}
-      </ul>
-      <p className="border-t border-white/10 px-6 py-4 text-sm text-mist">{t.paymentNote}</p>
+      <p className="flex items-start gap-3 border-t border-white/10 px-6 py-4 text-sm text-mist">
+        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gold text-midnight">
+          <Icon name="check" className="h-3 w-3" />
+        </span>
+        {t.priceNote}
+      </p>
     </div>
+  );
+}
+
+/** What happens after submitting: a blinking speech cloud "said" by the WhatsApp badge below it. */
+function WhatsAppBubble({ t }: { t: T }) {
+  const reduce = useReducedMotion();
+  return (
+    <motion.div
+      initial={reduce ? false : { opacity: 0, y: 18, scale: 0.96 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+      className="mt-8"
+    >
+      {/* the cloud: puffs + body share one drop-shadow, so the glow follows the whole outline */}
+      <div className="relative [filter:drop-shadow(0_14px_24px_rgba(11,45,91,0.18))] motion-safe:animate-[g4v-glow_2.8s_ease-in-out_infinite]">
+        <span aria-hidden className="absolute -top-3 inset-s-8 h-9 w-9 rounded-full bg-white" />
+        <span aria-hidden className="absolute -top-5 inset-s-15 h-12 w-12 rounded-full bg-white" />
+        <span aria-hidden className="absolute -top-3 inset-s-25 h-8 w-8 rounded-full bg-white" />
+        <span aria-hidden className="absolute -top-2 inset-e-10 h-7 w-7 rounded-full bg-white" />
+
+        <div className="relative rounded-[2rem] bg-white px-6 py-5">
+          <p className="flex items-center gap-1.5 text-xs font-semibold text-ocean">
+            <Icon name="whatsapp" className="h-4 w-4 text-[#25D366]" strokeWidth={2} />
+            {t.bubbleFrom} <span className="font-medium text-slate">· WhatsApp</span>
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-ink">{t.nextSteps}</p>
+          <p className="mt-4 flex items-center gap-2.5 font-semibold text-midnight">
+            <span aria-hidden className="h-5 w-1 shrink-0 rounded-full bg-gold" />
+            {t.signoff}
+          </p>
+        </div>
+      </div>
+
+      {/* thought trail down to the WhatsApp badge */}
+      <div aria-hidden className="relative h-20">
+        <span className="absolute inset-s-14 top-2 h-4 w-4 rounded-full bg-white shadow-[0_4px_12px_-4px_rgba(3,179,226,0.6)] motion-safe:animate-[g4v-blink_1.8s_ease-in-out_infinite]" />
+        <span className="absolute inset-s-11 top-7 h-2.5 w-2.5 rounded-full bg-white shadow-[0_4px_12px_-4px_rgba(3,179,226,0.6)] motion-safe:animate-[g4v-blink_1.8s_ease-in-out_0.3s_infinite]" />
+        <span className="absolute inset-s-0 top-9 flex h-11 w-11 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_8px_20px_-8px_rgba(37,211,102,0.8)]">
+          <span className="absolute inset-0 rounded-full bg-[#25D366] motion-safe:animate-[g4v-ping-soft_3.2s_ease-out_infinite]" />
+          <Icon name="whatsapp" className="relative h-5 w-5" />
+        </span>
+      </div>
+    </motion.div>
   );
 }
 
 export function BookingForm({ lang, t }: { lang: Locale; t: T }) {
   const uid = useId();
-  const fileRef = useRef<HTMLInputElement>(null);
   const [values, setValues] = useState<BookingInput>(empty);
-  const [receipt, setReceipt] = useState<File | null>(null);
   const [errors, setErrors] = useState<BookingErrors>({});
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [serverError, setServerError] = useState("");
@@ -238,7 +210,7 @@ export function BookingForm({ lang, t }: { lang: Locale; t: T }) {
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const found = validateBooking(values, receipt && { name: receipt.name, type: receipt.type, size: receipt.size }, lang);
+    const found = validateBooking(values, lang);
     setErrors(found);
     if (Object.keys(found).length > 0) {
       const first = ORDER.find((k) => found[k]);
@@ -253,7 +225,6 @@ export function BookingForm({ lang, t }: { lang: Locale; t: T }) {
       const body = new FormData();
       for (const [k, v] of Object.entries(values)) body.append(k, v ?? "");
       body.append("lang", lang);
-      body.append("receipt", receipt!);
       const res = await fetch("/api/booking", { method: "POST", body });
       const json = await res.json();
       if (!res.ok || !json.ok) {
@@ -262,15 +233,12 @@ export function BookingForm({ lang, t }: { lang: Locale; t: T }) {
       }
       setStatus("sent");
       setValues(empty);
-      setReceipt(null);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
       setStatus("error");
       setServerError(err instanceof Error ? err.message : t.genericError);
     }
   }
-
-  const kb = receipt ? Math.max(1, Math.round(receipt.size / 1024)) : 0;
 
   return (
     <div className="grid items-start gap-8 lg:grid-cols-[1.6fr_1fr]">
@@ -347,76 +315,6 @@ export function BookingForm({ lang, t }: { lang: Locale; t: T }) {
                   </div>
                 </Group>
 
-                <Group n={3} title={t.steps[2]}>
-                  <Choices
-                    id={id("payment")}
-                    label={t.q.payment}
-                    value={values.payment}
-                    error={errors.payment}
-                    onChange={(v) => setValue("payment", v)}
-                    columns={3}
-                    options={PAYMENT_OPTIONS.map((o) => ({ value: o, label: paymentLabels[o] }))}
-                  />
-
-                  <div className="sm:col-span-2">
-                    <p className="text-sm font-semibold text-midnight">
-                      <label htmlFor={id("receipt")}>{t.q.receipt}</label> <span className="text-[#B42318]" aria-hidden>*</span>
-                    </p>
-                    <p className="mt-0.5 text-xs text-slate">{t.q.receiptHint}</p>
-                    <div
-                      className={`mt-2 flex flex-col gap-3 rounded-xl border-2 border-dashed p-4 sm:flex-row sm:items-center ${
-                        errors.receipt ? "border-[#B42318]/60 bg-[#B42318]/[0.03]" : receipt ? "border-ocean/50 bg-sky/5" : "border-line bg-cloud"
-                      }`}
-                    >
-                      <input
-                        ref={fileRef}
-                        id={id("receipt")}
-                        name="receipt"
-                        type="file"
-                        accept={RECEIPT_ACCEPT}
-                        required
-                        className="sr-only"
-                        aria-invalid={errors.receipt ? true : undefined}
-                        aria-describedby={errors.receipt ? `${id("receipt")}-error` : undefined}
-                        onChange={(e) => {
-                          setReceipt(e.target.files?.[0] ?? null);
-                          clear("receipt");
-                        }}
-                      />
-                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-ocean ring-1 ring-line">
-                        <Icon name={receipt ? "check" : "doc"} className="h-5 w-5" />
-                      </span>
-                      <span className="min-w-0 flex-1 text-sm">
-                        {receipt ? (
-                          <>
-                            <span className="block truncate font-semibold text-midnight">{receipt.name}</span>
-                            <span className="text-slate">{kb < 1024 ? `${kb} KB` : `${(kb / 1024).toFixed(1)} MB`}</span>
-                          </>
-                        ) : (
-                          <span className="text-slate">{t.q.receiptHint}</span>
-                        )}
-                      </span>
-                      <span className="flex gap-2">
-                        <button type="button" onClick={() => fileRef.current?.click()} className={buttonClasses("midnight", "!px-4 !py-2.5 hover:!translate-y-0")}>
-                          {receipt ? t.q.receiptChange : t.q.receiptChoose}
-                        </button>
-                        {receipt && (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setReceipt(null);
-                              if (fileRef.current) fileRef.current.value = "";
-                            }}
-                            className={buttonClasses("outline-dark", "!px-4 !py-2.5 hover:!translate-y-0")}
-                          >
-                            {t.q.receiptRemove}
-                          </button>
-                        )}
-                      </span>
-                    </div>
-                    <ErrorText id={id("receipt")} error={errors.receipt} />
-                  </div>
-                </Group>
               </div>
 
               {/* honeypot */}
@@ -440,7 +338,8 @@ export function BookingForm({ lang, t }: { lang: Locale; t: T }) {
       </Reveal>
 
       <Reveal delay={0.1} className="order-1 lg:sticky lg:top-[calc(var(--g4v-header-h)+1.5rem)] lg:order-2">
-        <PaymentCard t={t} selected={values.payment} />
+        <PriceCard t={t} />
+        <WhatsAppBubble t={t} />
       </Reveal>
     </div>
   );

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { Steps } from "@/components/Steps";
 import { Destinations } from "@/components/Destinations";
 import { PageCta } from "@/components/PageCta";
-import { PageHeader } from "@/components/ui/PageHeader";
+import { JourneyHero } from "@/components/JourneyHero";
 import { getDictionary } from "@/lib/content";
 import { getDestinations } from "@/lib/destinations";
 import { hasLocale, languageAlternates } from "@/lib/i18n";
@@ -20,18 +20,19 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/how-it-wor
   };
 }
 
-/** The student journey step by step, then the scholarship destinations. */
+/** Hero, the student journey step by step, the scholarship destinations, then the booking call to action. */
 export default async function HowItWorksPage({ params }: PageProps<"/[lang]/how-it-works">) {
   const { lang } = await params;
   if (!hasLocale(lang)) notFound();
   const t = getDictionary(lang);
+  const destinations = getDestinations(lang);
 
   return (
     <>
-      <PageHeader id="page-title" eyebrow={t.pages.howItWorks.eyebrow} title={t.pages.howItWorks.title} lead={t.pages.howItWorks.lead} />
+      <JourneyHero lang={lang} t={t.pages.howItWorks} steps={t.steps.items} />
       <Steps t={t.steps} />
-      <Destinations lang={lang} t={t.destinations} destinations={getDestinations(lang)} />
-      <PageCta lang={lang} t={t.pages.cta} start={t.ui.getStarted} />
+      <Destinations lang={lang} t={t.destinations} destinations={destinations} />
+      <PageCta lang={lang} t={t.pages.howItWorks.cta} start={t.pages.howItWorks.book} />
     </>
   );
 }

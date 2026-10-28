@@ -33,7 +33,8 @@ export type IconName =
   | "search"
   | "chat"
   | "wallet"
-  | "pulse";
+  | "pulse"
+  | "whatsapp";
 
 /** Line icons in the brand's icon-field style (24px grid, 1.75 stroke). */
 export function Icon({ name, ...props }: { name: IconName } & SVGProps<SVGSVGElement>) {
@@ -201,6 +202,13 @@ export function Icon({ name, ...props }: { name: IconName } & SVGProps<SVGSVGEle
       return (
         <svg {...common}>
           <path d="M20 12a8 8 0 0 1-11.8 7L4 20l1.1-4A8 8 0 1 1 20 12" />
+        </svg>
+      );
+    case "whatsapp":
+      return (
+        <svg {...common}>
+          <path d="m3.5 20.5 1.3-4.3A8.5 8.5 0 1 1 8 19.3z" />
+          <path d="M9 8.6c0 3.3 3.1 6.4 6.4 6.4l1-1.6-2.2-1-1 .9a4.6 4.6 0 0 1-2.4-2.4l.9-1-1-2.2z" />
         </svg>
       );
     case "wallet":

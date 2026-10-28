@@ -1,8 +1,11 @@
 # Consultation bookings → Google Sheet
 
-The booking page (`/en/apply`, `/fr/apply`) sends every booking to one Google
-Sheet: one row per candidate, with a link to the payment receipt saved in
-Google Drive, and an email for each new booking.
+The booking page (`/en/apply`, `/fr/apply`, `/ar/apply`) sends every booking to
+one Google Sheet: one row per candidate, and an email for each new booking. No
+payment is taken on the site: the team contacts each candidate on WhatsApp
+within 24–48 hours with the payment details, then sends a booking link once the
+payment is confirmed. The "Payment method" and "Receipt" columns are kept for
+older bookings and stay empty for new ones.
 
 ## Setup (once, about 5 minutes)
 
@@ -37,8 +40,8 @@ Google Drive, and an email for each new booking.
 | Column | Content |
 | --- | --- |
 | Date … Payment completed? | The candidate's answers |
-| Receipt | "View receipt" link to the file in Drive |
+| Payment method, Receipt | Older bookings only (the form no longer asks for payment) |
 | Status | Dropdown: New · Payment verified · Consultation scheduled · Done · Cancelled |
 
 Without these variables (local development), bookings are written to
-`data/bookings.jsonl` and receipts to `data/receipts/`.
+`data/bookings.jsonl`.

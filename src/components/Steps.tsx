@@ -23,7 +23,7 @@ export function Steps({ t }: { t: Dict["steps"] }) {
           align="center"
           id="steps-title"
           eyebrow={t.eyebrow}
-          title={t.items.map((s) => s.title).join(` ${t.arrow} `)}
+          title={t.title}
         />
 
         <div ref={ref} className="relative mt-10">
@@ -42,7 +42,7 @@ export function Steps({ t }: { t: Dict["steps"] }) {
           {t.items.map((s, i) => (
             <Reveal
               as="li"
-              key={s.title}
+              key={s.key}
               delay={i * 0.12}
               className="relative flex items-start gap-4 rounded-brand-lg text-start max-md:bg-white max-md:p-4 max-md:ring-1 max-md:ring-line md:block md:text-center"
             >
@@ -53,8 +53,9 @@ export function Steps({ t }: { t: Dict["steps"] }) {
               </div>
               <div className="min-w-0">
               <p className="label-caps !text-[0.65rem] text-ocean md:mt-4">{t.stepLabel} {i + 1}</p>
-              <h3 className="mt-1 text-base font-semibold text-midnight md:mt-1.5 md:text-xl">{s.title}</h3>
-              <p className="mt-1 text-sm text-slate md:mx-auto md:mt-2 md:max-w-xs">{s.text}</p>
+              <h3 className="mt-1 text-base font-semibold text-midnight md:mt-1.5 md:text-xl">{s.label}</h3>
+              <p className="mt-1 text-sm font-semibold text-midnight md:mx-auto md:mt-2 md:max-w-xs">{s.title}</p>
+              <p className="mt-1 text-sm text-slate md:mx-auto md:mt-1.5 md:max-w-xs">{s.text}</p>
               </div>
             </Reveal>
           ))}

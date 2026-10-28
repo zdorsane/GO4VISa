@@ -4,10 +4,9 @@ import { motion } from "framer-motion";
 import { useReducedMotion } from "@/lib/motion";
 import { site, whatsappHref, type Dict } from "@/lib/content";
 import type { Locale } from "@/lib/i18n";
-import { GlobeHorizon } from "./brand/GlobeHorizon";
 import { LogoSymbol } from "./brand/Logo";
 import { Reveal } from "./ui/Reveal";
-import { Icon } from "./ui/Icon";
+import { Icon, type IconName } from "./ui/Icon";
 import { ButtonLink } from "./ui/Button";
 
 const channelIcon =
@@ -112,74 +111,94 @@ function BoardingPass({ lang, t }: { lang: Locale; t: Dict["contact"]["journey"]
   );
 }
 
-export function Contact({ lang, t: contact }: { lang: Locale; t: Dict["contact"] }) {
+/** Contact channels + boarding pass — the right half of the founder + contact section. */
+export function ContactPanel({
+  lang,
+  t: contact,
+  social,
+}: {
+  lang: Locale;
+  t: Dict["contact"];
+  social: { label: string; on: string };
+}) {
   const whatsapp = whatsappHref();
+  const socials = site.socials.filter((s) => s.href);
 
   return (
-    <section
-      id="contact"
-      aria-labelledby="contact-title"
-      className="relative isolate overflow-hidden bg-midnight pb-24 pt-12 md:pb-32 md:pt-16"
-    >
-      <div aria-hidden className="absolute inset-0 -z-10 bg-[radial-gradient(60%_50%_at_20%_20%,rgba(3,179,226,0.22),transparent_70%)]" />
-      <GlobeHorizon className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-20 w-full md:h-28" />
+    <div>
+      <Reveal>
+        <p className="label-caps text-gold">{contact.eyebrow}</p>
+        <h2 id="contact-title" className="mt-3 text-2xl font-bold leading-tight text-white md:text-[2rem]">
+          {contact.title}
+        </h2>
+        <p className="mt-3 text-sm text-mist md:text-base">{contact.lead}</p>
 
-      <div className="container-brand grid max-w-6xl items-center gap-10 lg:grid-cols-[1fr_1fr] lg:gap-12">
-        <Reveal>
-          <p className="label-caps text-gold">{contact.eyebrow}</p>
-          <h2 id="contact-title" className="mt-3 text-2xl font-bold leading-tight text-white md:text-[2rem]">
-            {contact.title}
-          </h2>
-          <p className="mt-3 text-sm text-mist md:text-base">{contact.lead}</p>
-
-          <ul className="mt-6 space-y-2.5 text-sm">
+        <ul className="mt-6 grid gap-3 text-sm sm:grid-cols-2">
+          <li className="sm:col-span-2">
+            <a href={`mailto:${site.email}`} className="group inline-flex min-w-0 max-w-full items-center gap-4 text-white">
+              <span className={channelIcon}>
+                <Icon name="mail" className="h-5 w-5" />
+              </span>
+              <span className="break-all underline-offset-4 group-hover:underline">{site.email}</span>
+            </a>
+          </li>
+          {whatsapp && (
             <li>
-              <a href={`mailto:${site.email}`} className="group inline-flex min-w-0 max-w-full items-center gap-4 text-white">
+              <a href={whatsapp} target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-4 text-white">
                 <span className={channelIcon}>
-                  <Icon name="mail" className="h-5 w-5" />
+                  <Icon name="chat" className="h-5 w-5" />
                 </span>
-                <span className="break-all underline-offset-4 group-hover:underline">{site.email}</span>
+                <span>
+                  <span className="block text-xs font-medium uppercase tracking-wider text-mist">{contact.whatsapp}</span>
+                  <span dir="ltr" className="underline-offset-4 group-hover:underline">{site.whatsappDisplay}</span>
+                </span>
               </a>
             </li>
-            {whatsapp && (
-              <li>
-                <a href={whatsapp} target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-4 text-white">
-                  <span className={channelIcon}>
-                    <Icon name="chat" className="h-5 w-5" />
-                  </span>
-                  <span>
-                    <span className="block text-xs font-medium uppercase tracking-wider text-mist">{contact.whatsapp}</span>
-                    <span dir="ltr" className="underline-offset-4 group-hover:underline">{site.whatsappDisplay}</span>
-                  </span>
-                </a>
-              </li>
-            )}
-            {/* Shown once site.phone and site.phoneHref are set in lib/content.ts */}
-            {site.phoneHref && (
-              <li>
-                <a href={site.phoneHref} className="group inline-flex items-center gap-4 text-white">
-                  <span className={channelIcon}>
-                    <Icon name="phone" className="h-5 w-5" />
-                  </span>
-                  <span dir="ltr" className="underline-offset-4 group-hover:underline">{site.phone}</span>
-                </a>
-              </li>
-            )}
+          )}
+          {/* Shown once site.phone and site.phoneHref are set in lib/content.ts */}
+          {site.phoneHref && (
             <li>
-              <a href={site.url} className="group inline-flex items-center gap-4 text-white">
+              <a href={site.phoneHref} className="group inline-flex items-center gap-4 text-white">
                 <span className={channelIcon}>
-                  <Icon name="web" className="h-5 w-5" />
+                  <Icon name="phone" className="h-5 w-5" />
                 </span>
-                <span className="underline-offset-4 group-hover:underline">www.go4visa.com</span>
+                <span dir="ltr" className="underline-offset-4 group-hover:underline">{site.phone}</span>
               </a>
             </li>
+          )}
+          <li>
+            <a href={site.url} className="group inline-flex items-center gap-4 text-white">
+              <span className={channelIcon}>
+                <Icon name="web" className="h-5 w-5" />
+              </span>
+              <span className="underline-offset-4 group-hover:underline">www.go4visa.com</span>
+            </a>
+          </li>
+        </ul>
+
+        {/* Shown once the profile URLs are set in site.socials */}
+        {socials.length > 0 && (
+          <ul className="mt-5 flex gap-2.5" aria-label={social.label}>
+            {socials.map((s) => (
+              <li key={s.name}>
+                <a
+                  href={s.href}
+                  aria-label={`${social.on} ${s.name}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex h-10 w-10 items-center justify-center rounded-full text-white ring-1 ring-white/20 transition-all hover:-translate-y-0.5 hover:bg-gold hover:text-midnight hover:ring-gold"
+                >
+                  <Icon name={s.name.toLowerCase() as IconName} className="h-5 w-5" />
+                </a>
+              </li>
+            ))}
           </ul>
-        </Reveal>
+        )}
+      </Reveal>
 
-        <Reveal delay={0.1}>
-          <BoardingPass lang={lang} t={contact.journey} />
-        </Reveal>
-      </div>
-    </section>
+      <Reveal delay={0.1} className="mt-10">
+        <BoardingPass lang={lang} t={contact.journey} />
+      </Reveal>
+    </div>
   );
 }

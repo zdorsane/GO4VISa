@@ -2,14 +2,13 @@ import { notFound } from "next/navigation";
 import { Hero } from "@/components/Hero";
 import { Stats } from "@/components/Stats";
 import { About } from "@/components/About";
-import { Founder } from "@/components/Founder";
 import { Services } from "@/components/Services";
 import { Gallery } from "@/components/Gallery";
 import { Feedback } from "@/components/Feedback";
-import { Contact } from "@/components/Contact";
+import { FounderContact } from "@/components/FounderContact";
 import { FloatingCta } from "@/components/FloatingCta";
 import { getDictionary, site } from "@/lib/content";
-import { getFeedback } from "@/lib/feedback";
+import { getFeedback, getVisas } from "@/lib/feedback";
 import { getPhotos } from "@/lib/gallery";
 import { hasLocale } from "@/lib/i18n";
 
@@ -42,11 +41,15 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
       <Hero lang={lang} t={t.hero} />
       <Stats t={t.stats} />
       <About lang={lang} t={t.about} />
-      <Founder lang={lang} t={t.founder} start={t.ui.getStarted} />
       <Services lang={lang} t={t.services} />
+      <Feedback t={t.feedback} viewer={t.gallery} items={getFeedback(lang)} visas={getVisas()} />
       <Gallery lang={lang} t={t.gallery} start={t.ui.getStarted} photos={getPhotos(lang)} />
-      <Feedback lang={lang} t={t.feedback} viewer={t.gallery} start={t.ui.getStarted} items={getFeedback(lang)} />
-      <Contact lang={lang} t={t.contact} />
+      <FounderContact
+        lang={lang}
+        founder={t.founder}
+        contact={t.contact}
+        social={{ label: t.footer.social, on: t.footer.socialOn }}
+      />
       <FloatingCta lang={lang} t={t.floatingCta} />
     </>
   );

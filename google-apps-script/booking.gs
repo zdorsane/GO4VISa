@@ -1,8 +1,10 @@
 /**
  * Go4Visa — consultation bookings → Google Sheet + Google Drive
  *
- * Receives each booking sent by the website (/apply), saves the payment receipt
- * in a Drive folder, adds one row to the "Bookings" sheet and emails a notice.
+ * Receives each booking sent by the website (/apply), adds one row to the
+ * "Bookings" sheet and emails a notice. The website no longer collects payment
+ * details or receipts (the team shares payment details on WhatsApp); the
+ * "Payment method" and "Receipt" columns stay for older rows and are left empty.
  *
  * SETUP (once, about 5 minutes) — see README.md in this folder.
  */
@@ -79,8 +81,8 @@ function doPost(e) {
           "<p><b>" + esc(data.name) + "</b> booked a consultation.</p>" +
           "<p>Opportunity: " + esc(data.opportunity) + "<br>" +
           "WhatsApp: " + esc(data.whatsapp) + "<br>" +
-          "Email: " + esc(data.email) + "<br>" +
-          "Payment: " + esc(data.payment) + "</p>" +
+          "Email: " + esc(data.email) +
+          (data.payment ? "<br>Payment: " + esc(data.payment) : "") + "</p>" +
           (receiptUrl ? '<p><a href="' + receiptUrl + '">View the payment receipt</a></p>' : "") +
           '<p><a href="' + SpreadsheetApp.getActiveSpreadsheet().getUrl() + '">Open the bookings sheet</a></p>',
       });
