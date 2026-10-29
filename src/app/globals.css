@@ -321,15 +321,3 @@ html[lang="ar"] body * {
   }
 }
 
-/* Rendered news articles (src/lib/news.ts renderArticle) */
-.article-body { line-height: 1.75; color: var(--g4v-slate); }
-.article-body > * + * { margin-top: 1rem; }
-.article-body h2 { margin-top: 2rem; font-size: 1.4rem; font-weight: 700; color: var(--g4v-ink); line-height: 1.3; }
-.article-body h3 { margin-top: 1.5rem; font-size: 1.15rem; font-weight: 600; color: var(--g4v-ink); }
-.article-body strong { color: var(--g4v-ink); font-weight: 600; }
-.article-body a { color: var(--g4v-ocean); text-decoration: underline; text-underline-offset: 3px; }
-.article-body ul { list-style: disc; padding-inline-start: 1.4rem; }
-.article-body ol { list-style: decimal; padding-inline-start: 1.4rem; }
-.article-body li + li { margin-top: 0.35rem; }
-.article-body blockquote { border-inline-start: 3px solid var(--g4v-gold); padding-inline-start: 1rem; font-style: italic; color: var(--g4v-ink); }
-.article-body figure img { width: 100%; height: auto; border-radius: var(--g4v-radius); }

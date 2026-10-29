@@ -14,7 +14,6 @@ import {
   saveScholarship,
   setStatus,
 } from "@/lib/server/scholarships";
-import { deleteNews, getNewsById, parseNewsForm, saveNews } from "@/lib/server/news";
 import { deleteMedia, uploadImage, UploadError } from "@/lib/server/media";
 import { WORKFLOW } from "@/lib/scholarships";
 
@@ -22,7 +21,6 @@ export type FormState = { ok?: boolean; error?: string; fields?: Record<string, 
 
 const uuid = z.uuid();
 const refreshScholarships = () => updateTag("scholarships");
-const refreshNews = () => updateTag("news");
 
 // ── Session ────────────────────────────────────────────────────────────────
 
@@ -139,50 +137,6 @@ export async function removeSourceAction(form: FormData) {
   redirect(`/admin/scholarships/${id}#sources`);
 }
 
-// ── News ───────────────────────────────────────────────────────────────────
-
-export async function saveNewsAction(_: FormState, form: FormData): Promise<FormState> {
-  const id = String(form.get("id") ?? "") || null;
-  if (id && !uuid.safeParse(id).success) return { error: "not-found" };
-  const parsed = parseNewsForm(form);
-  // publishing (or editing what is live) is reserved to admins
-  const previous = id ? await getNewsById(id) : null;
-  const touchesLive = (parsed.success && parsed.data.status === "published") || previous?.status === "published";
-  const admin = await requireAdmin(touchesLive ? "publish" : "edit").catch((e) => {
-    if (e instanceof Error && e.message === "FORBIDDEN") return null;
-    throw e;
-  });
-  if (!admin) return { error: "forbidden-status" };
-  if (!parsed.success) {
-    const fields: Record<string, string[]> = {};
-    for (const issue of parsed.error.issues) (fields[String(issue.path[0])] ??= []).push(issue.message);
-    return { error: "invalid", fields };
-  }
-  let savedId: string;
-  try {
-    savedId = await saveNews(id, parsed.data, admin.id);
-  } catch (e) {
-    if (e instanceof Error && e.message === "SLUG_TAKEN") return { error: "invalid", fields: { slug: ["taken"] } };
-    throw e;
-  }
-  await logActivity(admin.id, id ? "update" : "create", "news", savedId, { title: parsed.data.title, status: parsed.data.status });
-  refreshNews();
-  if (!id) redirect(`/admin/news/${savedId}?saved=1`);
-  return { ok: true };
-}
-
-export async function deleteNewsAction(form: FormData) {
-  const id = String(form.get("id"));
-  if (!uuid.safeParse(id).success) return;
-  const admin = await requireAdmin("delete");
-  const current = await getNewsById(id);
-  if (!current) redirect("/admin/news");
-  await deleteNews(id);
-  await logActivity(admin.id, "delete", "news", id, { title: current.title });
-  refreshNews();
-  redirect("/admin/news?deleted=1");
-}
-
 // ── Media ──────────────────────────────────────────────────────────────────
 
 export type UploadState = { url?: string; error?: string } | undefined;
@@ -209,4 +163,14 @@ export async function deleteMediaAction(form: FormData) {
   await deleteMedia(id);
   await logActivity(admin.id, "delete", "media", id);
   redirect("/admin/media");
+}
+
+// ── Site cache ─────────────────────────────────────────────────────────────
+
+/** Makes public pages re-read the database now (after an import done outside the back-office). */
+export async function refreshSiteAction() {
+  const admin = await requireAdmin("publish");
+  refreshScholarships();
+  await logActivity(admin.id, "refresh-cache", "site", null);
+  redirect("/admin?refreshed=1");
 }

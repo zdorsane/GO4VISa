@@ -1,10 +1,8 @@
 import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { deadlineStatus, type DeadlineStatus, type Scholarship } from "@/lib/scholarships";
-import { newsLabels, type NewsArticle } from "@/lib/news";
 import { hasDatabase } from "./db";
 import { getPublishedBySlug, getSources, listPublished, type Source } from "./scholarships";
-import { getPublishedNews, listPublishedNews } from "./news";
 
 /** A published opportunity with its deadline status as of the cache time (browsers recompute it live). */
 export type PublicScholarship = Scholarship & { deadline_status: DeadlineStatus };
@@ -12,7 +10,7 @@ export type PublicScholarship = Scholarship & { deadline_status: DeadlineStatus 
 const withStatus = (s: Scholarship, now: Date): PublicScholarship => ({ ...s, deadline_status: deadlineStatus(s, now) });
 
 /**
- * Cached reads for public pages. Admin actions expire the "scholarships" / "news" tags
+ * Cached reads for public pages. Admin actions expire the "scholarships" tag
  * immediately; otherwise the data refreshes hourly so deadline statuses roll over.
  */
 export async function getPublicScholarships(): Promise<PublicScholarship[]> {
@@ -34,24 +32,6 @@ export async function getPublicScholarship(slug: string): Promise<{ scholarship:
   return { scholarship: withStatus(s, new Date()), sources: await getSources(s.id) };
 }
 
-export async function getPublicNews(limit = 50): Promise<NewsArticle[]> {
-  "use cache";
-  cacheTag("news");
-  cacheLife("hours");
-  if (!hasDatabase()) return [];
-  const now = new Date();
-  // automatic labels (NEW, DEADLINE ALERT…) resolved at cache time, like deadline statuses
-  return (await listPublishedNews(limit)).map((a) => ({ ...a, labels: newsLabels(a, now) }));
-}
-
-export async function getPublicArticle(slug: string): Promise<NewsArticle | null> {
-  "use cache";
-  cacheTag("news");
-  cacheLife("hours");
-  if (!hasDatabase()) return null;
-  const a = await getPublishedNews(slug);
-  return a ? { ...a, labels: newsLabels(a, new Date()) } : null;
-}
 
 /** Fields the cards and the directory filters need (keeps long texts out of the page payload). */
 export type ListItem = Pick<

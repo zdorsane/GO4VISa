@@ -7,7 +7,6 @@ import { Icon, type IconName } from "@/components/ui/Icon";
 const LINKS: { href: string; label: string; icon: IconName }[] = [
   { href: "/admin", label: "Tableau de bord", icon: "pulse" },
   { href: "/admin/scholarships", label: "Bourses", icon: "cap" },
-  { href: "/admin/news", label: "Actualités", icon: "doc" },
   { href: "/admin/media", label: "Médias", icon: "star" },
 ];
 

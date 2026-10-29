@@ -1,5 +1,4 @@
 import type { Category, DeadlineStatus, Funding, Level, Warning, Workflow } from "@/lib/scholarships";
-import type { NewsCategory, NewsLabel } from "@/lib/news";
 
 export const WORKFLOW_LABEL: Record<Workflow, string> = {
   draft: "Brouillon",
@@ -73,23 +72,6 @@ export const FUNDING_LABEL: Record<Funding, string> = {
   unknown: "Non précisé",
 };
 
-export const NEWS_CATEGORY_LABEL: Record<NewsCategory, string> = {
-  announcement: "Annonce",
-  scholarship: "Bourse",
-  deadline: "Date limite",
-  results: "Résultats",
-  event: "Événement",
-  guide: "Guide",
-};
-
-export const NEWS_LABEL_LABEL: Record<NewsLabel, string> = {
-  new: "Nouveau",
-  important: "Important",
-  "applications-open": "Candidatures ouvertes",
-  "deadline-alert": "Alerte date limite",
-  announcement: "Annonce",
-  "results-released": "Résultats publiés",
-};
 
 export function Pill({ className, children }: { className: string; children: React.ReactNode }) {
   return <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ring-inset ${className}`}>{children}</span>;

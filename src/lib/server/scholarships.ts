@@ -292,8 +292,6 @@ export async function dashboardStats() {
       count(*) filter (where deadline_at < now() and status <> 'archived')::int as expired,
       count(*) filter (where verification = 'needs_verification' or verified_at is null or verified_at < current_date - 30)::int as needs_verification
     from scholarships`;
-  const [n] = await db()`
-    select count(*)::int as news_total, count(*) filter (where status = 'published')::int as news_published from news`;
   const [sub] = await db()`select count(*) filter (where unsubscribed_at is null)::int as subscribers from newsletter_subscribers`;
   const deadlines = (await db()`
     select to_char(date_trunc('month', deadline_at at time zone 'Africa/Algiers'), 'YYYY-MM') as month, count(*)::int as n
@@ -311,7 +309,7 @@ export async function dashboardStats() {
     created_at: Date;
     user_name: string | null;
   }[];
-  return { ...s, ...n, ...sub, deadlines, activity } as Record<string, number> & {
+  return { ...s, ...sub, deadlines, activity } as Record<string, number> & {
     deadlines: typeof deadlines;
     activity: typeof activity;
   };

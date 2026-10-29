@@ -1,10 +1,8 @@
 import type { Locale } from "./i18n";
 import type { Category, DeadlineStatus, Funding, Level } from "./scholarships";
-import type { NewsCategory, NewsLabel } from "./news";
 
 /** Interface strings of the scholarship platform (directory, detail pages, news, newsletter). */
 const en = {
-  nav: { scholarships: "Scholarships", news: "News" },
   status: {
     open: "Open",
     closing: "Closing soon",
@@ -40,22 +38,6 @@ const en = {
     unpaid: "Unpaid",
     unknown: "Funding not specified",
   } satisfies Record<Funding, string>,
-  newsCategory: {
-    announcement: "Announcement",
-    scholarship: "Scholarship",
-    deadline: "Deadline",
-    results: "Results",
-    event: "Event",
-    guide: "Guide",
-  } satisfies Record<NewsCategory, string>,
-  newsLabel: {
-    new: "New",
-    important: "Important",
-    "applications-open": "Applications open",
-    "deadline-alert": "Deadline alert",
-    announcement: "Announcement",
-    "results-released": "Results released",
-  } satisfies Record<NewsLabel, string>,
   directory: {
     eyebrow: "Scholarship directory",
     title: "International scholarships and opportunities",
@@ -141,30 +123,6 @@ const en = {
     helpText: "Go4Visa advisers guide you through documents, motivation letter and visa.",
     helpCta: "Book a consultation",
   },
-  home: {
-    searchTitle: "Find your next opportunity",
-    searchCta: "Search",
-    featured: "Featured opportunities",
-    closing: "Closing soon",
-    latest: "Latest opportunities",
-    funded: "Fully funded",
-    byCountry: "Browse by country",
-    byLevel: "Browse by level",
-    seeAll: "See all",
-    news: "Latest news",
-    allNews: "All news",
-  },
-  news: {
-    eyebrow: "News",
-    title: "News and announcements",
-    lead: "Scholarship announcements, deadline alerts and results, checked against official sources.",
-    empty: "No news published yet.",
-    read: "Read",
-    source: "Official source",
-    related: "Related opportunity",
-    back: "All news",
-    by: "By",
-  },
   newsletter: {
     title: "Get new scholarships by e-mail",
     text: "One e-mail when new verified opportunities are published. Unsubscribe in one click.",
@@ -181,7 +139,6 @@ const en = {
 export type PlatformDict = typeof en;
 
 const fr: PlatformDict = {
-  nav: { scholarships: "Bourses", news: "Actualités" },
   status: {
     open: "Ouverte",
     closing: "Clôture proche",
@@ -216,22 +173,6 @@ const fr: PlatformDict = {
     stipend: "Allocation versée",
     unpaid: "Non rémunéré",
     unknown: "Financement non précisé",
-  },
-  newsCategory: {
-    announcement: "Annonce",
-    scholarship: "Bourse",
-    deadline: "Date limite",
-    results: "Résultats",
-    event: "Événement",
-    guide: "Guide",
-  },
-  newsLabel: {
-    new: "Nouveau",
-    important: "Important",
-    "applications-open": "Candidatures ouvertes",
-    "deadline-alert": "Alerte date limite",
-    announcement: "Annonce",
-    "results-released": "Résultats publiés",
   },
   directory: {
     eyebrow: "Annuaire des bourses",
@@ -318,30 +259,6 @@ const fr: PlatformDict = {
     helpText: "Les conseillers Go4Visa vous accompagnent : dossier, lettre de motivation et visa.",
     helpCta: "Réserver une consultation",
   },
-  home: {
-    searchTitle: "Trouvez votre prochaine opportunité",
-    searchCta: "Rechercher",
-    featured: "Opportunités à la une",
-    closing: "Clôture imminente",
-    latest: "Dernières opportunités",
-    funded: "Entièrement financées",
-    byCountry: "Par pays",
-    byLevel: "Par niveau",
-    seeAll: "Tout voir",
-    news: "Dernières actualités",
-    allNews: "Toutes les actualités",
-  },
-  news: {
-    eyebrow: "Actualités",
-    title: "Actualités et annonces",
-    lead: "Annonces de bourses, alertes de dates limites et résultats, vérifiés sur les sources officielles.",
-    empty: "Aucune actualité publiée pour l'instant.",
-    read: "Lire",
-    source: "Source officielle",
-    related: "Opportunité liée",
-    back: "Toutes les actualités",
-    by: "Par",
-  },
   newsletter: {
     title: "Recevez les nouvelles bourses par e-mail",
     text: "Un e-mail quand de nouvelles opportunités vérifiées sont publiées. Désinscription en un clic.",
@@ -356,7 +273,6 @@ const fr: PlatformDict = {
 };
 
 const ar: PlatformDict = {
-  nav: { scholarships: "المنح", news: "الأخبار" },
   status: {
     open: "مفتوحة",
     closing: "تُغلق قريبًا",
@@ -391,22 +307,6 @@ const ar: PlatformDict = {
     stipend: "منحة مالية مدفوعة",
     unpaid: "غير مدفوع",
     unknown: "التمويل غير محدد",
-  },
-  newsCategory: {
-    announcement: "إعلان",
-    scholarship: "منحة",
-    deadline: "موعد نهائي",
-    results: "نتائج",
-    event: "فعالية",
-    guide: "دليل",
-  },
-  newsLabel: {
-    new: "جديد",
-    important: "مهم",
-    "applications-open": "التسجيل مفتوح",
-    "deadline-alert": "تنبيه الموعد النهائي",
-    announcement: "إعلان",
-    "results-released": "صدور النتائج",
   },
   directory: {
     eyebrow: "دليل المنح",
@@ -492,30 +392,6 @@ const ar: PlatformDict = {
     help: "هل تحتاج إلى مساعدة في ملفك؟",
     helpText: "يرافقك مستشارو Go4Visa في الملف ورسالة التحفيز والتأشيرة.",
     helpCta: "احجز استشارة",
-  },
-  home: {
-    searchTitle: "ابحث عن فرصتك القادمة",
-    searchCta: "بحث",
-    featured: "فرص مميزة",
-    closing: "تُغلق قريبًا",
-    latest: "أحدث الفرص",
-    funded: "ممولة بالكامل",
-    byCountry: "حسب البلد",
-    byLevel: "حسب المستوى",
-    seeAll: "عرض الكل",
-    news: "آخر الأخبار",
-    allNews: "كل الأخبار",
-  },
-  news: {
-    eyebrow: "الأخبار",
-    title: "الأخبار والإعلانات",
-    lead: "إعلانات المنح وتنبيهات المواعيد النهائية والنتائج، بعد التحقق منها في المصادر الرسمية.",
-    empty: "لم تُنشر أي أخبار بعد.",
-    read: "اقرأ",
-    source: "المصدر الرسمي",
-    related: "الفرصة المرتبطة",
-    back: "كل الأخبار",
-    by: "بقلم",
   },
   newsletter: {
     title: "تلقَّ المنح الجديدة عبر البريد الإلكتروني",

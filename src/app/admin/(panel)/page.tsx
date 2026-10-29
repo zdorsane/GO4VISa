@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { can, requireAdmin } from "@/lib/server/auth";
 import { dashboardStats, listAll } from "@/lib/server/scholarships";
+import { refreshSiteAction } from "../actions";
 import { deadlineStatus, publishWarnings } from "@/lib/scholarships";
 import { DEADLINE_LABEL, DEADLINE_STYLE, fmtDate, Pill, WARNING_LABEL } from "../ui/labels";
 
@@ -15,10 +17,11 @@ const ACTION_LABEL: Record<string, string> = {
   upload: "a importé une image",
   "add-source": "a ajouté une source à",
   "remove-source": "a retiré une source de",
+  "refresh-cache": "a rafraîchi le site public",
 };
 
-export default async function Dashboard() {
-  const [s, all] = await Promise.all([dashboardStats(), listAll()]);
+export default async function Dashboard({ searchParams }: PageProps<"/admin">) {
+  const [s, all, admin, sp] = await Promise.all([dashboardStats(), listAll(), requireAdmin(), searchParams]);
   const now = new Date();
   const closing = all
     .filter((x) => x.status === "published" && ["today", "closing"].includes(deadlineStatus(x, now)))
@@ -44,15 +47,25 @@ export default async function Dashboard() {
           <h1 className="text-2xl font-semibold text-midnight">Tableau de bord</h1>
           <p className="mt-1 text-sm text-slate">Statuts calculés en direct à partir des dates, heure d&apos;Alger.</p>
         </div>
-        <div className="flex gap-2">
-          <Link href="/admin/news/new" className="admin-btn admin-btn-ghost">
-            Nouvelle actualité
-          </Link>
+        <div className="flex flex-wrap gap-2">
+          {can(admin.role, "publish") && (
+            <form action={refreshSiteAction}>
+              <button className="admin-btn admin-btn-ghost" title="Après un import hors back-office : les pages publiques relisent la base tout de suite">
+                Rafraîchir le site
+              </button>
+            </form>
+          )}
           <Link href="/admin/scholarships/new" className="admin-btn admin-btn-gold">
             Ajouter une bourse
           </Link>
         </div>
       </header>
+
+      {sp.refreshed && (
+        <p role="status" className="rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+          Le site public affiche maintenant les dernières données.
+        </p>
+      )}
 
       <section aria-label="Statistiques" className="grid grid-cols-2 gap-3 md:grid-cols-4">
         {cards.map((c) => (
@@ -154,14 +167,7 @@ export default async function Dashboard() {
         </section>
         <section className="admin-card">
           <h2 className="font-semibold text-midnight">Site public</h2>
-          <dl className="mt-3 grid grid-cols-2 gap-3 text-sm">
-            <div className="rounded-xl bg-cloud p-3">
-              <dt className="text-slate">Actualités publiées</dt>
-              <dd className="mt-1 text-2xl font-bold text-midnight">
-                {s.news_published}
-                <span className="text-sm font-medium text-slate"> / {s.news_total}</span>
-              </dd>
-            </div>
+          <dl className="mt-3 grid gap-3 text-sm">
             <div className="rounded-xl bg-cloud p-3">
               <dt className="text-slate">Abonnés newsletter</dt>
               <dd className="mt-1 text-2xl font-bold text-midnight">{s.subscribers}</dd>

@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { site } from "@/lib/content";
 import { destinationSlugs } from "@/lib/destinations";
 import { locales } from "@/lib/i18n";
-import { getPublicNews, getPublicScholarships } from "@/lib/server/public";
+import { getPublicScholarships } from "@/lib/server/public";
 
 // Bump when static content changes (a fixed date keeps the sitemap prerenderable).
 const LAST_UPDATED = "2026-10-29";
@@ -20,13 +20,11 @@ function entry(path: string, priority: number, lastModified = LAST_UPDATED, chan
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [scholarships, news] = await Promise.all([getPublicScholarships(), getPublicNews(500)]);
+  const scholarships = await getPublicScholarships();
   return [
     ...entry("", 1, LAST_UPDATED, "daily"),
     ...entry("/scholarships", 0.95, LAST_UPDATED, "daily"),
     ...scholarships.filter((s) => s.deadline_status !== "closed").flatMap((s) => entry(`/scholarships/${s.slug}`, 0.85, s.updated_at, "weekly")),
-    ...entry("/news", 0.8, LAST_UPDATED, "daily"),
-    ...news.flatMap((a) => entry(`/news/${a.slug}`, 0.7, a.updated_at, "monthly")),
     ...entry("/how-it-works", 0.9),
     ...entry("/faq", 0.8),
     ...entry("/apply", 0.9),

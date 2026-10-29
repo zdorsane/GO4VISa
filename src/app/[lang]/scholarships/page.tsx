@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Directory, DirectorySkeleton } from "@/components/scholarships/Directory";
+import { Newsletter } from "@/components/Newsletter";
 import { hasLocale, languageAlternates } from "@/lib/i18n";
 import { getPlatformDict } from "@/lib/platform-i18n";
 import { getPublicScholarships, toListItem } from "@/lib/server/public";
@@ -46,6 +47,7 @@ export default async function ScholarshipsPage({ params }: PageProps<"/[lang]/sc
           </Suspense>
         </div>
       </section>
+      <Newsletter lang={lang} />
     </>
   );
 }

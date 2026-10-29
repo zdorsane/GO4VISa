@@ -7,19 +7,15 @@ import { Gallery } from "@/components/Gallery";
 import { Feedback } from "@/components/Feedback";
 import { FounderContact } from "@/components/FounderContact";
 import { FloatingCta } from "@/components/FloatingCta";
-import { LatestNews, Opportunities } from "@/components/home/Opportunities";
-import { Newsletter } from "@/components/Newsletter";
 import { getDictionary, site } from "@/lib/content";
 import { getFeedback, getVisas } from "@/lib/feedback";
 import { getPhotos } from "@/lib/gallery";
 import { hasLocale } from "@/lib/i18n";
-import { getPublicNews, getPublicScholarships } from "@/lib/server/public";
 
 export default async function Home({ params }: PageProps<"/[lang]">) {
   const { lang } = await params;
   if (!hasLocale(lang)) notFound();
   const t = getDictionary(lang);
-  const [scholarships, news] = await Promise.all([getPublicScholarships(), getPublicNews(3)]);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -44,13 +40,10 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
       />
       <Hero lang={lang} t={t.hero} />
       <Stats t={t.stats} />
-      <Opportunities items={scholarships} lang={lang} />
       <About lang={lang} t={t.about} />
       <Services lang={lang} t={t.services} />
       <Feedback t={t.feedback} viewer={t.gallery} items={getFeedback(lang)} visas={getVisas()} />
       <Gallery lang={lang} t={t.gallery} start={t.ui.getStarted} photos={getPhotos(lang)} />
-      <LatestNews items={news} lang={lang} />
-      <Newsletter lang={lang} />
       <FounderContact
         lang={lang}
         founder={t.founder}
