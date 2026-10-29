@@ -210,6 +210,37 @@ html[lang="ar"] body * {
   50% { transform: translate(2px, -2px) rotate(-6deg); }
 }
 
+/* Student stories wheel: the ring turns, each photo counter-turns to stay upright;
+   hovering or focusing the wheel pauses it so a photo can be picked */
+@keyframes g4v-orbit {
+  to { transform: rotate(360deg); }
+}
+.g4v-orbit,
+.g4v-orbit-counter,
+.g4v-orbit-rev {
+  animation: g4v-orbit 70s linear infinite;
+}
+.g4v-orbit-counter {
+  animation-direction: reverse;
+}
+.g4v-orbit-rev {
+  animation-duration: 110s;
+  animation-direction: reverse;
+}
+.g4v-wheel:hover .g4v-orbit,
+.g4v-wheel:hover .g4v-orbit-counter,
+.g4v-wheel:focus-within .g4v-orbit,
+.g4v-wheel:focus-within .g4v-orbit-counter {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .g4v-orbit,
+  .g4v-orbit-counter,
+  .g4v-orbit-rev {
+    animation: none;
+  }
+}
+
 /* Booking page WhatsApp badge */
 @keyframes g4v-ping-soft {
   0% { transform: scale(1); opacity: 0.45; }
