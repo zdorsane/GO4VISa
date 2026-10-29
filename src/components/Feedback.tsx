@@ -33,8 +33,18 @@ function StoryDiagram({ t, items, onOpen }: { t: Dict["feedback"]; items: Feedba
 
   return (
     <div>
-      <div className="relative mx-auto aspect-square w-full max-w-[25rem]">
-        {/* spokes and orbit */}
+      <div className="g4v-wheel relative mx-auto aspect-square w-full max-w-[22rem] sm:max-w-[30rem] lg:max-w-[34rem]">
+        {/* outer decorative ring, turning the other way */}
+        <svg aria-hidden viewBox="0 0 100 100" className="g4v-orbit-rev absolute -inset-[4%] h-[108%] w-[108%] overflow-visible">
+          <circle cx="50" cy="50" r="49" fill="none" stroke="rgba(245,179,1,0.28)" strokeWidth="0.3" strokeDasharray="0.4 2.6" strokeLinecap="round" />
+          <circle cx="50" cy="1" r="0.9" fill="#f5b301" />
+          <circle cx="50" cy="99" r="0.6" fill="rgba(255,255,255,0.6)" />
+        </svg>
+        {/* glow behind the wheel */}
+        <div aria-hidden className="absolute inset-[12%] rounded-full bg-gold/10 blur-3xl" />
+
+        {/* the wheel: spokes, orbit and photos turn together */}
+        <div className="g4v-orbit absolute inset-0">
         <svg aria-hidden viewBox="0 0 100 100" className="absolute inset-0 h-full w-full overflow-visible">
           <circle cx="50" cy="50" r={RING} fill="none" stroke="rgba(245,179,1,0.18)" strokeWidth="0.25" strokeDasharray="0.8 1.2" />
           <circle cx="50" cy="50" r={RING - 14} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="0.2" />
@@ -65,18 +75,6 @@ function StoryDiagram({ t, items, onOpen }: { t: Dict["feedback"]; items: Feedba
           })}
         </svg>
 
-        {/* hub */}
-        <div className="absolute left-1/2 top-1/2 flex h-[30%] w-[30%] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full bg-midnight text-center shadow-[0_0_0_8px_rgba(245,179,1,0.08),0_0_60px_-10px_rgba(245,179,1,0.45)] ring-1 ring-gold/40">
-          <span aria-hidden className="absolute inset-0 rounded-full ring-1 ring-gold/30 motion-safe:animate-[g4v-ping-soft_3s_ease-out_infinite]" />
-          <span className="keep-light flex h-[34%] w-[34%] items-center justify-center rounded-full bg-white p-[6%]">
-            <LogoSymbol className="h-full w-auto" />
-          </span>
-          <span className="mt-[6%] text-xl font-bold leading-none text-gold sm:text-2xl">{items.length}</span>
-          <span className="mt-1 px-2 text-[0.5rem] font-semibold uppercase leading-tight tracking-[0.16em] text-mist sm:text-[0.56rem]">
-            {t.stories}
-          </span>
-        </div>
-
         {/* photo nodes */}
         <ul>
           {nodes.map(({ f, x, y }, i) => (
@@ -86,27 +84,43 @@ function StoryDiagram({ t, items, onOpen }: { t: Dict["feedback"]; items: Feedba
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.35 + i * 0.06, ease }}
-              className="absolute -translate-x-1/2 -translate-y-1/2"
+              className={`absolute -translate-x-1/2 -translate-y-1/2 ${active === i ? "z-10" : ""}`}
               style={{ left: `${x}%`, top: `${y}%` }}
             >
-              <button
-                type="button"
-                onClick={() => onOpen(i)}
-                onMouseEnter={() => setActive(i)}
-                onMouseLeave={() => setActive(null)}
-                onFocus={() => setActive(i)}
-                onBlur={() => setActive(null)}
-                aria-label={`${t.open}: ${f.caption}`}
-                className={`group relative block h-12 w-12 overflow-hidden rounded-2xl bg-midnight shadow-[0_12px_28px_-10px_rgba(0,0,0,0.8)] ring-2 transition-all duration-300 focus-visible:outline-none sm:h-14 sm:w-14 ${
-                  active === i ? "z-10 scale-110 ring-gold" : "ring-white/25 hover:ring-gold"
-                }`}
-              >
-                <Image src={f.src} alt="" fill sizes="80px" className="object-cover object-top transition-transform duration-500 group-hover:scale-110" />
-                <span className="absolute inset-0 bg-midnight/25 transition-opacity duration-300 group-hover:opacity-0" />
-              </button>
+              {/* counter-turns so the photo stays upright while the wheel spins */}
+              <span className="g4v-orbit-counter block">
+                <button
+                  type="button"
+                  onClick={() => onOpen(i)}
+                  onMouseEnter={() => setActive(i)}
+                  onMouseLeave={() => setActive(null)}
+                  onFocus={() => setActive(i)}
+                  onBlur={() => setActive(null)}
+                  aria-label={`${t.open}: ${f.caption}`}
+                  className={`group relative block h-12 w-12 overflow-hidden rounded-2xl bg-midnight shadow-[0_14px_30px_-10px_rgba(0,0,0,0.85)] ring-2 transition-all duration-300 focus-visible:outline-none sm:h-16 sm:w-16 lg:h-[4.5rem] lg:w-[4.5rem] ${
+                    active === i ? "scale-125 ring-gold shadow-[0_0_30px_-4px_rgba(245,179,1,0.7)]" : "ring-white/25 hover:ring-gold"
+                  }`}
+                >
+                  <Image src={f.src} alt="" fill sizes="96px" className="object-cover object-top transition-transform duration-500 group-hover:scale-110" />
+                  <span className="absolute inset-0 bg-midnight/25 transition-opacity duration-300 group-hover:opacity-0" />
+                </button>
+              </span>
             </motion.li>
           ))}
         </ul>
+        </div>
+
+        {/* hub */}
+        <div className="absolute left-1/2 top-1/2 flex h-[30%] w-[30%] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full bg-midnight text-center shadow-[0_0_0_8px_rgba(245,179,1,0.08),0_0_60px_-10px_rgba(245,179,1,0.45)] ring-1 ring-gold/40">
+          <span aria-hidden className="absolute inset-0 rounded-full ring-1 ring-gold/30 motion-safe:animate-[g4v-ping-soft_3s_ease-out_infinite]" />
+          <span className="keep-light flex h-[34%] w-[34%] items-center justify-center rounded-full bg-white p-[6%]">
+            <LogoSymbol className="h-full w-auto" />
+          </span>
+          <span className="mt-[6%] text-2xl font-bold leading-none text-gold sm:text-3xl lg:text-4xl">{items.length}</span>
+          <span className="mt-1 px-2 text-[0.5rem] font-semibold uppercase leading-tight tracking-[0.16em] text-mist sm:text-[0.62rem]">
+            {t.stories}
+          </span>
+        </div>
       </div>
 
       {/* caption of the hovered story */}
@@ -285,7 +299,7 @@ export function Feedback({
         <SectionHeading tone="dark" align="center" id="feedback-title" eyebrow={t.eyebrow} title={t.title} lead={t.lead} />
 
         {/* visa wall on the left, the story diagram on the right */}
-        <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:items-center lg:gap-10">
+        <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center lg:gap-12">
           <VisaPanel t={t} visas={visas} onOpen={setOpenVisa} />
           <StoryDiagram t={t} items={items} onOpen={setOpen} />
         </div>
