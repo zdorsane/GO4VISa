@@ -23,14 +23,14 @@ for (const s of scholarships) {
       slug, content_lang, title, institution, country_code, city, levels, categories, fields, tags,
       eligible_nationalities, algeria_eligible, qualifications, age_limit, language_requirements,
       funding_type, tuition, stipend, accommodation, travel, insurance, duration,
-      opens_at, deadline_at, deadline_note, application_url, source_url, verified_at, verification,
+      opens_at, deadline_at, deadline_note, deadline_tz, application_url, source_url, verified_at, verification,
       summary, description, documents, instructions, featured, status, published_at
     ) values (
       ${row.slug}, ${row.content_lang}, ${row.title}, ${row.institution}, ${row.country_code}, ${row.city},
       ${row.levels}, ${row.categories}, ${row.fields}, ${row.tags},
       ${row.eligible_nationalities}, ${row.algeria_eligible}, ${row.qualifications}, ${row.age_limit}, ${row.language_requirements},
       ${row.funding_type}, ${row.tuition}, ${row.stipend}, ${row.accommodation}, ${row.travel}, ${row.insurance}, ${row.duration},
-      ${row.opens_at}, ${row.deadline_at}, ${row.deadline_note}, ${row.application_url}, ${row.source_url}, ${row.verified_at}, ${row.verification},
+      ${row.opens_at}, ${row.deadline_at}, ${row.deadline_note}, ${row.deadline_tz}, ${row.application_url}, ${row.source_url}, ${row.verified_at}, ${row.verification},
       ${row.summary}, ${row.description}, ${row.documents}, ${row.instructions}, ${row.featured}, ${row.status},
       ${row.status === "published" ? new Date().toISOString() : null}
     )
@@ -44,6 +44,7 @@ for (const s of scholarships) {
       tuition = excluded.tuition, stipend = excluded.stipend, accommodation = excluded.accommodation,
       travel = excluded.travel, insurance = excluded.insurance, duration = excluded.duration,
       opens_at = excluded.opens_at, deadline_at = excluded.deadline_at, deadline_note = excluded.deadline_note,
+      deadline_tz = excluded.deadline_tz,
       application_url = excluded.application_url, source_url = excluded.source_url,
       verified_at = excluded.verified_at, verification = excluded.verification, summary = excluded.summary,
       description = excluded.description, documents = excluded.documents, instructions = excluded.instructions,

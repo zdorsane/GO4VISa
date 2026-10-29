@@ -8,10 +8,21 @@
       "institution": "University of Cambridge — Gates Cambridge Trust",
       "country_code": "GB",
       "city": "Cambridge",
-      "levels": ["master", "phd"],
-      "categories": ["masters", "phd"],
-      "fields": ["All fields"],
-      "tags": ["fully-funded", "postgraduate"],
+      "levels": [
+        "master",
+        "phd"
+      ],
+      "categories": [
+        "masters",
+        "phd"
+      ],
+      "fields": [
+        "All fields"
+      ],
+      "tags": [
+        "fully-funded",
+        "postgraduate"
+      ],
       "eligible_nationalities": "Citizens of any country outside the United Kingdom.",
       "algeria_eligible": "yes",
       "qualifications": "Applying for a full-time PhD (or part-time PhD), a full-time MLitt, or a one-year full-time postgraduate course at the University of Cambridge (some exceptions; MASt and most professional degrees such as MBA, EMBA, MFin and PGCE are excluded).",
@@ -27,11 +38,18 @@
       "opens_at": "2026-09-11T00:00:00+01:00",
       "deadline_at": "2027-01-06T23:59:00+00:00",
       "deadline_note": "Two international deadlines, 11:59pm UK time: Tuesday 8 December 2026 or Wednesday 6 January 2027, depending on your course's University funding deadline. Check your course page. (US citizens resident in the US: 14 October 2026, already passed.)",
+      "deadline_tz": "Europe/London",
       "application_url": "https://www.gatescambridge.org/apply/how-to-apply/",
       "source_url": "https://www.gatescambridge.org/apply/timeline/",
       "sources": [
-        { "url": "https://www.gatescambridge.org/apply/eligibility/", "label": "Eligibility" },
-        { "url": "https://www.gatescambridge.org/programme/the-scholarship/", "label": "What the scholarship covers" }
+        {
+          "url": "https://www.gatescambridge.org/apply/eligibility/",
+          "label": "Eligibility"
+        },
+        {
+          "url": "https://www.gatescambridge.org/programme/the-scholarship/",
+          "label": "What the scholarship covers"
+        }
       ],
       "verified_at": "2026-10-29",
       "verification": "verified",
@@ -49,10 +67,27 @@
       "institution": "World Intellectual Property Organization (WIPO)",
       "country_code": "CH",
       "city": "Geneva",
-      "levels": ["bachelor", "master", "phd"],
-      "categories": ["internship"],
-      "fields": ["Law", "Intellectual property", "IT", "International relations", "Economics", "Communications"],
-      "tags": ["united-nations", "paid-internship", "rolling"],
+      "levels": [
+        "bachelor",
+        "master",
+        "phd"
+      ],
+      "categories": [
+        "internship"
+      ],
+      "fields": [
+        "Law",
+        "Intellectual property",
+        "IT",
+        "International relations",
+        "Economics",
+        "Communications"
+      ],
+      "tags": [
+        "united-nations",
+        "paid-internship",
+        "rolling"
+      ],
       "eligible_nationalities": "No nationality restriction stated on the official page. The travel reimbursement is for nationals of developing, least developed or transition countries residing in their home country.",
       "algeria_eligible": "unknown",
       "qualifications": "Category I: bachelor's degree within the last 2 years, 3rd/4th-year undergraduate, or master's student who has not completed coursework/thesis. Category II: master's degree within the last 2 years, graduate student with coursework completed but thesis pending, or holder of a first advanced degree pursuing another degree.",
@@ -68,6 +103,7 @@
       "opens_at": null,
       "deadline_at": null,
       "deadline_note": "Rolling: the Internship Roster is generic and applications are shared with WIPO departments on a rolling basis. No fixed deadline is published on the official page.",
+      "deadline_tz": null,
       "application_url": "https://wipo.taleo.net/careersection/wp_internship/jobdetail.ftl?job=26011-INT",
       "source_url": "https://www.wipo.int/en/web/working-at-wipo/internship-program",
       "sources": [],
@@ -87,10 +123,19 @@
       "institution": "American University of Beirut (AUB) and Lebanese American University (LAU)",
       "country_code": "LB",
       "city": "Beirut",
-      "levels": ["highschool", "bachelor"],
-      "categories": ["undergraduate", "leadership"],
+      "levels": [
+        "highschool",
+        "bachelor"
+      ],
+      "categories": [
+        "undergraduate",
+        "leadership"
+      ],
       "fields": null,
-      "tags": ["mena", "algeria-eligible"],
+      "tags": [
+        "mena",
+        "algeria-eligible"
+      ],
       "eligible_nationalities": "Citizens of Algeria, Egypt, Iraq, Jordan, Lebanon, Libya, Morocco, Syria, Tunisia, West Bank or Palestinian students residing in a third country with legal residency status, or Yemen.",
       "algeria_eligible": "yes",
       "qualifications": "Current high school seniors or applicants who graduated from high school in 2026 (2025 graduates also accepted for Iraq, Libya, Syria, Palestinian students in third countries and Yemen). Strong academic credentials; current seniors must pass their leaving exam. Ability to start the undergraduate program in August 2027.",
@@ -106,11 +151,18 @@
       "opens_at": "2026-10-01T00:00:00+03:00",
       "deadline_at": "2026-11-18T23:59:00+02:00",
       "deadline_note": "Application deadline 18 November 2026 (timezone not stated on the official page). Existing TOEFL/IELTS results under two years old can be submitted with applications sent before 18 November 2026.",
+      "deadline_tz": null,
       "application_url": "https://fhi360.govfa.net/wfzYp4Y",
       "source_url": "https://www.tomorrowsleadersprogram.org/application-timeline-2026-2027-academic-year/",
       "sources": [
-        { "url": "https://www.tomorrowsleadersprogram.org/eligibility/", "label": "Eligibility" },
-        { "url": "https://www.tomorrowsleadersprogram.org/", "label": "Applications open announcement" }
+        {
+          "url": "https://www.tomorrowsleadersprogram.org/eligibility/",
+          "label": "Eligibility"
+        },
+        {
+          "url": "https://www.tomorrowsleadersprogram.org/",
+          "label": "Applications open announcement"
+        }
       ],
       "verified_at": "2026-10-29",
       "verification": "verified",
@@ -128,10 +180,26 @@
       "institution": "Food and Agriculture Organization of the United Nations (FAO)",
       "country_code": "IT",
       "city": "Rome",
-      "levels": ["highschool", "bachelor", "master", "phd", "professional"],
-      "categories": ["volunteering"],
-      "fields": ["Agriculture", "Food security", "Development"],
-      "tags": ["united-nations", "unpaid", "rolling"],
+      "levels": [
+        "highschool",
+        "bachelor",
+        "master",
+        "phd",
+        "professional"
+      ],
+      "categories": [
+        "volunteering"
+      ],
+      "fields": [
+        "Agriculture",
+        "Food security",
+        "Development"
+      ],
+      "tags": [
+        "united-nations",
+        "unpaid",
+        "rolling"
+      ],
       "eligible_nationalities": "Nationals of FAO Members.",
       "algeria_eligible": "yes",
       "qualifications": "Completed secondary school education; aged 18 or older; able to work in an international multicultural environment with good communication and basic computer skills; appropriate residence or immigration status in the country of assignment; no family members employed by FAO.",
@@ -147,6 +215,7 @@
       "opens_at": null,
       "deadline_at": null,
       "deadline_note": "Applications respond to Calls for Expression of Interest published on the FAO careers portal; candidates not selected must re-apply to new calls. No fixed deadline on the official page.",
+      "deadline_tz": null,
       "application_url": "https://www.fao.org/employment/young-talent-programme/volunteer-programme/en",
       "source_url": "https://www.fao.org/employment/young-talent-programme/volunteer-programme/en",
       "sources": [],
@@ -166,10 +235,19 @@
       "institution": "Fred J. Hansen Foundation — University of San Diego",
       "country_code": "US",
       "city": "San Diego",
-      "levels": ["bachelor"],
-      "categories": ["leadership", "summer-school"],
-      "fields": ["All fields"],
-      "tags": ["leadership"],
+      "levels": [
+        "bachelor"
+      ],
+      "categories": [
+        "leadership",
+        "summer-school"
+      ],
+      "fields": [
+        "All fields"
+      ],
+      "tags": [
+        "leadership"
+      ],
       "eligible_nationalities": null,
       "algeria_eligible": "unknown",
       "qualifications": null,
@@ -185,6 +263,7 @@
       "opens_at": null,
       "deadline_at": "2027-01-15T23:55:00-08:00",
       "deadline_note": "International applicants: all materials, including references, by 11:55 PM Pacific Time on 15 January 2027. U.S. applicants: 15 March 2027.",
+      "deadline_tz": "America/Los_Angeles",
       "application_url": "https://hansenleadershipinstitute.awardsplatform.com",
       "source_url": "https://hansenleadershipinstitute.org/",
       "sources": [],
@@ -204,10 +283,20 @@
       "institution": "U.S. host institutions — Fulbright Program (U.S. Department of State, administered by IIE)",
       "country_code": "US",
       "city": null,
-      "levels": ["phd", "postdoc", "professional"],
-      "categories": ["research-fellowship"],
-      "fields": ["All fields"],
-      "tags": ["lebanon-only"],
+      "levels": [
+        "phd",
+        "postdoc",
+        "professional"
+      ],
+      "categories": [
+        "research-fellowship"
+      ],
+      "fields": [
+        "All fields"
+      ],
+      "tags": [
+        "lebanon-only"
+      ],
       "eligible_nationalities": "Lebanese academics (country-specific competition).",
       "algeria_eligible": "no",
       "qualifications": null,
@@ -223,6 +312,7 @@
       "opens_at": null,
       "deadline_at": "2026-12-01T23:59:00+02:00",
       "deadline_note": "1 December 2026 according to third-party listings; the official IIE portal requires login and could not be checked.",
+      "deadline_tz": null,
       "application_url": "https://apply.iie.org/fvsp2027/",
       "source_url": null,
       "sources": [],
@@ -242,10 +332,20 @@
       "institution": "University of Science and Technology of China (USTC)",
       "country_code": "CN",
       "city": "Hefei",
-      "levels": ["bachelor", "master"],
-      "categories": ["summer-school"],
-      "fields": ["Science", "Technology"],
-      "tags": ["china"],
+      "levels": [
+        "bachelor",
+        "master"
+      ],
+      "categories": [
+        "summer-school"
+      ],
+      "fields": [
+        "Science",
+        "Technology"
+      ],
+      "tags": [
+        "china"
+      ],
       "eligible_nationalities": null,
       "algeria_eligible": "unknown",
       "qualifications": null,
@@ -261,6 +361,7 @@
       "opens_at": null,
       "deadline_at": null,
       "deadline_note": "The PDF lists 8 November 2026 and 19 Dec 2026 – 1 Jan 2027, but no 2026 edition was found on the official USTC International College site on 2026-10-29 (the last edition found ran 22–31 December 2025 with a 20 November 2025 deadline, fee 3,000 CNY).",
+      "deadline_tz": null,
       "application_url": null,
       "source_url": null,
       "sources": [],
@@ -280,10 +381,18 @@
       "institution": "Kalinga Institute of Industrial Technology (KIIT)",
       "country_code": "IN",
       "city": "Bhubaneswar",
-      "levels": ["master", "phd"],
-      "categories": ["masters", "phd"],
+      "levels": [
+        "master",
+        "phd"
+      ],
+      "categories": [
+        "masters",
+        "phd"
+      ],
       "fields": null,
-      "tags": ["india"],
+      "tags": [
+        "india"
+      ],
       "eligible_nationalities": null,
       "algeria_eligible": "unknown",
       "qualifications": null,
@@ -299,10 +408,14 @@
       "opens_at": null,
       "deadline_at": null,
       "deadline_note": "Algerian universities (Sétif 1, M'sila, Blida) relay a 30 October 2026 deadline, but the official KIIT international portal shows 'Admissions 2026-27 Open Now' with no deadline and no scholarship conditions.",
+      "deadline_tz": null,
       "application_url": "https://kiit.ac.in/admission/international/",
       "source_url": null,
       "sources": [
-        { "url": "https://international.kiit.ac.in/", "label": "KIIT international admissions portal (no scholarship terms shown)" }
+        {
+          "url": "https://international.kiit.ac.in/",
+          "label": "KIIT international admissions portal (no scholarship terms shown)"
+        }
       ],
       "verified_at": null,
       "verification": "needs_verification",

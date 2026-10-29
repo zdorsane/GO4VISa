@@ -87,7 +87,9 @@ const en = {
     home: "Home",
     sectionsLabel: "On the home page",
     pages: [
+      { label: "Scholarships", path: "/scholarships" },
       { label: "How it works & destinations", path: "/how-it-works" },
+      { label: "News", path: "/news" },
       { label: "FAQ", path: "/faq" },
     ],
     sections: [
@@ -558,7 +560,9 @@ const fr: Dict = {
     home: "Accueil",
     sectionsLabel: "Sur la page d'accueil",
     pages: [
+      { label: "Bourses", path: "/scholarships" },
       { label: "Parcours & destinations", path: "/how-it-works" },
+      { label: "Actualités", path: "/news" },
       { label: "FAQ", path: "/faq" },
     ],
     sections: [
@@ -1026,7 +1030,9 @@ const ar: Dict = {
     home: "الرئيسية",
     sectionsLabel: "في الصفحة الرئيسية",
     pages: [
+      { label: "المنح", path: "/scholarships" },
       { label: "كيف نعمل والوجهات", path: "/how-it-works" },
+      { label: "الأخبار", path: "/news" },
       { label: "الأسئلة الشائعة", path: "/faq" },
     ],
     sections: [

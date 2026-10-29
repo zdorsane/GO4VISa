@@ -1,11 +1,11 @@
 import "server-only";
 import * as z from "zod";
-import { CATEGORIES, FUNDING, LEVELS, WORKFLOW, slugify, type Scholarship } from "@/lib/scholarships";
+import { CATEGORIES, FUNDING, isTimeZone, LEVELS, WORKFLOW, slugify, zonedToIso, type Scholarship } from "@/lib/scholarships";
 import { db } from "./db";
 
 const COLUMNS = `id, slug, content_lang, title, institution, logo_url, country_code, city, levels, categories, fields, tags,
   eligible_nationalities, algeria_eligible, qualifications, age_limit, language_requirements, funding_type, tuition,
-  stipend, accommodation, travel, insurance, duration, opens_at, deadline_at, deadline_note, application_url,
+  stipend, accommodation, travel, insurance, duration, opens_at, deadline_at, deadline_note, deadline_tz, application_url,
   source_url, verified_at::text as verified_at, verification, summary, description, documents, instructions, featured, status,
   published_at, created_at, updated_at`;
 
@@ -71,13 +71,13 @@ const url = z
 const list = z
   .string()
   .transform((v) => [...new Set(v.split(/[,\n]/).map((s) => s.trim()).filter(Boolean))].slice(0, 30));
-/** <input type="datetime-local"> value read as Algiers time (UTC+1, no DST). */
+/** <input type="datetime-local"> wall time; converted to an instant with the official time zone below. */
 const localDate = z
   .string()
   .trim()
-  .transform((v) => (v === "" ? null : new Date(v.length === 10 ? `${v}T23:59:00+01:00` : `${v}:00+01:00`)))
-  .refine((d) => d === null || !Number.isNaN(d.getTime()), { message: "invalid-date" })
-  .transform((d) => (d ? d.toISOString() : null));
+  .transform((v) => (v === "" ? null : v))
+  .nullable()
+  .refine((v) => v === null || /^d{4}-d{2}-d{2}(Td{2}:d{2})?$/.test(v), { message: "invalid-date" });
 
 export const ScholarshipInput = z
   .object({
@@ -111,6 +111,12 @@ export const ScholarshipInput = z
     opens_at: localDate,
     deadline_at: localDate,
     deadline_note: text(1000),
+    deadline_tz: z
+      .string()
+      .trim()
+      .transform((v) => (v === "" ? null : v))
+      .nullable()
+      .refine((v) => v === null || isTimeZone(v), { message: "invalid-timezone" }),
     application_url: url,
     source_url: url,
     verified_at: z
@@ -127,7 +133,16 @@ export const ScholarshipInput = z
     featured: z.boolean(),
     status: z.enum(WORKFLOW),
   })
-  .transform((v) => ({ ...v, slug: slugify(v.slug || v.title) }))
+  .transform((v) => {
+    // dates are typed in the official time zone (Algiers when the source states none)
+    const tz = v.deadline_tz ?? "Africa/Algiers";
+    return {
+      ...v,
+      slug: slugify(v.slug || v.title),
+      opens_at: v.opens_at ? zonedToIso(v.opens_at, tz) : null,
+      deadline_at: v.deadline_at ? zonedToIso(v.deadline_at, tz) : null,
+    };
+  })
   .refine((v) => v.slug.length > 0, { path: ["slug"], message: "required" })
   .refine((v) => !v.opens_at || !v.deadline_at || v.opens_at <= v.deadline_at, { path: ["deadline_at"], message: "before-opening" })
   .refine((v) => v.status !== "published" || !!v.source_url, { path: ["source_url"], message: "required-to-publish" });
@@ -164,6 +179,7 @@ export function parseScholarshipForm(form: FormData) {
     opens_at: get("opens_at"),
     deadline_at: get("deadline_at"),
     deadline_note: get("deadline_note"),
+    deadline_tz: get("deadline_tz"),
     application_url: get("application_url"),
     source_url: get("source_url"),
     verified_at: get("verified_at"),
@@ -189,12 +205,12 @@ export async function saveScholarship(id: string | null, d: ScholarshipData, use
     d.fields, d.tags, d.eligible_nationalities, d.algeria_eligible, d.qualifications, d.age_limit,
     d.language_requirements, d.funding_type, d.tuition, d.stipend, d.accommodation, d.travel, d.insurance,
     d.duration, d.opens_at, d.deadline_at, d.deadline_note, d.application_url, d.source_url, d.verified_at,
-    d.verification, d.summary, d.description, d.documents, d.instructions, d.featured, d.status, userId,
+    d.verification, d.summary, d.description, d.documents, d.instructions, d.featured, d.status, d.deadline_tz, userId,
   ];
   const cols = `slug, content_lang, title, institution, logo_url, country_code, city, levels, categories, fields, tags,
     eligible_nationalities, algeria_eligible, qualifications, age_limit, language_requirements, funding_type, tuition,
     stipend, accommodation, travel, insurance, duration, opens_at, deadline_at, deadline_note, application_url,
-    source_url, verified_at, verification, summary, description, documents, instructions, featured, status`;
+    source_url, verified_at, verification, summary, description, documents, instructions, featured, status, deadline_tz`;
   const params = values.map((_, i) => `$${i + 1}`);
   if (!id) {
     const [row] = await sql.query(
@@ -237,12 +253,12 @@ export async function duplicateScholarship(id: string, userId: string): Promise<
     insert into scholarships (
       slug, content_lang, title, institution, logo_url, country_code, city, levels, categories, fields, tags,
       eligible_nationalities, algeria_eligible, qualifications, age_limit, language_requirements, funding_type, tuition,
-      stipend, accommodation, travel, insurance, duration, opens_at, deadline_at, deadline_note, application_url,
+      stipend, accommodation, travel, insurance, duration, opens_at, deadline_at, deadline_note, deadline_tz, application_url,
       source_url, verified_at, verification, summary, description, documents, instructions, featured, status,
       created_by, updated_by)
     select ${slug}, content_lang, title || ' (copy)', institution, logo_url, country_code, city, levels, categories, fields, tags,
       eligible_nationalities, algeria_eligible, qualifications, age_limit, language_requirements, funding_type, tuition,
-      stipend, accommodation, travel, insurance, duration, opens_at, deadline_at, deadline_note, application_url,
+      stipend, accommodation, travel, insurance, duration, opens_at, deadline_at, deadline_note, deadline_tz, application_url,
       source_url, null, 'needs_verification', summary, description, documents, instructions, false, 'draft',
       ${userId}, ${userId}
     from scholarships where id = ${id} returning id`;

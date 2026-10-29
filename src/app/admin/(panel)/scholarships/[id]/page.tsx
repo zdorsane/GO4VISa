@@ -54,7 +54,7 @@ export default async function EditScholarship({ params, searchParams }: PageProp
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Link href={`/admin/scholarships/${s.id}/preview`} target="_blank" className="admin-btn admin-btn-ghost">
+          <Link href={`/admin/preview/${s.id}`} target="_blank" className="admin-btn admin-btn-ghost">
             Aperçu
           </Link>
           {s.status === "published" && (

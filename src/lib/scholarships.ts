@@ -51,6 +51,8 @@ export type Scholarship = {
   opens_at: string | null;
   deadline_at: string | null;
   deadline_note: string | null;
+  /** IANA zone of the official deadline; null when the source does not state one. */
+  deadline_tz: string | null;
   application_url: string | null;
   source_url: string | null;
   verified_at: string | null;
@@ -137,4 +139,71 @@ export function slugify(input: string) {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
     .slice(0, 80);
+}
+
+// ── Official deadline time zones ────────────────────────────────────────────
+
+/** Time zones offered in the admin form (any valid IANA zone is accepted). */
+export const TIMEZONES = [
+  "Africa/Algiers",
+  "UTC",
+  "Europe/London",
+  "Europe/Paris",
+  "Europe/Berlin",
+  "Europe/Zurich",
+  "Europe/Istanbul",
+  "Asia/Beirut",
+  "Asia/Riyadh",
+  "Asia/Dubai",
+  "Asia/Kolkata",
+  "Asia/Shanghai",
+  "Asia/Seoul",
+  "Asia/Tokyo",
+  "Australia/Sydney",
+  "America/New_York",
+  "America/Chicago",
+  "America/Los_Angeles",
+  "America/Toronto",
+] as const;
+
+export function isTimeZone(tz: string) {
+  try {
+    new Intl.DateTimeFormat("en", { timeZone: tz });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Offset of a time zone from UTC at a given instant, in milliseconds. */
+function offsetMs(at: Date, timeZone: string) {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    hourCycle: "h23",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  }).formatToParts(at);
+  const n = (t: string) => Number(parts.find((p) => p.type === t)!.value);
+  return Date.UTC(n("year"), n("month") - 1, n("day"), n("hour"), n("minute"), n("second")) - Math.floor(at.getTime() / 1000) * 1000;
+}
+
+/** "YYYY-MM-DDTHH:mm" (or a bare date, read as 23:59) in `timeZone` → ISO instant. */
+export function zonedToIso(local: string, timeZone: string) {
+  const [date, time = "23:59"] = local.split("T");
+  const [y, m, d] = date.split("-").map(Number);
+  const [h, min] = time.split(":").map(Number);
+  const wall = Date.UTC(y, m - 1, d, h, min);
+  let ts = wall - offsetMs(new Date(wall), timeZone);
+  ts = wall - offsetMs(new Date(ts), timeZone); // second pass settles DST transitions
+  return new Date(ts).toISOString();
+}
+
+/** ISO instant → "YYYY-MM-DDTHH:mm" wall time in `timeZone` (for <input type="datetime-local">). */
+export function isoToZoned(iso: string, timeZone: string) {
+  const at = new Date(iso);
+  return new Date(at.getTime() + offsetMs(at, timeZone)).toISOString().slice(0, 16);
 }

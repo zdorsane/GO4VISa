@@ -1,24 +1,22 @@
 "use client";
 
 import { useActionState, useMemo, useState } from "react";
-import { CATEGORIES, FUNDING, LEVELS, publishWarnings, type Scholarship, WORKFLOW } from "@/lib/scholarships";
+import { CATEGORIES, FUNDING, isoToZoned, LEVELS, publishWarnings, type Scholarship, TIMEZONES, WORKFLOW, zonedToIso } from "@/lib/scholarships";
 import { COMMON_COUNTRIES, countryName } from "@/lib/countries";
 import { saveScholarshipAction } from "../actions";
 import { ImageField } from "./ImageField";
 import { CATEGORY_LABEL, FUNDING_LABEL, LEVEL_LABEL, WARNING_LABEL, WORKFLOW_LABEL } from "./labels";
 
-/** ISO instant → value for <input type="datetime-local"> in Algiers time (UTC+1, no DST). */
-function toLocalInput(iso: string | null) {
-  if (!iso) return "";
-  const d = new Date(new Date(iso).getTime() + 60 * 60 * 1000);
-  return d.toISOString().slice(0, 16);
-}
+const ALGIERS = "Africa/Algiers";
+const tzLabel = (tz: string) =>
+  tz === ALGIERS ? "Alger (heure algérienne)" : tz === "UTC" ? "UTC" : tz.split("/").pop()!.replace(/_/g, " ");
 
 const FIELD_ERRORS: Record<string, string> = {
   taken: "Cette adresse (slug) est déjà utilisée par une autre bourse.",
   "invalid-url": "Adresse invalide : elle doit commencer par https://",
   "invalid-date": "Date invalide.",
   "before-opening": "La date limite doit être après la date d'ouverture.",
+  "invalid-timezone": "Fuseau horaire inconnu.",
   "required-to-publish": "Une source officielle est obligatoire pour publier.",
   required: "Champ obligatoire.",
 };
@@ -31,7 +29,8 @@ export function ScholarshipForm({ scholarship: s, canPublish }: Props) {
   const [draft, setDraft] = useState({
     source_url: s?.source_url ?? "",
     application_url: s?.application_url ?? "",
-    deadline_at: toLocalInput(s?.deadline_at ?? null),
+    deadline_tz: s?.deadline_tz ?? "",
+    deadline_at: s?.deadline_at ? isoToZoned(s.deadline_at, s.deadline_tz ?? ALGIERS) : "",
     eligible_nationalities: s?.eligible_nationalities ?? "",
     qualifications: s?.qualifications ?? "",
     verified_at: s?.verified_at ?? "",
@@ -43,7 +42,7 @@ export function ScholarshipForm({ scholarship: s, canPublish }: Props) {
     () =>
       publishWarnings({
         ...draft,
-        deadline_at: draft.deadline_at ? new Date(`${draft.deadline_at}:00+01:00`).toISOString() : null,
+        deadline_at: draft.deadline_at ? zonedToIso(draft.deadline_at, draft.deadline_tz || ALGIERS) : null,
         application_url: draft.application_url || null,
         source_url: draft.source_url || null,
         verified_at: draft.verified_at || null,
@@ -230,7 +229,12 @@ export function ScholarshipForm({ scholarship: s, canPublish }: Props) {
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="block">
               <span className="admin-label">Ouverture des candidatures</span>
-              <input type="datetime-local" name="opens_at" defaultValue={toLocalInput(s?.opens_at ?? null)} className="admin-input mt-1" />
+              <input
+                type="datetime-local"
+                name="opens_at"
+                defaultValue={s?.opens_at ? isoToZoned(s.opens_at, s.deadline_tz ?? ALGIERS) : ""}
+                className="admin-input mt-1"
+              />
             </label>
             <label className="block">
               <span className="admin-label">Date limite officielle</span>
@@ -242,10 +246,22 @@ export function ScholarshipForm({ scholarship: s, canPublish }: Props) {
                 aria-invalid={!!state?.fields?.deadline_at}
                 className="admin-input mt-1"
               />
-              <p className="admin-hint">Heure d&apos;Alger. Convertissez depuis le fuseau officiel (ex. 23:59 UK = 00:59 Alger en hiver).</p>
+              <p className="admin-hint">Saisissez l&apos;heure telle qu&apos;écrite sur la source officielle, dans son fuseau.</p>
               {err("deadline_at") && <p className="mt-1 text-xs text-red-700">{err("deadline_at")}</p>}
             </label>
           </div>
+          <label className="block sm:max-w-sm">
+            <span className="admin-label">Fuseau horaire officiel</span>
+            <select name="deadline_tz" value={draft.deadline_tz} onChange={set("deadline_tz")} className="admin-input mt-1">
+              <option value="">Non précisé par la source (date seule, lue à l&apos;heure d&apos;Alger)</option>
+              {[...new Set([...TIMEZONES, ...(draft.deadline_tz ? [draft.deadline_tz] : [])])].map((tz) => (
+                <option key={tz} value={tz}>
+                  {tzLabel(tz)}
+                </option>
+              ))}
+            </select>
+            <p className="admin-hint">Les dates ci-dessus sont lues dans ce fuseau. Le site affiche aussi l&apos;heure d&apos;Alger.</p>
+          </label>
           {text("deadline_note", "Précisions sur la date limite", {
             rows: 2,
             hint: "Fuseau officiel, dates différentes selon le cursus, etc.",
