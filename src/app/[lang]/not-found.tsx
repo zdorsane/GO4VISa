@@ -6,7 +6,7 @@ import { defaultLocale, hasLocale } from "@/lib/i18n";
 
 export default async function NotFound() {
   const value = await rootLang();
-  const lang = hasLocale(value) ? value : defaultLocale;
+  const lang = value && hasLocale(value) ? value : defaultLocale;
   const t = getDictionary(lang).notFound;
 
   return (
