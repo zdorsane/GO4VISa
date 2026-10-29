@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "db:migrate": "node scripts/migrate.mjs",
-    "admin:create": "node scripts/create-admin.mjs"
+    "admin:create": "node scripts/create-admin.mjs",
+    "db:seed": "node scripts/seed.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.2.0",
