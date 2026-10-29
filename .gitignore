@@ -53,3 +53,8 @@ next-env.d.ts
 
 # Editor/agent tooling (not part of the website)
 /.kilo
+
+# agent skills installed by the Vercel CLI (not site code)
+/.agents/
+/.claude/skills/
+/skills-lock.json
