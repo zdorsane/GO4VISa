@@ -47,6 +47,7 @@ export type ListItem = Pick<
   | "fields"
   | "tags"
   | "algeria_eligible"
+  | "verification"
   | "funding_type"
   | "summary"
   | "opens_at"
@@ -74,6 +75,7 @@ export function toListItem(s: PublicScholarship): ListItem {
     fields: s.fields,
     tags: s.tags,
     algeria_eligible: s.algeria_eligible,
+    verification: s.verification,
     funding_type: s.funding_type,
     summary: s.summary,
     opens_at: s.opens_at,

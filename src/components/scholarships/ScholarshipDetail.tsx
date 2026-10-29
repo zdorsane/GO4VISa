@@ -9,7 +9,7 @@ import { toListItem, type PublicScholarship } from "@/lib/server/public";
 import type { Source } from "@/lib/server/scholarships";
 import { DeadlineBadge } from "./DeadlineBadge";
 import { Flag } from "./Flag";
-import { SaveButton, ScholarshipCard } from "./ScholarshipCard";
+import { Caveats, SaveButton, ScholarshipCard } from "./ScholarshipCard";
 import { ShareActions } from "./ShareActions";
 
 function Row({ label, children, empty }: { label: string; children: ReactNode; empty: string }) {
@@ -94,7 +94,7 @@ export function ScholarshipDetail({
               </span>
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
-                  <DeadlineBadge lang={lang} opens_at={s.opens_at} deadline_at={s.deadline_at} initial={s.deadline_status} className="!bg-white/95" />
+                  <DeadlineBadge lang={lang} opens_at={s.opens_at} deadline_at={s.deadline_at} initial={s.deadline_status} unconfirmed={s.verification !== "verified"} className="!bg-white/95" />
                   <span className="rounded-full bg-gold px-2.5 py-1 text-[0.7rem] font-bold uppercase tracking-wide text-midnight">{t.funding[s.funding_type]}</span>
                 </div>
                 <h1 dir="auto" className="mt-3 text-2xl font-bold leading-tight text-white md:text-4xl">{s.title}</h1>
@@ -102,13 +102,14 @@ export function ScholarshipDetail({
                   {s.institution}
                   {place && ` · ${place}`}
                 </p>
+                <Caveats s={s} lang={lang} className="mt-3" />
               </div>
             </div>
             <div className="flex shrink-0 items-center gap-2">
               <SaveButton slug={s.slug} lang={lang} className="!h-11 !w-11" />
               {applyUrl && s.deadline_status !== "closed" && (
                 <a href={applyUrl} target="_blank" rel="noopener noreferrer" className={buttonClasses("gold")}>
-                  {t.card.apply}
+                  {s.application_url ? t.card.apply : t.card.official}
                   <Icon name="external" className="h-4 w-4" />
                 </a>
               )}
@@ -182,7 +183,7 @@ export function ScholarshipDetail({
               <dl className="mt-3 space-y-3 text-sm">
                 <div>
                   <dt className="text-slate">{f.deadline}</dt>
-                  <dd className="mt-0.5 text-base font-semibold text-midnight">{deadline?.official ?? t.card.noDeadline}</dd>
+                  <dd className="mt-0.5 text-base font-semibold text-midnight">{deadline?.official ?? (s.verification !== "verified" ? t.card.dateTbc : t.card.noDeadline)}</dd>
                   {deadline?.local && <dd className="mt-0.5 text-xs text-slate">{deadline.local}</dd>}
                 </div>
                 <div>

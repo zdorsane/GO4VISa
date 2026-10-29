@@ -8,10 +8,21 @@
       "institution": "Université de Cambridge — Gates Cambridge Trust",
       "country_code": "GB",
       "city": "Cambridge",
-      "levels": ["master", "phd"],
-      "categories": ["masters", "phd"],
-      "fields": ["Tous domaines"],
-      "tags": ["entièrement financée", "postgraduate"],
+      "levels": [
+        "master",
+        "phd"
+      ],
+      "categories": [
+        "masters",
+        "phd"
+      ],
+      "fields": [
+        "Tous domaines"
+      ],
+      "tags": [
+        "entièrement financée",
+        "postgraduate"
+      ],
       "eligible_nationalities": "Ressortissants de tout pays autre que le Royaume-Uni.",
       "algeria_eligible": "yes",
       "qualifications": "Candidater à un doctorat (PhD) à temps plein ou partiel, à un MLitt à temps plein ou à une formation postgraduate d'un an à temps plein à l'Université de Cambridge (quelques exceptions). Les MASt et la plupart des diplômes professionnels (MBA, EMBA, MFin, PGCE…) sont exclus.",
@@ -31,8 +42,14 @@
       "application_url": "https://www.gatescambridge.org/apply/how-to-apply/",
       "source_url": "https://www.gatescambridge.org/apply/timeline/",
       "sources": [
-        { "url": "https://www.gatescambridge.org/apply/eligibility/", "label": "Conditions d'éligibilité" },
-        { "url": "https://www.gatescambridge.org/programme/the-scholarship/", "label": "Ce que couvre la bourse" }
+        {
+          "url": "https://www.gatescambridge.org/apply/eligibility/",
+          "label": "Conditions d'éligibilité"
+        },
+        {
+          "url": "https://www.gatescambridge.org/programme/the-scholarship/",
+          "label": "Ce que couvre la bourse"
+        }
       ],
       "verified_at": "2026-10-29",
       "verification": "verified",
@@ -50,10 +67,27 @@
       "institution": "Organisation Mondiale de la Propriété Intellectuelle (OMPI)",
       "country_code": "CH",
       "city": "Genève",
-      "levels": ["bachelor", "master", "phd"],
-      "categories": ["internship"],
-      "fields": ["Droit", "Propriété intellectuelle", "Informatique", "Relations internationales", "Économie", "Communication"],
-      "tags": ["nations unies", "stage rémunéré", "candidature continue"],
+      "levels": [
+        "bachelor",
+        "master",
+        "phd"
+      ],
+      "categories": [
+        "internship"
+      ],
+      "fields": [
+        "Droit",
+        "Propriété intellectuelle",
+        "Informatique",
+        "Relations internationales",
+        "Économie",
+        "Communication"
+      ],
+      "tags": [
+        "nations unies",
+        "stage rémunéré",
+        "candidature continue"
+      ],
       "eligible_nationalities": "Aucune restriction de nationalité indiquée sur la page officielle. Le remboursement du voyage est réservé aux ressortissants des pays en développement, les moins avancés ou en transition résidant dans leur pays.",
       "algeria_eligible": "unknown",
       "qualifications": "Catégorie I : licence obtenue depuis moins de 2 ans, étudiant en 3e ou 4e année de licence, ou étudiant en master n'ayant pas terminé ses cours ou son mémoire. Catégorie II : master obtenu depuis moins de 2 ans, étudiant de master ayant terminé ses cours mais pas son mémoire, ou titulaire d'un premier diplôme avancé préparant un autre diplôme.",
@@ -89,10 +123,19 @@
       "institution": "Université américaine de Beyrouth (AUB) et Université libano-américaine (LAU)",
       "country_code": "LB",
       "city": "Beyrouth",
-      "levels": ["highschool", "bachelor"],
-      "categories": ["undergraduate", "leadership"],
+      "levels": [
+        "highschool",
+        "bachelor"
+      ],
+      "categories": [
+        "undergraduate",
+        "leadership"
+      ],
       "fields": null,
-      "tags": ["moyen-orient et afrique du nord", "ouverte aux algériens"],
+      "tags": [
+        "moyen-orient et afrique du nord",
+        "ouverte aux algériens"
+      ],
       "eligible_nationalities": "Citoyens d'Algérie, d'Égypte, d'Irak, de Jordanie, du Liban, de Libye, du Maroc, de Syrie, de Tunisie, du Yémen, et étudiants de Cisjordanie ou palestiniens résidant légalement dans un pays tiers.",
       "algeria_eligible": "yes",
       "qualifications": "Être en terminale (année du baccalauréat) ou avoir obtenu le baccalauréat en 2026 (les bacheliers 2025 sont aussi acceptés pour l'Irak, la Libye, la Syrie, les étudiants palestiniens en pays tiers et le Yémen). Excellents résultats scolaires ; les élèves de terminale doivent réussir leur examen de fin d'études. Pouvoir commencer la licence en août 2027.",
@@ -112,8 +155,14 @@
       "application_url": "https://fhi360.govfa.net/wfzYp4Y",
       "source_url": "https://www.tomorrowsleadersprogram.org/application-timeline-2026-2027-academic-year/",
       "sources": [
-        { "url": "https://www.tomorrowsleadersprogram.org/eligibility/", "label": "Conditions d'éligibilité" },
-        { "url": "https://www.tomorrowsleadersprogram.org/faqs/", "label": "Ce que couvre la bourse (FAQ)" }
+        {
+          "url": "https://www.tomorrowsleadersprogram.org/eligibility/",
+          "label": "Conditions d'éligibilité"
+        },
+        {
+          "url": "https://www.tomorrowsleadersprogram.org/faqs/",
+          "label": "Ce que couvre la bourse (FAQ)"
+        }
       ],
       "verified_at": "2026-10-29",
       "verification": "verified",
@@ -131,10 +180,26 @@
       "institution": "Organisation des Nations unies pour l'alimentation et l'agriculture (FAO)",
       "country_code": "IT",
       "city": "Rome",
-      "levels": ["highschool", "bachelor", "master", "phd", "professional"],
-      "categories": ["volunteering"],
-      "fields": ["Agriculture", "Sécurité alimentaire", "Développement"],
-      "tags": ["nations unies", "non rémunéré", "candidature continue"],
+      "levels": [
+        "highschool",
+        "bachelor",
+        "master",
+        "phd",
+        "professional"
+      ],
+      "categories": [
+        "volunteering"
+      ],
+      "fields": [
+        "Agriculture",
+        "Sécurité alimentaire",
+        "Développement"
+      ],
+      "tags": [
+        "nations unies",
+        "non rémunéré",
+        "candidature continue"
+      ],
       "eligible_nationalities": "Ressortissants des pays membres de la FAO.",
       "algeria_eligible": "yes",
       "qualifications": "Avoir terminé l'enseignement secondaire ; avoir 18 ans ou plus ; savoir travailler dans un environnement international et multiculturel, avec de bonnes capacités de communication et des bases en informatique ; disposer du titre de séjour adapté dans le pays d'affectation ; n'avoir aucun membre de sa famille employé par la FAO.",
@@ -170,10 +235,19 @@
       "institution": "Fred J. Hansen Foundation — Université de San Diego",
       "country_code": "US",
       "city": "San Diego",
-      "levels": ["bachelor"],
-      "categories": ["leadership"],
-      "fields": ["Tous domaines"],
-      "tags": ["leadership", "entièrement financé"],
+      "levels": [
+        "bachelor"
+      ],
+      "categories": [
+        "leadership"
+      ],
+      "fields": [
+        "Tous domaines"
+      ],
+      "tags": [
+        "leadership",
+        "entièrement financé"
+      ],
       "eligible_nationalities": "Candidats internationaux et américains ; aucune restriction par pays n'est indiquée sur le site officiel.",
       "algeria_eligible": "unknown",
       "qualifications": "Avoir terminé au moins une année d'études universitaires au moment de la candidature, ou être jeune diplômé (promotion 2025 ou 2026) si l'on n'est plus inscrit à l'université.",
@@ -193,7 +267,10 @@
       "application_url": "https://hansenleadershipinstitute.awardsplatform.com",
       "source_url": "https://hansenleadershipinstitute.org/faq/",
       "sources": [
-        { "url": "https://hansenleadershipinstitute.org/", "label": "Annonce de l'ouverture des candidatures 2027" }
+        {
+          "url": "https://hansenleadershipinstitute.org/",
+          "label": "Annonce de l'ouverture des candidatures 2027"
+        }
       ],
       "verified_at": "2026-10-29",
       "verification": "verified",
@@ -211,37 +288,52 @@
       "institution": "Universités américaines d'accueil — Programme Fulbright (Département d'État américain, géré par l'IIE)",
       "country_code": "US",
       "city": null,
-      "levels": ["phd", "postdoc", "professional"],
-      "categories": ["research-fellowship"],
-      "fields": ["Tous domaines"],
-      "tags": ["réservé au liban"],
-      "eligible_nationalities": "Universitaires libanais (concours propre au Liban).",
+      "levels": [
+        "phd",
+        "postdoc",
+        "professional"
+      ],
+      "categories": [
+        "research-fellowship"
+      ],
+      "fields": [
+        "Tous domaines"
+      ],
+      "tags": [
+        "réservé au liban"
+      ],
+      "eligible_nationalities": "Réservé aux titulaires d'un passeport libanais ou d'un document de voyage spécial pour réfugiés palestiniens (concours propre au Liban). Non ouvert aux candidats algériens.",
       "algeria_eligible": "no",
-      "qualifications": null,
+      "qualifications": "Être titulaire d'un doctorat ou d'une formation professionnelle équivalente, et enseigner dans un établissement d'enseignement supérieur libanais accrédité au moment de la candidature.",
       "age_limit": null,
-      "language_requirements": null,
-      "funding_type": "unknown",
+      "language_requirements": "Niveau d'anglais adapté au projet d'enseignement et/ou de recherche.",
+      "funding_type": "full",
       "tuition": null,
       "stipend": null,
-      "accommodation": null,
-      "travel": null,
-      "insurance": null,
-      "duration": null,
+      "accommodation": "Hébergement pris en charge (sous réserve de disponibilité des fonds).",
+      "travel": "Billet d'avion aller-retour pris en charge (sous réserve de disponibilité des fonds).",
+      "insurance": "Assurance santé prise en charge (sous réserve de disponibilité des fonds).",
+      "duration": "3 à 10 mois dans une université américaine, à partir d'août ou septembre 2027 selon l'établissement.",
       "opens_at": null,
-      "deadline_at": "2026-12-01T23:59:00+02:00",
-      "deadline_note": "1er décembre 2026 selon des sites tiers ; la page de l'ambassade des États-Unis à Beyrouth n'a pas pu être consultée directement.",
+      "deadline_at": "2026-12-01T23:59:00+01:00",
+      "deadline_note": "Date limite : 1er décembre 2026 (heure non précisée). Les candidatures en retard ou incomplètes ne sont pas examinées.",
       "deadline_tz": null,
       "application_url": "https://apply.iie.org/fvsp2027/",
-      "source_url": null,
-      "sources": [],
-      "verified_at": null,
+      "source_url": "https://lb.usembassy.gov/the-fulbright-visiting-scholar-program-2027-2028/",
+      "sources": [
+        {
+          "url": "https://fulbrightscholars.org/non-us-scholars/fulbright-visiting-scholar-program",
+          "label": "Programme Fulbright Visiting Scholar (site officiel Fulbright)"
+        }
+      ],
+      "verified_at": "2026-10-29",
       "verification": "needs_verification",
-      "summary": "Bourses de recherche et d'enseignement aux États-Unis réservées aux universitaires libanais — non ouvertes aux candidats algériens.",
-      "description": "Concours Fulbright propre au Liban, pour les enseignants-chercheurs libanais. Non ouvert aux candidats algériens. À confirmer sur la page officielle de l'ambassade des États-Unis à Beyrouth avant toute publication.",
-      "documents": null,
-      "instructions": null,
+      "summary": "Séjours de recherche ou d'enseignement de 3 à 10 mois aux États-Unis pour les universitaires libanais. Réservé au Liban : non ouvert aux candidats algériens.",
+      "description": "Chaque année, environ 900 enseignants et professionnels du monde entier reçoivent une bourse Fulbright pour mener des recherches ou enseigner aux États-Unis. Ce concours est propre au Liban : les universitaires libanais peuvent être accueillis par une université américaine pendant 3 à 10 mois à partir d'août ou septembre 2027.\n\nCe programme n'est pas ouvert aux candidats algériens. Les informations proviennent de la page de l'ambassade des États-Unis à Beyrouth ; vérifiez-les sur la page officielle avant de postuler.",
+      "documents": "CV\nDescription du projet\nAu moins 3 lettres de recommandation\nLettre d'invitation d'une université américaine (facultative)",
+      "instructions": "Remplissez le formulaire de candidature en ligne sur le portail de l'IIE avant le 1er décembre 2026.",
       "featured": false,
-      "status": "draft"
+      "status": "published"
     },
     {
       "slug": "ustc-international-winter-camp",
@@ -250,10 +342,20 @@
       "institution": "Université des sciences et technologies de Chine (USTC)",
       "country_code": "CN",
       "city": "Hefei",
-      "levels": ["bachelor", "master"],
-      "categories": ["summer-school"],
-      "fields": ["Sciences", "Technologie"],
-      "tags": ["chine"],
+      "levels": [
+        "bachelor",
+        "master"
+      ],
+      "categories": [
+        "summer-school"
+      ],
+      "fields": [
+        "Sciences",
+        "Technologie"
+      ],
+      "tags": [
+        "chine"
+      ],
       "eligible_nationalities": null,
       "algeria_eligible": "unknown",
       "qualifications": null,
@@ -268,19 +370,19 @@
       "duration": null,
       "opens_at": null,
       "deadline_at": null,
-      "deadline_note": "Le PDF indique le 8 novembre 2026 et un camp du 19 décembre 2026 au 1er janvier 2027, mais aucune édition 2026 n'apparaît sur le site officiel de l'USTC au 29 octobre 2026 (la dernière édition trouvée : 22-31 décembre 2025, date limite 20 novembre 2025, frais de 3 000 CNY).",
+      "deadline_note": "Le document de référence annonce une date limite au 8 novembre 2026 et un camp du 19 décembre 2026 au 1er janvier 2027, mais l'USTC n'a pas encore publié l'appel 2026 sur son site officiel (vérifié le 29 octobre 2026). Pour information, l'édition précédente s'est tenue du 22 au 31 décembre 2025 (date limite : 20 novembre 2025 ; frais : 3 000 CNY).",
       "deadline_tz": null,
       "application_url": null,
-      "source_url": null,
+      "source_url": "https://ic.ustc.edu.cn/?news-category=activity-en",
       "sources": [],
-      "verified_at": null,
+      "verified_at": "2026-10-29",
       "verification": "needs_verification",
-      "summary": "Camp académique et culturel d'hiver à Hefei — édition 2026 non encore confirmée par l'USTC.",
-      "description": "Ne pas publier tant que l'USTC n'a pas publié l'appel de décembre 2026 sur ic.ustc.edu.cn.",
+      "summary": "Camp académique et culturel d'hiver à Hefei (Chine) pour étudiants de licence et de master. Édition 2026 pas encore annoncée officiellement : dates à confirmer.",
+      "description": "Le camp d'hiver international de l'Université des sciences et technologies de Chine (USTC) propose des conférences, des visites de laboratoires nationaux, des cours de chinois et des visites culturelles à Hefei.\n\nAttention : l'appel à candidatures 2026 n'est pas encore publié sur le site officiel de l'USTC. Les dates indiquées dans certains documents ne sont donc pas confirmées. Suivez les annonces officielles du collège international de l'USTC avant de préparer votre dossier.",
       "documents": null,
-      "instructions": null,
+      "instructions": "Surveillez la page des annonces du collège international de l'USTC. Lors de l'édition précédente, la candidature se faisait sur le portail officiel (rubrique Non-Degree Program → Winter Camp).",
       "featured": false,
-      "status": "draft"
+      "status": "published"
     },
     {
       "slug": "kiit-international-admissions-2026",
@@ -289,10 +391,18 @@
       "institution": "Kalinga Institute of Industrial Technology (KIIT)",
       "country_code": "IN",
       "city": "Bhubaneswar",
-      "levels": ["master", "phd"],
-      "categories": ["masters", "phd"],
+      "levels": [
+        "master",
+        "phd"
+      ],
+      "categories": [
+        "masters",
+        "phd"
+      ],
       "fields": null,
-      "tags": ["inde"],
+      "tags": [
+        "inde"
+      ],
       "eligible_nationalities": null,
       "algeria_eligible": "unknown",
       "qualifications": null,
@@ -312,7 +422,10 @@
       "application_url": "https://kiit.ac.in/admission/international/",
       "source_url": null,
       "sources": [
-        { "url": "https://international.kiit.ac.in/", "label": "Portail des admissions internationales du KIIT (sans conditions de bourse)" }
+        {
+          "url": "https://international.kiit.ac.in/",
+          "label": "Portail des admissions internationales du KIIT (sans conditions de bourse)"
+        }
       ],
       "verified_at": null,
       "verification": "needs_verification",

@@ -77,6 +77,10 @@ const en = {
     deadline: "Deadline",
     noDeadline: "No fixed deadline",
     daysLeft: (n: number) => (n === 0 ? "Last day" : n === 1 ? "1 day left" : `${n} days left`),
+    notAlgeria: "Not open to Algerian applicants",
+    unverified: "Details to be confirmed",
+    dateTbc: "Date to be confirmed",
+    official: "Official site",
   },
   detail: {
     back: "All scholarships",
@@ -213,6 +217,10 @@ const fr: PlatformDict = {
     deadline: "Date limite",
     noDeadline: "Sans date limite fixe",
     daysLeft: (n: number) => (n === 0 ? "Dernier jour" : n === 1 ? "Plus que 1 jour" : `Plus que ${n} jours`),
+    notAlgeria: "Non ouvert aux candidats algériens",
+    unverified: "Informations à confirmer",
+    dateTbc: "Date à confirmer",
+    official: "Site officiel",
   },
   detail: {
     back: "Toutes les bourses",
@@ -347,6 +355,10 @@ const ar: PlatformDict = {
     deadline: "الموعد النهائي",
     noDeadline: "دون موعد نهائي ثابت",
     daysLeft: (n: number) => (n === 0 ? "آخر يوم" : `بقي ${n} يوم`),
+    notAlgeria: "غير مفتوحة للمترشحين الجزائريين",
+    unverified: "معلومات قيد التأكيد",
+    dateTbc: "الموعد قيد التأكيد",
+    official: "الموقع الرسمي",
   },
   detail: {
     back: "كل المنح",

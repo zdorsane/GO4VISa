@@ -21,6 +21,8 @@ export type CardData = Pick<
   | "city"
   | "levels"
   | "funding_type"
+  | "algeria_eligible"
+  | "verification"
   | "summary"
   | "opens_at"
   | "deadline_at"
@@ -60,6 +62,28 @@ export function SaveButton({ slug, lang, className = "" }: { slug: string; lang:
   );
 }
 
+/** Warnings that must stay visible: not open to Algerians, details not yet confirmed. */
+export function Caveats({ s, lang, className = "" }: { s: Pick<CardData, "algeria_eligible" | "verification">; lang: Locale; className?: string }) {
+  const t = getPlatformDict(lang).card;
+  if (s.algeria_eligible !== "no" && s.verification === "verified") return null;
+  return (
+    <div className={`flex flex-wrap gap-1.5 ${className}`}>
+      {s.algeria_eligible === "no" && (
+        <span className="inline-flex items-center gap-1.5 rounded-lg bg-red-50 px-2.5 py-1 text-xs font-semibold text-red-700 ring-1 ring-inset ring-red-200">
+          <Icon name="close" className="h-3.5 w-3.5" />
+          {t.notAlgeria}
+        </span>
+      )}
+      {s.verification !== "verified" && (
+        <span className="inline-flex items-center gap-1.5 rounded-lg bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-800 ring-1 ring-inset ring-amber-200">
+          <Icon name="pulse" className="h-3.5 w-3.5" />
+          {t.unverified}
+        </span>
+      )}
+    </div>
+  );
+}
+
 /** Opportunity card: logo or flag, status, level, funding, short description and two actions. */
 export function ScholarshipCard({ s, lang }: { s: CardData; lang: Locale }) {
   const t = getPlatformDict(lang);
@@ -84,7 +108,7 @@ export function ScholarshipCard({ s, lang }: { s: CardData; lang: Locale }) {
           )}
         </span>
         <div className="flex items-center gap-2">
-          <DeadlineBadge lang={lang} opens_at={s.opens_at} deadline_at={s.deadline_at} initial={s.deadline_status} />
+          <DeadlineBadge lang={lang} opens_at={s.opens_at} deadline_at={s.deadline_at} initial={s.deadline_status} unconfirmed={s.verification !== "verified"} />
           <SaveButton slug={s.slug} lang={lang} />
         </div>
       </div>
@@ -97,6 +121,8 @@ export function ScholarshipCard({ s, lang }: { s: CardData; lang: Locale }) {
       <p className="mt-1 text-sm text-slate">
         {s.institution} · {countryName(s.country_code, lang)}
       </p>
+
+      <Caveats s={s} lang={lang} className="mt-3" />
 
       <div className="mt-3 flex flex-wrap gap-1.5">
         <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ring-inset ${FUNDING_STYLE[s.funding_type]}`}>{t.funding[s.funding_type]}</span>
@@ -117,6 +143,8 @@ export function ScholarshipCard({ s, lang }: { s: CardData; lang: Locale }) {
               {t.card.deadline}{lang === "fr" ? " :" : ":"} <strong className="font-semibold text-midnight">{formatDate(s.deadline_at, lang, false, s.deadline_tz ?? undefined)}</strong>
               {left !== null && <span className="font-semibold text-orange-700">· {t.card.daysLeft(left)}</span>}
             </>
+          ) : s.verification !== "verified" ? (
+            t.card.dateTbc
           ) : (
             t.card.noDeadline
           )}
@@ -132,7 +160,7 @@ export function ScholarshipCard({ s, lang }: { s: CardData; lang: Locale }) {
               rel="noopener noreferrer"
               className="flex flex-1 items-center justify-center gap-1.5 rounded-full bg-gold px-4 py-2.5 text-sm font-semibold text-midnight transition-colors hover:bg-amber"
             >
-              {t.card.apply}
+              {s.application_url ? t.card.apply : t.card.official}
               <Icon name="external" className="h-3.5 w-3.5" />
             </a>
           )}

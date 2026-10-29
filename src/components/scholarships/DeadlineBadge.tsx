@@ -39,15 +39,26 @@ export function DeadlineBadge({
   opens_at,
   deadline_at,
   initial,
+  unconfirmed = false,
   className = "",
 }: {
   lang: Locale;
   opens_at: string | null;
   deadline_at: string | null;
   initial: DeadlineStatus;
+  /** Details not confirmed yet: a missing deadline reads "date to be confirmed", not "no deadline". */
+  unconfirmed?: boolean;
   className?: string;
 }) {
   const status = useLiveStatus(opens_at, deadline_at, initial);
+  if (unconfirmed && status === "rolling") {
+    return (
+      <span className={`inline-flex items-center gap-1.5 rounded-full bg-amber-500/12 px-2.5 py-1 text-[0.7rem] font-bold uppercase tracking-wide text-amber-800 ring-1 ring-inset ring-amber-600/30 ${className}`}>
+        <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+        {getPlatformDict(lang).card.dateTbc}
+      </span>
+    );
+  }
   return (
     <span
       className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[0.7rem] font-bold uppercase tracking-wide ring-1 ring-inset ${STATUS_STYLE[status]} ${className}`}
