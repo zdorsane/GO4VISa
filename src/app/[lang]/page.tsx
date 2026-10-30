@@ -49,7 +49,6 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         lang={lang}
         founder={t.founder}
         contact={t.contact}
-        social={{ label: t.footer.social, on: t.footer.socialOn }}
       />
       <FloatingCta lang={lang} t={t.floatingCta} />
     </>

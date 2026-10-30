@@ -115,11 +115,9 @@ function BoardingPass({ lang, t }: { lang: Locale; t: Dict["contact"]["journey"]
 export function ContactPanel({
   lang,
   t: contact,
-  social,
 }: {
   lang: Locale;
   t: Dict["contact"];
-  social: { label: string; on: string };
 }) {
   const whatsapp = whatsappHref();
   const socials = site.socials.filter((s) => s.href);
@@ -190,25 +188,6 @@ export function ContactPanel({
             </a>
           </li>
         </ul>
-
-        {/* Shown once the profile URLs are set in site.socials */}
-        {socials.length > 0 && (
-          <ul className="mt-5 flex gap-2.5" aria-label={social.label}>
-            {socials.map((s) => (
-              <li key={s.name}>
-                <a
-                  href={s.href}
-                  aria-label={`${social.on} ${s.name}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex h-10 w-10 items-center justify-center rounded-full text-white ring-1 ring-white/20 transition-all hover:-translate-y-0.5 hover:bg-gold hover:text-midnight hover:ring-gold"
-                >
-                  <Icon name={s.name.toLowerCase() as IconName} className="h-5 w-5" />
-                </a>
-              </li>
-            ))}
-          </ul>
-        )}
       </Reveal>
 
       <Reveal delay={0.1} className="mt-10">

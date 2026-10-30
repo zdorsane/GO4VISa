@@ -3,7 +3,7 @@ import { site, whatsappHref, type Dict } from "@/lib/content";
 import type { Destination } from "@/lib/destinations";
 import type { Locale } from "@/lib/i18n";
 import { LogoSymbol, Wordmark } from "./brand/Logo";
-import { Icon, type IconName } from "./ui/Icon";
+import { Icon } from "./ui/Icon";
 import { CurrentYear } from "./ui/CurrentYear";
 
 export function Footer({
@@ -31,23 +31,6 @@ export function Footer({
           </Link>
           <p className="label-caps mt-4 !text-[0.65rem] text-gold">{site.tagline}</p>
           <p className="mt-3 max-w-xs text-sm">{t.closing}</p>
-          {socials.length > 0 && (
-            <ul className="mt-4 flex gap-2.5" aria-label={t.social}>
-              {socials.map((s) => (
-                <li key={s.name}>
-                  <a
-                    href={s.href}
-                    aria-label={`${t.socialOn} ${s.name}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex h-10 w-10 items-center justify-center rounded-full text-white ring-1 ring-white/20 transition-all hover:-translate-y-0.5 hover:bg-gold hover:text-midnight hover:ring-gold"
-                  >
-                    <Icon name={s.name.toLowerCase() as IconName} className="h-5 w-5" />
-                  </a>
-                </li>
-              ))}
-            </ul>
-          )}
         </div>
 
         <nav aria-label={t.footerNav}>

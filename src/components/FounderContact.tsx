@@ -13,12 +13,10 @@ export function FounderContact({
   lang,
   founder,
   contact,
-  social,
 }: {
   lang: Locale;
   founder: Dict["founder"];
   contact: Dict["contact"];
-  social: { label: string; on: string };
 }) {
   return (
     <section
@@ -34,7 +32,7 @@ export function FounderContact({
           <FounderProfile t={founder} />
         </div>
         <div id="contact" className="min-w-0 border-t border-white/10 pt-12 lg:border-s lg:border-t-0 lg:ps-12 lg:pt-0">
-          <ContactPanel lang={lang} t={contact} social={social} />
+          <ContactPanel lang={lang} t={contact} />
         </div>
       </div>
     </section>
