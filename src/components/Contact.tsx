@@ -166,12 +166,27 @@ export function ContactPanel({
               </a>
             </li>
           )}
+          {socials
+            .filter((s) => s.handle)
+            .map((s) => (
+              <li key={s.name}>
+                <a href={s.href} target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-4 text-white">
+                  <span className={channelIcon}>
+                    <Icon name={s.name.toLowerCase() as IconName} className="h-5 w-5" />
+                  </span>
+                  <span>
+                    <span className="block text-xs font-medium uppercase tracking-wider text-mist">{s.name}</span>
+                    <span dir="ltr" className="underline-offset-4 group-hover:underline">{s.handle}</span>
+                  </span>
+                </a>
+              </li>
+            ))}
           <li>
             <a href={site.url} className="group inline-flex items-center gap-4 text-white">
               <span className={channelIcon}>
                 <Icon name="web" className="h-5 w-5" />
               </span>
-              <span className="underline-offset-4 group-hover:underline">www.go4visa.com</span>
+              <span className="underline-offset-4 group-hover:underline">{site.domain}</span>
             </a>
           </li>
         </ul>

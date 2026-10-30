@@ -121,9 +121,18 @@ export function Footer({
                 </a>
               </li>
             )}
+            {socials
+              .filter((s) => s.handle)
+              .map((s) => (
+                <li key={s.name}>
+                  <a href={s.href} target="_blank" rel="noopener noreferrer" className="inline-block py-1 hover:text-gold">
+                    {s.name}: <span dir="ltr">{s.handle}</span>
+                  </a>
+                </li>
+              ))}
             <li>
               <a href={site.url} className="inline-block py-1 hover:text-gold">
-                www.go4visa.com
+                {site.domain}
               </a>
             </li>
           </ul>

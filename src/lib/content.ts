@@ -11,7 +11,9 @@ import type { Locale } from "./i18n";
 /** Language-independent details. */
 export const site = {
   name: "Go4Visa",
-  url: "https://www.go4visa.com",
+  // live address of the site (go4visa.com does not resolve); also used for SEO, sitemap and share previews
+  url: "https://go4visa.vercel.app",
+  domain: "go4visa.vercel.app",
   email: "go4visa.consultation@gmail.com",
   // Contact channels below are hidden on the site until they are filled in.
   phone: "", // TODO(content): display format, e.g. "+213 XX XX XX XX"
@@ -22,9 +24,9 @@ export const site = {
   tagline: "Dream · Study · Go Further", // brand tagline, kept in English
   // TODO(content): real profile URLs — an icon is only shown once its URL is set
   socials: [
-    { name: "Instagram", href: "https://www.instagram.com/go4visa_consultancy/" },
-    { name: "Facebook", href: "" },
-    { name: "LinkedIn", href: "" },
+    { name: "Instagram", href: "https://www.instagram.com/go4visa_consultancy/", handle: "@go4visa_consultancy" },
+    { name: "Facebook", href: "", handle: "" },
+    { name: "LinkedIn", href: "", handle: "" },
   ],
 };
 
