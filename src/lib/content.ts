@@ -22,7 +22,7 @@ export const site = {
   tagline: "Dream · Study · Go Further", // brand tagline, kept in English
   // TODO(content): real profile URLs — an icon is only shown once its URL is set
   socials: [
-    { name: "Instagram", href: "" },
+    { name: "Instagram", href: "https://www.instagram.com/go4visa_consultancy/" },
     { name: "Facebook", href: "" },
     { name: "LinkedIn", href: "" },
   ],

@@ -28,6 +28,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         logo: `${site.url}/assets/go4visa-logo.jpg`,
         slogan: site.tagline,
         description: t.meta.description,
+        sameAs: site.socials.filter((s) => s.href).map((s) => s.href),
       },
     ],
   };
