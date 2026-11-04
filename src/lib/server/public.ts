@@ -40,6 +40,7 @@ export type ListItem = Pick<
   | "title"
   | "institution"
   | "logo_url"
+  | "cover_url"
   | "country_code"
   | "city"
   | "levels"
@@ -68,6 +69,7 @@ export function toListItem(s: PublicScholarship): ListItem {
     title: s.title,
     institution: s.institution,
     logo_url: s.logo_url,
+    cover_url: s.cover_url,
     country_code: s.country_code,
     city: s.city,
     levels: s.levels,

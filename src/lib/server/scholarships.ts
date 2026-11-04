@@ -3,7 +3,7 @@ import * as z from "zod";
 import { CATEGORIES, FUNDING, isTimeZone, LEVELS, WORKFLOW, slugify, zonedToIso, type Scholarship } from "@/lib/scholarships";
 import { db } from "./db";
 
-const COLUMNS = `id, slug, content_lang, title, institution, logo_url, country_code, city, levels, categories, fields, tags,
+const COLUMNS = `id, slug, content_lang, title, institution, logo_url, cover_url, cover_credit, cover_credit_url, country_code, city, levels, categories, fields, tags,
   eligible_nationalities, algeria_eligible, qualifications, age_limit, language_requirements, funding_type, tuition,
   stipend, accommodation, travel, insurance, duration, opens_at, deadline_at, deadline_note, deadline_tz, application_url,
   source_url, verified_at::text as verified_at, verification, summary, description, documents, instructions, featured, status,
@@ -86,6 +86,15 @@ export const ScholarshipInput = z
     content_lang: z.enum(["fr", "en", "ar"]),
     institution: z.string().trim().min(2).max(200),
     logo_url: url,
+    // uploaded or external image, or a file shipped in public/ ("/scholarships/…")
+    cover_url: z
+      .string()
+      .trim()
+      .transform((v) => (v === "" ? null : v))
+      .nullable()
+      .refine((v) => v === null || /^(https?:\/\/[^\s]+\.[^\s]+|\/[^\s]+)$/.test(v), { message: "invalid-url" }),
+    cover_credit: text(300),
+    cover_credit_url: url,
     country_code: z
       .string()
       .trim()
@@ -158,6 +167,9 @@ export function parseScholarshipForm(form: FormData) {
     content_lang: get("content_lang") || "en",
     institution: get("institution"),
     logo_url: get("logo_url"),
+    cover_url: get("cover_url"),
+    cover_credit: get("cover_credit"),
+    cover_credit_url: get("cover_credit_url"),
     country_code: get("country_code"),
     city: get("city"),
     levels: form.getAll("levels").map(String),
@@ -205,12 +217,12 @@ export async function saveScholarship(id: string | null, d: ScholarshipData, use
     d.fields, d.tags, d.eligible_nationalities, d.algeria_eligible, d.qualifications, d.age_limit,
     d.language_requirements, d.funding_type, d.tuition, d.stipend, d.accommodation, d.travel, d.insurance,
     d.duration, d.opens_at, d.deadline_at, d.deadline_note, d.application_url, d.source_url, d.verified_at,
-    d.verification, d.summary, d.description, d.documents, d.instructions, d.featured, d.status, d.deadline_tz, userId,
+    d.verification, d.summary, d.description, d.documents, d.instructions, d.featured, d.status, d.deadline_tz, d.cover_url, d.cover_credit, d.cover_credit_url, userId,
   ];
   const cols = `slug, content_lang, title, institution, logo_url, country_code, city, levels, categories, fields, tags,
     eligible_nationalities, algeria_eligible, qualifications, age_limit, language_requirements, funding_type, tuition,
     stipend, accommodation, travel, insurance, duration, opens_at, deadline_at, deadline_note, application_url,
-    source_url, verified_at, verification, summary, description, documents, instructions, featured, status, deadline_tz`;
+    source_url, verified_at, verification, summary, description, documents, instructions, featured, status, deadline_tz, cover_url, cover_credit, cover_credit_url`;
   const params = values.map((_, i) => `$${i + 1}`);
   if (!id) {
     const [row] = await sql.query(
@@ -251,12 +263,12 @@ export async function duplicateScholarship(id: string, userId: string): Promise<
   for (let n = 2; (await db()`select 1 from scholarships where slug = ${slug}`).length; n++) slug = `${original.slug}-copy-${n}`.slice(0, 80);
   const [row] = await db()`
     insert into scholarships (
-      slug, content_lang, title, institution, logo_url, country_code, city, levels, categories, fields, tags,
+      slug, content_lang, title, institution, logo_url, cover_url, cover_credit, cover_credit_url, country_code, city, levels, categories, fields, tags,
       eligible_nationalities, algeria_eligible, qualifications, age_limit, language_requirements, funding_type, tuition,
       stipend, accommodation, travel, insurance, duration, opens_at, deadline_at, deadline_note, deadline_tz, application_url,
       source_url, verified_at, verification, summary, description, documents, instructions, featured, status,
       created_by, updated_by)
-    select ${slug}, content_lang, title || ' (copy)', institution, logo_url, country_code, city, levels, categories, fields, tags,
+    select ${slug}, content_lang, title || ' (copy)', institution, logo_url, cover_url, cover_credit, cover_credit_url, country_code, city, levels, categories, fields, tags,
       eligible_nationalities, algeria_eligible, qualifications, age_limit, language_requirements, funding_type, tuition,
       stipend, accommodation, travel, insurance, duration, opens_at, deadline_at, deadline_note, deadline_tz, application_url,
       source_url, null, 'needs_verification', summary, description, documents, instructions, false, 'draft',

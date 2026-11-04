@@ -1,5 +1,6 @@
 import { GlobeHorizon } from "@/components/brand/GlobeHorizon";
 import { Reveal } from "@/components/ui/Reveal";
+import { Counter } from "@/components/Stats";
 import { countryName } from "@/lib/countries";
 import { formatDate, getPlatformDict } from "@/lib/platform-i18n";
 import type { Locale } from "@/lib/i18n";
@@ -15,11 +16,11 @@ export function ScholarshipsHero({ lang, items }: { lang: Locale; items: PublicS
     .sort((a, b) => Date.parse(a.deadline_at!) - Date.parse(b.deadline_at!))[0];
   const countries = [...new Set(live.map((s) => s.country_code))];
 
-  const stats = [
-    { value: String(live.length), label: t.statOpps },
-    { value: String(live.filter((s) => s.funding_type === "full").length), label: t.statFunded },
-    { value: String(live.filter((s) => s.algeria_eligible === "yes").length), label: t.statAlgeria },
-    { value: next ? formatDate(next.deadline_at, lang, false, next.deadline_tz ?? undefined)! : "—", label: t.statNext, small: true },
+  const stats: { value: number | string; label: string }[] = [
+    { value: live.length, label: t.statOpps },
+    { value: live.filter((s) => s.funding_type === "full").length, label: t.statFunded },
+    { value: live.filter((s) => s.algeria_eligible === "yes").length, label: t.statAlgeria },
+    { value: next ? formatDate(next.deadline_at, lang, false, next.deadline_tz ?? undefined)! : "—", label: t.statNext },
   ];
 
   return (
@@ -38,8 +39,8 @@ export function ScholarshipsHero({ lang, items }: { lang: Locale; items: PublicS
 
         {countries.length > 0 && (
           <ul className="mt-6 flex flex-wrap justify-center gap-2" aria-label={t.country}>
-            {countries.map((c) => (
-              <li key={c} className="inline-flex items-center gap-2 rounded-full bg-white/10 py-1 pe-3 ps-1.5 text-xs font-medium text-white ring-1 ring-white/15 backdrop-blur">
+            {countries.map((c, i) => (
+              <li key={c} style={{ animationDelay: `${0.25 + i * 0.07}s` }} className="g4v-rise inline-flex items-center gap-2 rounded-full bg-white/10 py-1 pe-3 ps-1.5 text-xs font-medium text-white ring-1 ring-white/15 backdrop-blur">
                 <Flag code={c} className="h-4 w-6" />
                 {countryName(c, lang)}
               </li>
@@ -48,10 +49,12 @@ export function ScholarshipsHero({ lang, items }: { lang: Locale; items: PublicS
         )}
 
         <dl className="mx-auto mt-8 grid max-w-3xl grid-cols-2 gap-3 md:grid-cols-4">
-          {stats.map((s) => (
-            <div key={s.label} className="rounded-2xl bg-white/[0.07] px-4 py-4 ring-1 ring-white/15 backdrop-blur">
+          {stats.map((s, i) => (
+            <div key={s.label} style={{ animationDelay: `${0.5 + i * 0.1}s` }} className="g4v-rise rounded-2xl bg-white/[0.07] px-4 py-4 ring-1 ring-white/15 backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:bg-white/[0.12] hover:ring-gold/40">
               <dt className="sr-only">{s.label}</dt>
-              <dd className={`font-bold text-gold ${s.small ? "text-lg leading-7 md:text-xl" : "text-3xl md:text-4xl"}`}>{s.value}</dd>
+              <dd className={`font-bold text-gold ${typeof s.value === "string" ? "text-lg leading-7 md:text-xl" : "text-3xl md:text-4xl"}`}>
+                {typeof s.value === "number" ? <Counter value={s.value} /> : s.value}
+              </dd>
               <dd aria-hidden className="mt-1 text-[0.7rem] font-medium uppercase tracking-wider text-mist">{s.label}</dd>
             </div>
           ))}

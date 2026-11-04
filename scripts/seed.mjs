@@ -20,13 +20,13 @@ for (const s of scholarships) {
   const row = { ...s, levels: s.levels ?? [], categories: s.categories ?? [], fields: s.fields ?? [], tags: s.tags ?? [] };
   const [saved] = await sql`
     insert into scholarships (
-      slug, content_lang, title, institution, country_code, city, levels, categories, fields, tags,
+      slug, content_lang, title, institution, cover_url, cover_credit, cover_credit_url, country_code, city, levels, categories, fields, tags,
       eligible_nationalities, algeria_eligible, qualifications, age_limit, language_requirements,
       funding_type, tuition, stipend, accommodation, travel, insurance, duration,
       opens_at, deadline_at, deadline_note, deadline_tz, application_url, source_url, verified_at, verification,
       summary, description, documents, instructions, featured, status, published_at
     ) values (
-      ${row.slug}, ${row.content_lang}, ${row.title}, ${row.institution}, ${row.country_code}, ${row.city},
+      ${row.slug}, ${row.content_lang}, ${row.title}, ${row.institution}, ${row.cover_url ?? null}, ${row.cover_credit ?? null}, ${row.cover_credit_url ?? null}, ${row.country_code}, ${row.city},
       ${row.levels}, ${row.categories}, ${row.fields}, ${row.tags},
       ${row.eligible_nationalities}, ${row.algeria_eligible}, ${row.qualifications}, ${row.age_limit}, ${row.language_requirements},
       ${row.funding_type}, ${row.tuition}, ${row.stipend}, ${row.accommodation}, ${row.travel}, ${row.insurance}, ${row.duration},
@@ -36,6 +36,7 @@ for (const s of scholarships) {
     )
     on conflict (slug) do update set
       content_lang = excluded.content_lang, title = excluded.title, institution = excluded.institution,
+      cover_url = excluded.cover_url, cover_credit = excluded.cover_credit, cover_credit_url = excluded.cover_credit_url,
       country_code = excluded.country_code, city = excluded.city, levels = excluded.levels,
       categories = excluded.categories, fields = excluded.fields, tags = excluded.tags,
       eligible_nationalities = excluded.eligible_nationalities, algeria_eligible = excluded.algeria_eligible,

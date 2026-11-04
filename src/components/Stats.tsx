@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import type { Dict, Stat } from "@/lib/content";
 import { Reveal } from "./ui/Reveal";
 
-function Counter({ value, suffix = "" }: { value: number; suffix?: string }) {
+export function Counter({ value, suffix = "" }: { value: number; suffix?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: "-40px" });
   const reduce = useReducedMotion();

@@ -6,6 +6,9 @@
       "content_lang": "fr",
       "title": "Bourse Gates Cambridge 2027-2028",
       "institution": "Université de Cambridge — Gates Cambridge Trust",
+      "cover_url": "/scholarships/gates-cambridge-scholarship-2027.webp",
+      "cover_credit": "Photo : Dmitry Tonkonog, CC BY-SA 3.0, via Wikimedia Commons",
+      "cover_credit_url": "https://commons.wikimedia.org/wiki/File:20130808_Kings_College_Chapel_01.jpg",
       "country_code": "GB",
       "city": "Cambridge",
       "levels": [
@@ -65,6 +68,9 @@
       "content_lang": "fr",
       "title": "Programme de stages de l'OMPI (WIPO)",
       "institution": "Organisation Mondiale de la Propriété Intellectuelle (OMPI)",
+      "cover_url": "/scholarships/wipo-internship-programme.webp",
+      "cover_credit": "Photo : Emmanuel Berrod, CC BY-SA 4.0, via Wikimedia Commons",
+      "cover_credit_url": "https://commons.wikimedia.org/wiki/File:WIPO_Headquarters.jpg",
       "country_code": "CH",
       "city": "Genève",
       "levels": [
@@ -121,6 +127,9 @@
       "content_lang": "fr",
       "title": "Bourse de licence MEPI Tomorrow's Leaders 2027-2028",
       "institution": "Université américaine de Beyrouth (AUB) et Université libano-américaine (LAU)",
+      "cover_url": "/scholarships/mepi-tomorrows-leaders-undergraduate-2027.webp",
+      "cover_credit": "Photo : marviikad, CC BY-SA 2.0, via Wikimedia Commons",
+      "cover_credit_url": "https://commons.wikimedia.org/wiki/File:American_University_of_Beirut_-_College_hall_(9691111395).jpg",
       "country_code": "LB",
       "city": "Beyrouth",
       "levels": [
@@ -178,6 +187,9 @@
       "content_lang": "fr",
       "title": "Programme de volontariat de la FAO",
       "institution": "Organisation des Nations unies pour l'alimentation et l'agriculture (FAO)",
+      "cover_url": "/scholarships/fao-volunteer-programme.webp",
+      "cover_credit": "Photo : Scopritore, CC BY-SA 3.0, via Wikimedia Commons",
+      "cover_credit_url": "https://commons.wikimedia.org/wiki/File:Food_and_Agriculture_Organization_HQ_2008.jpg",
       "country_code": "IT",
       "city": "Rome",
       "levels": [
@@ -233,6 +245,9 @@
       "content_lang": "fr",
       "title": "Hansen Leadership Institute 2027",
       "institution": "Fred J. Hansen Foundation — Université de San Diego",
+      "cover_url": "/scholarships/hansen-leadership-institute-2027.webp",
+      "cover_credit": "Photo : Krdobyns, CC BY-SA 4.0, via Wikimedia Commons",
+      "cover_credit_url": "https://commons.wikimedia.org/wiki/File:Joan_B._Kroc_Institute_for_Peace_and_Justice.jpg",
       "country_code": "US",
       "city": "San Diego",
       "levels": [
@@ -286,6 +301,9 @@
       "content_lang": "fr",
       "title": "Programme Fulbright Visiting Scholar 2027-2028 (Liban)",
       "institution": "Universités américaines d'accueil — Programme Fulbright (Département d'État américain, géré par l'IIE)",
+      "cover_url": "/scholarships/fulbright-visiting-scholar-lebanon-2027.webp",
+      "cover_credit": "Photo : Architect of the Capitol, domaine public, via Wikimedia Commons",
+      "cover_credit_url": "https://commons.wikimedia.org/wiki/File:United_States_Capitol_west_front_edit2.jpg",
       "country_code": "US",
       "city": null,
       "levels": [
@@ -340,6 +358,9 @@
       "content_lang": "fr",
       "title": "Camp d'hiver international de l'USTC",
       "institution": "Université des sciences et technologies de Chine (USTC)",
+      "cover_url": "/scholarships/ustc-international-winter-camp.webp",
+      "cover_credit": "Photo : Leiem, CC BY-SA 4.0, via Wikimedia Commons",
+      "cover_credit_url": "https://commons.wikimedia.org/wiki/File:Season_of_sakura_in_University_of_Science_and_Technology_of_China,_2018.jpg",
       "country_code": "CN",
       "city": "Hefei",
       "levels": [
@@ -389,6 +410,9 @@
       "content_lang": "fr",
       "title": "Admissions internationales KIIT 2026-2027 (master et doctorat)",
       "institution": "Kalinga Institute of Industrial Technology (KIIT)",
+      "cover_url": null,
+      "cover_credit": null,
+      "cover_credit_url": null,
       "country_code": "IN",
       "city": "Bhubaneswar",
       "levels": [

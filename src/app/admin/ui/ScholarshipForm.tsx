@@ -128,7 +128,12 @@ export function ScholarshipForm({ scholarship: s, canPublish }: Props) {
               </select>
             </label>
           </div>
-          <ImageField name="logo_url" label="Logo de l'institution" defaultValue={s?.logo_url} hint="Sinon, le drapeau du pays est affiché." />
+          <ImageField name="logo_url" label="Logo de l'institution" defaultValue={s?.logo_url} hint="Facultatif : remplace l'icône sur les cartes." />
+          <ImageField name="cover_url" label="Photo de couverture" defaultValue={s?.cover_url} hint="Photo du campus ou de la ville, au format paysage. Sans photo, le drapeau du pays est affiché." />
+          <div className="grid gap-4 sm:grid-cols-2">
+            {text("cover_credit", "Crédit photo", { hint: "Auteur et licence, ex. « Photo : Jean Dupont, CC BY-SA 4.0 »." })}
+            {text("cover_credit_url", "Lien du crédit photo", { placeholder: "https://" })}
+          </div>
           {text("summary", "Résumé court (cartes)", { rows: 2, hint: "2 phrases maximum, affichées sur les cartes." })}
           {text("description", "Description détaillée", { rows: 6 })}
         </fieldset>

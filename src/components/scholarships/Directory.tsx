@@ -2,8 +2,10 @@
 
 import { useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion";
 import { Icon } from "@/components/ui/Icon";
 import { countryName } from "@/lib/countries";
+import { useReducedMotion } from "@/lib/motion";
 import { getPlatformDict } from "@/lib/platform-i18n";
 import { deadlineStatus, LEVELS, type DeadlineStatus } from "@/lib/scholarships";
 import type { Locale } from "@/lib/i18n";
@@ -12,18 +14,20 @@ import { Flag } from "./Flag";
 import { ScholarshipCard, SpotlightCard } from "./ScholarshipCard";
 import { useSaved } from "./saved";
 
+const EASE = [0.22, 1, 0.36, 1] as const;
+
 const KEYS = ["q", "country", "level", "field", "funding", "status", "month", "university", "algeria", "sort", "saved"] as const;
 type Key = (typeof KEYS)[number];
 type Filters = Record<Key, string>;
 
-const norm = (s: string) =>
-  s
-    .normalize("NFKD")
-    .replace(/[̀-ͯ]/g, "")
-    .toLowerCase();
+const norm = (s: string) => s.normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCase();
 
 const monthKey = (iso: string) =>
-  new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Algiers", year: "numeric", month: "2-digit" }).format(new Date(iso));
+  new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Africa/Algiers",
+    year: "numeric",
+    month: "2-digit",
+  }).format(new Date(iso));
 
 export function Directory({ items, lang }: { items: ListItem[]; lang: Locale }) {
   const t = getPlatformDict(lang);
@@ -33,6 +37,7 @@ export function Directory({ items, lang }: { items: ListItem[]; lang: Locale }) 
   const saved = useSaved();
   const [showClosed, setShowClosed] = useState(false);
   const [advanced, setAdvanced] = useState(false);
+  const reduce = useReducedMotion();
   const [f, setF] = useState<Filters>(() => Object.fromEntries(KEYS.map((k) => [k, params.get(k) ?? ""])) as Filters);
 
   const update = (k: Key, v: string) => {
@@ -49,7 +54,14 @@ export function Directory({ items, lang }: { items: ListItem[]; lang: Locale }) 
 
   // live status from the visitor's clock (the cached list may be up to an hour old)
   const now = useMemo(() => new Date(), []);
-  const live = useMemo(() => items.map((s) => ({ ...s, deadline_status: deadlineStatus(s, now) as DeadlineStatus })), [items, now]);
+  const live = useMemo(
+    () =>
+      items.map((s) => ({
+        ...s,
+        deadline_status: deadlineStatus(s, now) as DeadlineStatus,
+      })),
+    [items, now],
+  );
 
   const options = useMemo(() => {
     const uniq = (xs: string[]) => [...new Set(xs.filter(Boolean))];
@@ -71,7 +83,9 @@ export function Directory({ items, lang }: { items: ListItem[]; lang: Locale }) 
     const q = norm(f.q.trim());
     const out = live.filter((s) => {
       if (q) {
-        const hay = norm([s.title, s.institution, s.city ?? "", countryName(s.country_code, lang), s.summary ?? "", ...s.fields, ...s.tags].join(" "));
+        const hay = norm(
+          [s.title, s.institution, s.city ?? "", countryName(s.country_code, lang), s.summary ?? "", ...s.fields, ...s.tags].join(" "),
+        );
         if (!q.split(/\s+/).every((w) => hay.includes(w))) return false;
       }
       if (f.country && s.country_code !== f.country) return false;
@@ -89,7 +103,9 @@ export function Directory({ items, lang }: { items: ListItem[]; lang: Locale }) 
     const sorters: Record<string, (a: ListItem, b: ListItem) => number> = {
       latest: (a, b) => time(b.published_at, 0) - time(a.published_at, 0),
       updated: (a, b) => time(b.updated_at, 0) - time(a.updated_at, 0),
-      funded: (a, b) => Number(b.funding_type === "full") - Number(a.funding_type === "full") || time(a.deadline_at, Infinity) - time(b.deadline_at, Infinity),
+      funded: (a, b) =>
+        Number(b.funding_type === "full") - Number(a.funding_type === "full") ||
+        time(a.deadline_at, Infinity) - time(b.deadline_at, Infinity),
       deadline: (a, b) => time(a.deadline_at, Infinity) - time(b.deadline_at, Infinity),
     };
     return out.sort(sorters[f.sort] ?? sorters.deadline);
@@ -99,7 +115,11 @@ export function Directory({ items, lang }: { items: ListItem[]; lang: Locale }) 
   const closed = f.status === "closed" ? [] : filtered.filter((s) => s.deadline_status === "closed");
   const anyFilter = KEYS.some((k) => k !== "sort" && f[k]);
   const monthLabel = (m: string) =>
-    new Intl.DateTimeFormat(lang === "ar" ? "ar-DZ" : lang, { month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${m}-15T00:00:00Z`));
+    new Intl.DateTimeFormat(lang === "ar" ? "ar-DZ" : lang, {
+      month: "long",
+      year: "numeric",
+      timeZone: "UTC",
+    }).format(new Date(`${m}-15T00:00:00Z`));
 
   const select = (k: Key, label: string, opts: [string, string][], emptyLabel = t.directory.any) => (
     <label className="block min-w-0">
@@ -136,14 +156,49 @@ export function Directory({ items, lang }: { items: ListItem[]; lang: Locale }) 
   const grid = spotlight.length ? active.filter((s) => !spotlight.includes(s)) : active;
   const savedCount = saved.filter((s) => items.some((i) => i.slug === s)).length;
 
-  const chips: { key: string; label: string; on: boolean; toggle: () => void; icon?: React.ReactNode }[] = [
-    { key: "full", label: t.funding.full, on: f.funding === "full", toggle: () => update("funding", f.funding === "full" ? "" : "full"), icon: <Icon name="star" className="h-3.5 w-3.5" /> },
-    { key: "dz", label: t.directory.quickAlgeria, on: !!f.algeria, toggle: () => update("algeria", f.algeria ? "" : "1"), icon: <Flag code="dz" className="h-3 w-4" /> },
-    { key: "closing", label: t.status.closing, on: f.status === "closing", toggle: () => update("status", f.status === "closing" ? "" : "closing"), icon: <Icon name="pulse" className="h-3.5 w-3.5" /> },
+  const chips: {
+    key: string;
+    label: string;
+    on: boolean;
+    toggle: () => void;
+    icon?: React.ReactNode;
+  }[] = [
+    {
+      key: "full",
+      label: t.funding.full,
+      on: f.funding === "full",
+      toggle: () => update("funding", f.funding === "full" ? "" : "full"),
+      icon: <Icon name="star" className="h-3.5 w-3.5" />,
+    },
+    {
+      key: "dz",
+      label: t.directory.quickAlgeria,
+      on: !!f.algeria,
+      toggle: () => update("algeria", f.algeria ? "" : "1"),
+      icon: <Flag code="dz" className="h-3 w-4" />,
+    },
+    {
+      key: "closing",
+      label: t.status.closing,
+      on: f.status === "closing",
+      toggle: () => update("status", f.status === "closing" ? "" : "closing"),
+      icon: <Icon name="pulse" className="h-3.5 w-3.5" />,
+    },
     ...options.levels
       .filter((l) => l !== "highschool" && l !== "professional")
-      .map((l) => ({ key: l, label: t.level[l], on: f.level === l, toggle: () => update("level", f.level === l ? "" : l), icon: <Icon name="cap" className="h-3.5 w-3.5" /> })),
-    { key: "saved", label: `${t.directory.saved} (${savedCount})`, on: !!f.saved, toggle: () => update("saved", f.saved ? "" : "1") },
+      .map((l) => ({
+        key: l,
+        label: t.level[l],
+        on: f.level === l,
+        toggle: () => update("level", f.level === l ? "" : l),
+        icon: <Icon name="cap" className="h-3.5 w-3.5" />,
+      })),
+    {
+      key: "saved",
+      label: `${t.directory.saved} (${savedCount})`,
+      on: !!f.saved,
+      toggle: () => update("saved", f.saved ? "" : "1"),
+    },
   ];
 
   return (
@@ -177,9 +232,10 @@ export function Directory({ items, lang }: { items: ListItem[]; lang: Locale }) 
             {t.directory.quickAll}
           </button>
           {chips.map((c) => (
-            <button
+            <motion.button
               key={c.key}
               type="button"
+              whileTap={{ scale: 0.92 }}
               onClick={c.toggle}
               aria-pressed={c.on}
               className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-all ${
@@ -188,7 +244,7 @@ export function Directory({ items, lang }: { items: ListItem[]; lang: Locale }) 
             >
               {c.icon}
               {c.label}
-            </button>
+            </motion.button>
           ))}
           <button
             type="button"
@@ -202,18 +258,62 @@ export function Directory({ items, lang }: { items: ListItem[]; lang: Locale }) 
           </button>
         </div>
 
-        {advanced && (
-          <div className="mt-3 grid gap-3 border-t border-line px-1 pt-4 sm:grid-cols-2 lg:grid-cols-4">
-            {select("country", t.directory.country, options.countries.map((c) => [c, countryName(c, lang)]))}
-            {select("level", t.directory.level, options.levels.map((l) => [l, t.level[l]]))}
-            {select("field", t.directory.field, options.fields.map((x) => [x, x]))}
-            {select("funding", t.directory.funding, (["full", "partial", "stipend", "unpaid"] as const).map((x) => [x, t.funding[x]]))}
-            {select("status", t.directory.status, (["open", "closing", "upcoming", "rolling", "closed"] as const).map((x) => [x, t.status[x]]))}
-            {select("month", t.directory.month, options.months.map((m) => [m, monthLabel(m)]))}
-            {select("university", t.directory.university, options.universities.map((u) => [u, u]))}
-            {select("sort", t.directory.sort, Object.entries(t.directory.sorts).filter(([k]) => k !== "deadline") as [string, string][], t.directory.sorts.deadline)}
-          </div>
-        )}
+        <AnimatePresence initial={false}>
+          {advanced && (
+            <motion.div
+              key="advanced"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.35, ease: EASE }}
+              className="overflow-hidden"
+            >
+              <div className="mt-3 grid gap-3 border-t border-line px-1 pt-4 sm:grid-cols-2 lg:grid-cols-4">
+                {select(
+                  "country",
+                  t.directory.country,
+                  options.countries.map((c) => [c, countryName(c, lang)]),
+                )}
+                {select(
+                  "level",
+                  t.directory.level,
+                  options.levels.map((l) => [l, t.level[l]]),
+                )}
+                {select(
+                  "field",
+                  t.directory.field,
+                  options.fields.map((x) => [x, x]),
+                )}
+                {select(
+                  "funding",
+                  t.directory.funding,
+                  (["full", "partial", "stipend", "unpaid"] as const).map((x) => [x, t.funding[x]]),
+                )}
+                {select(
+                  "status",
+                  t.directory.status,
+                  (["open", "closing", "upcoming", "rolling", "closed"] as const).map((x) => [x, t.status[x]]),
+                )}
+                {select(
+                  "month",
+                  t.directory.month,
+                  options.months.map((m) => [m, monthLabel(m)]),
+                )}
+                {select(
+                  "university",
+                  t.directory.university,
+                  options.universities.map((u) => [u, u]),
+                )}
+                {select(
+                  "sort",
+                  t.directory.sort,
+                  Object.entries(t.directory.sorts).filter(([k]) => k !== "deadline") as [string, string][],
+                  t.directory.sorts.deadline,
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {spotlight.length > 0 && (
@@ -226,10 +326,16 @@ export function Directory({ items, lang }: { items: ListItem[]; lang: Locale }) 
             {t.directory.spotlightLead}
           </h2>
           <ul className="mt-5 grid gap-6 lg:grid-cols-2">
-            {spotlight.map((s) => (
-              <li key={s.slug}>
-                <SpotlightCard s={s} lang={lang} />
-              </li>
+            {spotlight.map((s, i) => (
+              <motion.li
+                key={s.slug}
+                initial={reduce ? false : { opacity: 0, y: 40, scale: 0.97 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.8, delay: i * 0.12, ease: EASE }}
+              >
+                <SpotlightCard s={s} lang={lang} priority={i === 0} />
+              </motion.li>
             ))}
           </ul>
         </section>
@@ -253,13 +359,36 @@ export function Directory({ items, lang }: { items: ListItem[]; lang: Locale }) 
         </div>
 
         {grid.length ? (
-          <ul className="mt-5 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-            {grid.map((s) => (
-              <li key={s.slug}>
-                <ScholarshipCard s={s} lang={lang} />
-              </li>
-            ))}
-          </ul>
+          <motion.ul layout={!reduce} className="mt-5 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+            <AnimatePresence mode="popLayout" initial={false}>
+              {grid.map((s, i) => (
+                <motion.li
+                  key={s.slug}
+                  layout={!reduce}
+                  initial={reduce ? false : { opacity: 0, y: 36, scale: 0.96 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={
+                    reduce
+                      ? undefined
+                      : {
+                          opacity: 0,
+                          scale: 0.92,
+                          transition: { duration: 0.25 },
+                        }
+                  }
+                  viewport={{ once: true, margin: "-40px" }}
+                  transition={{
+                    duration: 0.6,
+                    delay: (i % 3) * 0.09,
+                    ease: EASE,
+                    layout: { type: "spring", stiffness: 260, damping: 30 },
+                  }}
+                >
+                  <ScholarshipCard s={s} lang={lang} />
+                </motion.li>
+              ))}
+            </AnimatePresence>
+          </motion.ul>
         ) : active.length ? null : (
           <div className="mt-5 rounded-brand-lg bg-white px-6 py-14 text-center ring-1 ring-line">
             <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-cloud text-ocean">
@@ -268,7 +397,11 @@ export function Directory({ items, lang }: { items: ListItem[]; lang: Locale }) 
             <p className="mt-4 font-semibold text-midnight">{t.directory.empty}</p>
             <p className="mt-1 text-sm text-slate">{t.directory.emptyHint}</p>
             {anyFilter && (
-              <button type="button" onClick={clear} className="mt-4 rounded-full px-5 py-2.5 text-sm font-semibold text-midnight ring-1 ring-midnight/20 hover:bg-midnight hover:text-white">
+              <button
+                type="button"
+                onClick={clear}
+                className="mt-4 rounded-full px-5 py-2.5 text-sm font-semibold text-midnight ring-1 ring-midnight/20 hover:bg-midnight hover:text-white"
+              >
                 {t.directory.clear}
               </button>
             )}
@@ -278,7 +411,12 @@ export function Directory({ items, lang }: { items: ListItem[]; lang: Locale }) 
 
       {closed.length > 0 && (
         <section className="border-t border-line pt-6">
-          <button type="button" onClick={() => setShowClosed((v) => !v)} aria-expanded={showClosed} className="flex items-center gap-2 text-sm font-semibold text-midnight">
+          <button
+            type="button"
+            onClick={() => setShowClosed((v) => !v)}
+            aria-expanded={showClosed}
+            className="flex items-center gap-2 text-sm font-semibold text-midnight"
+          >
             <Icon name="chevron" className={`h-4 w-4 transition-transform ${showClosed ? "rotate-180" : ""}`} />
             {t.directory.showClosed} ({closed.length})
           </button>

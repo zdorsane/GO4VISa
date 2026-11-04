@@ -30,6 +30,9 @@ export type Scholarship = {
   title: string;
   institution: string;
   logo_url: string | null;
+  cover_url: string | null;
+  cover_credit: string | null;
+  cover_credit_url: string | null;
   country_code: string;
   city: string | null;
   levels: Level[];

@@ -4,6 +4,10 @@ const nextConfig: NextConfig = {
   /* config options here */
   cacheComponents: true,
   partialPrefetching: true,
+  // photos uploaded from the back-office live in Vercel Blob
+  images: {
+    remotePatterns: [{ protocol: "https", hostname: "*.public.blob.vercel-storage.com" }],
+  },
   // The old destination pages were replaced by the scholarship directory: keep shared links working.
   async redirects() {
     return [{ source: "/:lang(en|fr|ar)/destinations/:slug*", destination: "/:lang/scholarships", permanent: true }];

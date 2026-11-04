@@ -7,6 +7,7 @@ import { formatDate, formatDeadline, getPlatformDict } from "@/lib/platform-i18n
 import type { Locale } from "@/lib/i18n";
 import { toListItem, type PublicScholarship } from "@/lib/server/public";
 import type { Source } from "@/lib/server/scholarships";
+import { Cover } from "./Cover";
 import { DeadlineBadge } from "./DeadlineBadge";
 import { Flag } from "./Flag";
 import { Caveats, SaveButton, ScholarshipCard } from "./ScholarshipCard";
@@ -73,8 +74,24 @@ export function ScholarshipDetail({
 
   return (
     <>
-      <section className="pattern-flight relative isolate overflow-hidden pb-24 pt-[calc(var(--g4v-header-h)+2rem)]">
-        <div aria-hidden className="absolute inset-0 -z-10 bg-linear-to-b from-navy/80 via-midnight/50 to-midnight/95" />
+      <section className="pattern-flight relative isolate overflow-hidden pb-28 pt-[calc(var(--g4v-header-h)+2.5rem)] md:min-h-[30rem]">
+        {s.cover_url && (
+          <div aria-hidden className="absolute inset-0 -z-20 overflow-hidden">
+            <Cover src={s.cover_url} country={s.country_code} sizes="100vw" priority className="g4v-kenburns" />
+          </div>
+        )}
+        <div aria-hidden className={`absolute inset-0 -z-10 ${s.cover_url ? "bg-linear-to-b from-midnight/85 via-midnight/55 to-midnight" : "bg-linear-to-b from-navy/80 via-midnight/50 to-midnight/95"}`} />
+        {s.cover_credit && (
+          <p className="absolute bottom-20 end-4 z-10 max-w-[18rem] text-end text-[0.65rem] text-white/60">
+            {s.cover_credit_url ? (
+              <a href={s.cover_credit_url} target="_blank" rel="noopener noreferrer" className="hover:text-white hover:underline">
+                {s.cover_credit}
+              </a>
+            ) : (
+              s.cover_credit
+            )}
+          </p>
+        )}
         <div className="container-brand max-w-5xl">
           {!preview && (
             <Link href={`/${lang}/scholarships`} className="inline-flex items-center gap-2 text-sm text-mist hover:text-white">
