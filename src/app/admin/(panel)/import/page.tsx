@@ -15,8 +15,8 @@ export default async function ImportPage() {
       <header>
         <h1 className="text-2xl font-semibold text-midnight">Importer un PDF</h1>
         <p className="mt-1 max-w-2xl text-sm text-slate">
-          Déposez la liste de bourses au format PDF. L&apos;IA lit le document, crée les nouvelles bourses et met à jour celles qui sont déjà
-          sur le site. Les bourses dont la date limite est passée sont ignorées.
+          Déposez la liste de bourses au format PDF. L&apos;IA lit le document et crée les nouvelles bourses. Celles qui sont déjà sur le site
+          sont refusées, et celles dont la date limite est passée sont ignorées.
         </p>
       </header>
       <PdfImport publish={publish} />

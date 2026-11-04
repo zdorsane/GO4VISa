@@ -25,6 +25,7 @@ export function PdfImport({ publish }: { publish: boolean }) {
   const [state, action, pending] = useActionState(importPdfAction, undefined);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState(false);
+  const [updateExisting, setUpdateExisting] = useState(false);
   const busy = uploading || pending;
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -41,6 +42,7 @@ export function PdfImport({ publish }: { publish: boolean }) {
       });
       const form = new FormData();
       form.set("url", blob.url);
+      if (updateExisting) form.set("update_existing", "on");
       startTransition(() => action(form));
     } catch {
       setUploadError(true);
@@ -68,6 +70,22 @@ export function PdfImport({ publish }: { publish: boolean }) {
         <button disabled={busy} className="admin-btn admin-btn-gold">
           {uploading ? "Envoi du fichier…" : pending ? "Lecture par l'IA…" : publish ? "Importer et publier" : "Importer"}
         </button>
+        <label className="flex items-start gap-2 text-sm text-slate sm:col-span-2">
+          <input
+            type="checkbox"
+            checked={updateExisting}
+            onChange={(e) => setUpdateExisting(e.target.checked)}
+            disabled={busy}
+            className="mt-0.5 h-4 w-4 accent-midnight"
+          />
+          <span>
+            Mettre à jour les bourses déjà présentes sur le site
+            <span className="block text-xs">
+              Décoché (par défaut) : les bourses déjà sur le site sont refusées. Les bourses vérifiées sur leur site officiel ne sont jamais
+              modifiées.
+            </span>
+          </span>
+        </label>
         {pending && (
           <p role="status" className="text-sm text-slate sm:col-span-2">
             L&apos;IA lit le document : comptez une à trois minutes. Gardez cette page ouverte.
@@ -88,13 +106,13 @@ export function PdfImport({ publish }: { publish: boolean }) {
           </h2>
           <ResultList title="Nouvelles bourses" items={r.created} />
           <ResultList title="Bourses mises à jour" items={r.updated} />
-          {r.kept.length > 0 && (
+          {r.duplicates.length > 0 && (
             <div>
-              <h3 className="text-sm font-medium text-midnight">Déjà vérifiées, non modifiées ({r.kept.length})</h3>
-              <p className="text-xs text-slate">Ces bourses ont été vérifiées sur leur site officiel : modifiez-les depuis leur fiche si besoin.</p>
+              <h3 className="text-sm font-medium text-amber-700">Refusées : déjà sur le site ({r.duplicates.length})</h3>
+              <p className="text-xs text-slate">Ces bourses existent déjà : elles n&apos;ont pas été ajoutées en double. Modifiez-les depuis leur fiche si besoin.</p>
               <ul className="mt-1 list-disc ps-5 text-sm text-slate">
-                {r.kept.map((t) => (
-                  <li key={t}>{t}</li>
+                {r.duplicates.map((t, i) => (
+                  <li key={`${t}-${i}`}>{t}</li>
                 ))}
               </ul>
             </div>
@@ -119,7 +137,7 @@ export function PdfImport({ publish }: { publish: boolean }) {
               </ul>
             </div>
           )}
-          {!r.created.length && !r.updated.length && !r.kept.length && !r.expired.length && !r.failed.length && (
+          {!r.created.length && !r.updated.length && !r.duplicates.length && !r.expired.length && !r.failed.length && (
             <p className="text-sm text-slate">Aucune bourse trouvée dans ce document.</p>
           )}
         </section>

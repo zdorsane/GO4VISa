@@ -1,7 +1,7 @@
 import "server-only";
 import * as z from "zod";
-import { CATEGORIES, FUNDING, isTimeZone, LEVELS, type Scholarship } from "@/lib/scholarships";
-import { getBySlug, listAll, ScholarshipInput, saveScholarship } from "./scholarships";
+import { CATEGORIES, FUNDING, isTimeZone, LEVELS, slugify, type Scholarship } from "@/lib/scholarships";
+import { listAll, ScholarshipInput, saveScholarship } from "./scholarships";
 
 export const MAX_PDF_BYTES = 30 * 1024 * 1024;
 
@@ -55,15 +55,15 @@ Rules:
 - Dates: "YYYY-MM-DD", or "YYYY-MM-DDTHH:mm" when the PDF gives a time. deadline_tz is the IANA time zone only if the PDF states one (e.g. "Europe/Paris" for CET), otherwise null. If the deadline is vague ("early March", "rolling"), set deadline_at to null and explain it in deadline_note.
 - algeria_eligible: "yes" if Algerians are explicitly eligible (or the programme is open to all nationalities), "no" if they are explicitly excluded, otherwise "unknown".
 - Links: copy full http(s) URLs exactly as written in the PDF. source_url is the official programme page; application_url is where to apply.
-- existing_slug: if the opportunity is the same programme as one in the "Already on the site" list, return that slug so the record is updated instead of duplicated; otherwise null.`;
+- existing_slug: if the opportunity is the same programme as one in the "Already on the site" list (even under a translated or slightly different name), return that slug; otherwise null.`;
 
 export type ImportReport = {
   created: { id: string; title: string; status: string }[];
   updated: { id: string; title: string; status: string }[];
   expired: string[];
   failed: { title: string; reason: string }[];
-  /** Already checked on the official site: the PDF does not overwrite them. */
-  kept: string[];
+  /** Already on the site (or twice in the PDF): refused, the existing record is left as it is. */
+  duplicates: string[];
 };
 
 const opt = (v: string | null | undefined) => v ?? "";
@@ -146,24 +146,91 @@ Extract every opportunity in this PDF.`,
 
 export class ImportError extends Error {}
 
+/** "www.example.org/path" of a specific page; null for a bare home page, too generic to identify a programme. */
+function pageKey(v: string | null) {
+  const url = link(v);
+  if (!url) return null;
+  try {
+    const u = new URL(url);
+    const path = u.pathname.replace(/\/+$/, "").toLowerCase();
+    return path ? `${u.hostname.replace(/^www\./, "").toLowerCase()}${path}` : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Identifiers that mean "same programme": its slug and its official pages. */
+function keys(s: { slug?: string; title: string; source_url: string | null; application_url: string | null }) {
+  return [s.slug, slugify(s.title), pageKey(s.source_url), pageKey(s.application_url)].filter((k): k is string => !!k);
+}
+
+/** Words that say what kind of opportunity it is, not which one (in French and English). */
+const GENERIC = new Set(
+  ("programme program bourse scholarship fellowship international internationale university universite universidad " +
+    "stage internship summer ete ecole school camp winter hiver leadership licence undergraduate graduate master masters " +
+    "doctorat phd postdoc track edition call volunteer volontariat institute institut research recherche student etudiant " +
+    "visiting scholar for pour and the des les une dans with avec").split(" "),
+);
+
+/** Distinctive words of a title ("Bourse Gates Cambridge 2027-2028" → gates, cambridge). */
+function titleWords(title: string) {
+  const words = slugify(title)
+    .split("-")
+    .map((w) => w.replace(/s$/, ""))
+    .filter((w) => w.length >= 3 && !/^\d+$/.test(w) && !GENERIC.has(w) && !GENERIC.has(`${w}s`));
+  return new Set(words);
+}
+
+/** Same programme under another name or language: most distinctive words in common. */
+function sameTitle(a: Set<string>, b: Set<string>) {
+  if (!a.size || !b.size) return false;
+  const common = [...a].filter((w) => b.has(w)).length;
+  return common > 0 && common / Math.min(a.size, b.size) >= 0.6;
+}
+
 /**
- * Reads a PDF with Gemini and saves every opportunity it finds: new ones are created, known ones
- * (same programme) are updated, and those whose deadline has already passed are skipped.
- * `publish` puts them online straight away; otherwise they wait in "Relecture".
+ * Reads a PDF with Gemini and saves every opportunity it finds; those whose deadline has passed are skipped.
+ * An opportunity already on the site is refused, unless `updateExisting` is set (verified ones are never
+ * overwritten); an archived one is reopened as the new edition. `publish` puts them online straight away,
+ * otherwise they wait in "Relecture".
  */
-export async function importScholarshipsFromPdf(pdf: Buffer, userId: string, publish: boolean): Promise<ImportReport> {
+export async function importScholarshipsFromPdf(
+  pdf: Buffer,
+  userId: string,
+  { publish, updateExisting }: { publish: boolean; updateExisting: boolean },
+): Promise<ImportReport> {
   if (!process.env.GEMINI_API_KEY) throw new ImportError("no-api-key");
   const existing = await listAll();
   const found = await extract(pdf, existing);
-  const report: ImportReport = { created: [], updated: [], expired: [], failed: [], kept: [] };
+  const report: ImportReport = { created: [], updated: [], expired: [], failed: [], duplicates: [] };
   const now = Date.now();
 
+  const byKey = new Map<string, Scholarship>();
+  for (const s of existing) for (const k of keys(s)) if (!byKey.has(k)) byKey.set(k, s);
+  const existingWords = existing.map((s) => [s, titleWords(s.title)] as const);
+  const seen = new Set<string>();
+  const seenWords: Set<string>[] = [];
+
   for (const item of found) {
-    const previous = item.existing_slug ? await getBySlug(item.existing_slug) : null;
-    if (previous?.verification === "verified" && previous.status !== "archived") {
-      report.kept.push(previous.title);
+    const itemKeys = keys(item);
+    const words = titleWords(item.title);
+    if (itemKeys.some((k) => seen.has(k)) || seenWords.some((w) => sameTitle(w, words))) {
+      report.duplicates.push(item.title);
       continue;
     }
+    itemKeys.forEach((k) => seen.add(k));
+    seenWords.push(words);
+
+    const match =
+      existing.find((s) => s.slug === item.existing_slug) ??
+      itemKeys.map((k) => byKey.get(k)).find(Boolean) ??
+      existingWords.find(([, w]) => sameTitle(w, words))?.[0] ??
+      null;
+    if (match && match.status !== "archived" && (!updateExisting || match.verification === "verified")) {
+      report.duplicates.push(match.title);
+      continue;
+    }
+    const previous = match;
     const parsed = ScholarshipInput.safeParse(toInput(item, previous, publish));
     if (!parsed.success) {
       report.failed.push({ title: item.title, reason: parsed.error.issues.map((i) => i.path.join(".")).join(", ") });

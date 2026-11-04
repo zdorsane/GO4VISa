@@ -186,10 +186,14 @@ export async function importPdfAction(_: ImportState, form: FormData): Promise<I
     if (pdf.subarray(0, 5).toString("latin1") !== "%PDF-") return { error: "bad-file" };
 
     // editors' imports wait in "Relecture"; owners and admins publish straight away
-    const report = await importScholarshipsFromPdf(pdf, admin.id, can(admin.role, "publish"));
+    const report = await importScholarshipsFromPdf(pdf, admin.id, {
+      publish: can(admin.role, "publish"),
+      updateExisting: form.get("update_existing") === "on",
+    });
     await logActivity(admin.id, "import-pdf", "scholarship", null, {
       created: String(report.created.length),
       updated: String(report.updated.length),
+      duplicates: String(report.duplicates.length),
     });
     refreshScholarships();
     return { report };
