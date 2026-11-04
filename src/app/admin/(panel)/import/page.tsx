@@ -4,7 +4,7 @@ import { PdfImport } from "../../ui/PdfImport";
 
 export const metadata: Metadata = { title: "Importer un PDF" };
 
-// Claude reads the whole PDF inside the import action: give it the platform's longest run.
+// Gemini reads the whole PDF inside the import action: give it the platform's longest run.
 export const maxDuration = 300;
 
 export default async function ImportPage() {

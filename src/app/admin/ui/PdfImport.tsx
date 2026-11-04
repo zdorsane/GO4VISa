@@ -10,7 +10,10 @@ import type { Workflow } from "@/lib/scholarships";
 const ERRORS: Record<string, string> = {
   "bad-file": "Ce fichier n'est pas un PDF valide.",
   "too-large": "PDF trop lourd (30 Mo maximum).",
-  "no-api-key": "La clé de l'IA (ANTHROPIC_API_KEY) n'est pas configurée sur Vercel.",
+  "no-api-key": "La clé de l'IA (GEMINI_API_KEY) n'est pas configurée : ajoutez-la dans .env.local (en local) ou dans les réglages Vercel (en ligne).",
+  "bad-api-key": "La clé de l'IA (GEMINI_API_KEY) est refusée par Google : recréez-la sur aistudio.google.com.",
+  busy: "L'IA de Google est surchargée en ce moment : réessayez dans quelques minutes.",
+  quota: "Limite gratuite de l'IA atteinte pour le moment : réessayez dans quelques minutes (ou demain).",
   refused: "L'IA a refusé de traiter ce document.",
   "too-long": "Le PDF contient trop de bourses pour un seul import : découpez-le en plusieurs fichiers.",
   unreadable: "L'IA n'a pas pu lire ce PDF. Vérifiez qu'il contient du texte (pas seulement des images floues).",
@@ -85,6 +88,17 @@ export function PdfImport({ publish }: { publish: boolean }) {
           </h2>
           <ResultList title="Nouvelles bourses" items={r.created} />
           <ResultList title="Bourses mises à jour" items={r.updated} />
+          {r.kept.length > 0 && (
+            <div>
+              <h3 className="text-sm font-medium text-midnight">Déjà vérifiées, non modifiées ({r.kept.length})</h3>
+              <p className="text-xs text-slate">Ces bourses ont été vérifiées sur leur site officiel : modifiez-les depuis leur fiche si besoin.</p>
+              <ul className="mt-1 list-disc ps-5 text-sm text-slate">
+                {r.kept.map((t) => (
+                  <li key={t}>{t}</li>
+                ))}
+              </ul>
+            </div>
+          )}
           {r.expired.length > 0 && (
             <div>
               <h3 className="text-sm font-medium text-midnight">Ignorées : date limite passée ({r.expired.length})</h3>
@@ -105,7 +119,7 @@ export function PdfImport({ publish }: { publish: boolean }) {
               </ul>
             </div>
           )}
-          {!r.created.length && !r.updated.length && !r.expired.length && !r.failed.length && (
+          {!r.created.length && !r.updated.length && !r.kept.length && !r.expired.length && !r.failed.length && (
             <p className="text-sm text-slate">Aucune bourse trouvée dans ce document.</p>
           )}
         </section>

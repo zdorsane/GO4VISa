@@ -1,13 +1,11 @@
 import "server-only";
-import Anthropic from "@anthropic-ai/sdk";
-import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import * as z from "zod";
 import { CATEGORIES, FUNDING, isTimeZone, LEVELS, type Scholarship } from "@/lib/scholarships";
 import { getBySlug, listAll, ScholarshipInput, saveScholarship } from "./scholarships";
 
 export const MAX_PDF_BYTES = 30 * 1024 * 1024;
 
-/** What Claude returns for each opportunity found in the PDF (strings stay null when the PDF says nothing). */
+/** What the AI returns for each opportunity found in the PDF (strings stay null when the PDF says nothing). */
 const Extracted = z.object({
   existing_slug: z.string().nullable(),
   title: z.string(),
@@ -64,6 +62,8 @@ export type ImportReport = {
   updated: { id: string; title: string; status: string }[];
   expired: string[];
   failed: { title: string; reason: string }[];
+  /** Already checked on the official site: the PDF does not overwrite them. */
+  kept: string[];
 };
 
 const opt = (v: string | null | undefined) => v ?? "";
@@ -74,51 +74,96 @@ const zone = (v: string | null) => (v && isTimeZone(v) ? v : "");
 /** Wall time typed in the admin form ("YYYY-MM-DD" → read as 23:59 by ScholarshipInput). */
 const day = (v: string | null) => (v && /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2})?$/.test(v) ? v : "");
 
+/** Free tier of Google's Gemini API, tried in order: the free models are often briefly overloaded (503). */
+const GEMINI_MODELS = ["gemini-3.5-flash", "gemini-flash-latest", "gemini-flash-lite-latest"];
+
+async function callGemini(body: string) {
+  let last: Response | null = null;
+  for (const model of GEMINI_MODELS) {
+    last = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-goog-api-key": process.env.GEMINI_API_KEY! },
+      body,
+    });
+    // overloaded, over quota or retired for this key: try the next model
+    if (![404, 429, 500, 503].includes(last.status)) return last;
+  }
+  return last!;
+}
+
 async function extract(pdf: Buffer, existing: Scholarship[]) {
-  const client = new Anthropic();
   const known = existing.map((s) => `- ${s.slug}: ${s.title} (${s.institution})`).join("\n") || "(none)";
-  const stream = client.messages.stream({
-    model: "claude-opus-5",
-    max_tokens: 64000,
-    // extraction, not open-ended reasoning: medium keeps a long PDF inside the function time limit
-    output_config: { effort: "medium", format: zodOutputFormat(Extraction) },
-    system: SYSTEM,
-    messages: [
-      {
-        role: "user",
-        content: [
-          { type: "document", source: { type: "base64", media_type: "application/pdf", data: pdf.toString("base64") } },
-          {
-            type: "text",
-            text: `Today is ${new Date().toISOString().slice(0, 10)}.\n\nAlready on the site:\n${known}\n\nExtract every opportunity in this PDF.`,
-          },
-        ],
+  const res = await callGemini(
+    JSON.stringify({
+      systemInstruction: { parts: [{ text: SYSTEM }] },
+      contents: [
+        {
+          role: "user",
+          parts: [
+            { inlineData: { mimeType: "application/pdf", data: pdf.toString("base64") } },
+            {
+              text: `Today is ${new Date().toISOString().slice(0, 10)}.
+
+Already on the site:
+${known}
+
+Extract every opportunity in this PDF.`,
+            },
+          ],
+        },
+      ],
+      generationConfig: {
+        responseMimeType: "application/json",
+        responseJsonSchema: z.toJSONSchema(Extraction),
+        temperature: 0,
       },
-    ],
-  });
-  const message = await stream.finalMessage();
-  if (message.stop_reason === "refusal") throw new ImportError("refused");
-  if (message.stop_reason === "max_tokens") throw new ImportError("too-long");
-  if (!message.parsed_output) throw new ImportError("unreadable");
-  return message.parsed_output.scholarships;
+    }),
+  );
+  if (res.status === 429) throw new ImportError("quota");
+  if (res.status === 503 || res.status === 500) throw new ImportError("busy");
+  if (!res.ok) {
+    console.error("Gemini error", res.status, (await res.text()).slice(0, 500));
+    throw new ImportError(res.status === 400 || res.status === 403 ? "bad-api-key" : "failed");
+  }
+  const body = (await res.json()) as {
+    candidates?: { finishReason?: string; content?: { parts?: { text?: string }[] } }[];
+    promptFeedback?: { blockReason?: string };
+  };
+  const candidate = body.candidates?.[0];
+  if (body.promptFeedback?.blockReason || candidate?.finishReason === "SAFETY") throw new ImportError("refused");
+  if (candidate?.finishReason === "MAX_TOKENS") throw new ImportError("too-long");
+  const text = candidate?.content?.parts?.map((p) => p.text ?? "").join("") ?? "";
+  let json: unknown;
+  try {
+    json = JSON.parse(text);
+  } catch {
+    throw new ImportError("unreadable");
+  }
+  const parsed = Extraction.safeParse(json);
+  if (!parsed.success) throw new ImportError("unreadable");
+  return parsed.data.scholarships;
 }
 
 export class ImportError extends Error {}
 
 /**
- * Reads a PDF with Claude and saves every opportunity it finds: new ones are created, known ones
+ * Reads a PDF with Gemini and saves every opportunity it finds: new ones are created, known ones
  * (same programme) are updated, and those whose deadline has already passed are skipped.
  * `publish` puts them online straight away; otherwise they wait in "Relecture".
  */
 export async function importScholarshipsFromPdf(pdf: Buffer, userId: string, publish: boolean): Promise<ImportReport> {
-  if (!process.env.ANTHROPIC_API_KEY) throw new ImportError("no-api-key");
+  if (!process.env.GEMINI_API_KEY) throw new ImportError("no-api-key");
   const existing = await listAll();
   const found = await extract(pdf, existing);
-  const report: ImportReport = { created: [], updated: [], expired: [], failed: [] };
+  const report: ImportReport = { created: [], updated: [], expired: [], failed: [], kept: [] };
   const now = Date.now();
 
   for (const item of found) {
     const previous = item.existing_slug ? await getBySlug(item.existing_slug) : null;
+    if (previous?.verification === "verified" && previous.status !== "archived") {
+      report.kept.push(previous.title);
+      continue;
+    }
     const parsed = ScholarshipInput.safeParse(toInput(item, previous, publish));
     if (!parsed.success) {
       report.failed.push({ title: item.title, reason: parsed.error.issues.map((i) => i.path.join(".")).join(", ") });
