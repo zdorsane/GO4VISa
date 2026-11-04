@@ -4,10 +4,9 @@ import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
 import { countryName } from "@/lib/countries";
 import { getPlatformDict, formatDate } from "@/lib/platform-i18n";
-import { daysLeft } from "@/lib/scholarships";
 import type { Locale } from "@/lib/i18n";
 import type { PublicScholarship } from "@/lib/server/public";
-import { DeadlineBadge, useLiveStatus } from "./DeadlineBadge";
+import { DeadlineBadge, useDaysLeft, useLiveStatus } from "./DeadlineBadge";
 import { Flag } from "./Flag";
 import { toggleSaved, useSaved } from "./saved";
 
@@ -34,12 +33,15 @@ export type CardData = Pick<
 >;
 
 const FUNDING_STYLE = {
-  full: "bg-gold/15 text-amber-800 ring-gold/40",
-  partial: "bg-sky-500/10 text-sky-800 ring-sky-500/25",
-  stipend: "bg-teal/10 text-teal-800 ring-teal/25",
-  unpaid: "bg-zinc-500/10 text-zinc-700 ring-zinc-500/20",
-  unknown: "bg-zinc-500/10 text-zinc-600 ring-zinc-500/20",
+  full: "bg-gold text-midnight",
+  partial: "bg-sky-100 text-sky-900",
+  stipend: "bg-teal/15 text-teal-900",
+  unpaid: "bg-zinc-100 text-zinc-700",
+  unknown: "bg-zinc-100 text-zinc-600",
 } as const;
+
+/** Days shown on the countdown bar: a deadline further away than this reads as a nearly empty bar. */
+const COUNTDOWN_WINDOW = 90;
 
 export function SaveButton({ slug, lang, className = "" }: { slug: string; lang: Locale; className?: string }) {
   const saved = useSaved().includes(slug);
@@ -51,8 +53,8 @@ export function SaveButton({ slug, lang, className = "" }: { slug: string; lang:
       aria-pressed={saved}
       aria-label={saved ? t.unsave : t.save}
       title={saved ? t.unsave : t.save}
-      className={`flex h-9 w-9 items-center justify-center rounded-full ring-1 transition-colors ${
-        saved ? "bg-gold text-midnight ring-gold" : "bg-white/80 text-midnight ring-line hover:ring-midnight/40"
+      className={`flex h-9 w-9 items-center justify-center rounded-full backdrop-blur transition-all duration-300 active:scale-90 ${
+        saved ? "bg-gold text-midnight shadow-[0_6px_18px_-6px_rgba(245,179,1,0.8)]" : "bg-white/85 text-midnight ring-1 ring-white/60 hover:bg-white"
       } ${className}`}
     >
       <svg viewBox="0 0 24 24" className="h-4 w-4" fill={saved ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.8" aria-hidden>
@@ -84,86 +86,231 @@ export function Caveats({ s, lang, className = "" }: { s: Pick<CardData, "algeri
   );
 }
 
-/** Opportunity card: logo or flag, status, level, funding, short description and two actions. */
+/** Flag backdrop under a brand gradient, with a dotted flight path: the "destination" half of the ticket. */
+function TicketBand({ s, lang, tall = false }: { s: CardData; lang: Locale; tall?: boolean }) {
+  const place = [s.city, countryName(s.country_code, lang)].filter(Boolean).join(", ");
+  return (
+    <div className={`relative isolate overflow-hidden bg-midnight ${tall ? "h-40 md:h-full md:min-h-64" : "h-32"}`}>
+      <span aria-hidden className="absolute inset-0 -z-10 scale-110 opacity-55 blur-[1px] transition-transform duration-700 group-hover:scale-125">
+        <Flag code={s.country_code} className="!h-full !w-full !rounded-none !shadow-none !ring-0" />
+      </span>
+      <span aria-hidden className="absolute inset-0 -z-10 bg-linear-to-br from-midnight/95 via-midnight/70 to-navy/40" />
+      <svg aria-hidden viewBox="0 0 200 60" className="absolute inset-x-6 top-1/2 h-12 w-[calc(100%-3rem)] -translate-y-1/2 opacity-40" preserveAspectRatio="none">
+        <path d="M2 50 Q100 -10 198 40" fill="none" stroke="#f5b301" strokeWidth="1.2" strokeDasharray="3 5" strokeLinecap="round" />
+      </svg>
+      {/* the small card's medallion overlaps the band's bottom-start corner */}
+      <p className={`absolute bottom-3 flex items-center gap-2 text-sm font-semibold text-white ${tall ? "start-4 end-4" : "start-[5.5rem] end-4"}`}>
+        <Flag code={s.country_code} className="h-3.5 w-5" />
+        <span className="truncate">{place}</span>
+      </p>
+    </div>
+  );
+}
+
+function Medallion({ s, className = "" }: { s: CardData; className?: string }) {
+  return (
+    <span className={`keep-light flex shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-[0_10px_25px_-10px_rgba(11,45,91,0.55)] ring-4 ring-white ${className}`}>
+      {s.logo_url ? (
+        // eslint-disable-next-line @next/next/no-img-element -- institution logos come from many hosts
+        <img src={s.logo_url} alt="" loading="lazy" className="h-full w-full object-contain p-1.5" />
+      ) : (
+        <Icon name="cap" className="h-1/2 w-1/2 text-midnight" />
+      )}
+    </span>
+  );
+}
+
+/** Deadline date, days left and a bar that fills up as the deadline approaches. */
+function Countdown({ s, lang, status }: { s: CardData; lang: Locale; status: ReturnType<typeof useLiveStatus> }) {
+  const t = getPlatformDict(lang).card;
+  const days = useDaysLeft(s.deadline_at);
+  const left = status === "closed" ? null : days;
+  const urgent = status === "closing" || status === "today";
+  const fill = left === null ? 0 : Math.max(6, Math.min(100, 100 - (left / COUNTDOWN_WINDOW) * 100));
+  return (
+    <div>
+      <div className="flex items-end justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-slate">{t.deadline}</p>
+          <p className="mt-0.5 truncate text-sm font-bold text-midnight">
+            {s.deadline_at
+              ? formatDate(s.deadline_at, lang, false, s.deadline_tz ?? undefined)
+              : s.verification !== "verified"
+                ? t.dateTbc
+                : t.noDeadline}
+          </p>
+        </div>
+        {left !== null && (
+          <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${urgent ? "bg-orange-100 text-orange-800" : "bg-cloud text-midnight"}`}>
+            {t.daysLeft(left)}
+          </span>
+        )}
+      </div>
+      {left !== null && (
+        <span aria-hidden className="mt-2.5 block h-1.5 overflow-hidden rounded-full bg-cloud">
+          <span
+            className={`block h-full rounded-full ${urgent ? "bg-linear-to-r from-orange-400 to-red-500" : "bg-linear-to-r from-sky to-ocean"}`}
+            style={{ width: `${fill}%` }}
+          />
+        </span>
+      )}
+    </div>
+  );
+}
+
+function Actions({ s, lang, href, status }: { s: CardData; lang: Locale; href: string; status: ReturnType<typeof useLiveStatus> }) {
+  const t = getPlatformDict(lang).card;
+  const applyHref = s.application_url ?? s.source_url;
+  return (
+    <div className="relative z-10 flex gap-2">
+      <Link
+        href={href}
+        className="flex flex-1 items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-center text-sm font-semibold text-midnight ring-1 ring-midnight/15 transition-all hover:bg-midnight hover:text-white"
+      >
+        {t.details}
+      </Link>
+      {applyHref && status !== "closed" && (
+        <a
+          href={applyHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex flex-1 items-center justify-center gap-1.5 rounded-full bg-gold px-4 py-2.5 text-sm font-semibold text-midnight shadow-[0_10px_24px_-12px_rgba(245,179,1,0.9)] transition-all hover:bg-amber hover:shadow-[0_14px_30px_-12px_rgba(245,179,1,1)]"
+        >
+          {s.application_url ? t.apply : t.official}
+          <Icon name="external" className="h-3.5 w-3.5" />
+        </a>
+      )}
+    </div>
+  );
+}
+
+/** Perforated tear line between the two halves of the ticket. */
+function Perforation() {
+  return (
+    <div aria-hidden className="relative my-4 h-0 border-t-2 border-dashed border-line">
+      <span className="absolute -start-7 -top-3 h-6 w-6 rounded-full bg-cloud" />
+      <span className="absolute -end-7 -top-3 h-6 w-6 rounded-full bg-cloud" />
+    </div>
+  );
+}
+
+const shell =
+  "group relative flex h-full overflow-hidden rounded-brand-lg bg-white ring-1 ring-line shadow-[0_18px_40px_-30px_rgba(11,45,91,0.45)] transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_30px_60px_-28px_rgba(11,45,91,0.55),0_0_0_1px_rgba(245,179,1,0.55)] motion-reduce:transform-none";
+
+/** Opportunity card styled as a boarding pass: destination band, details, then the deadline stub. */
 export function ScholarshipCard({ s, lang }: { s: CardData; lang: Locale }) {
   const t = getPlatformDict(lang);
   const status = useLiveStatus(s.opens_at, s.deadline_at, s.deadline_status);
-  const left = status === "closing" || status === "today" ? daysLeft(s.deadline_at) : null;
   const href = `/${lang}/scholarships/${s.slug}`;
-  const applyHref = s.application_url ?? s.source_url;
 
   return (
-    <article
-      className={`group relative flex h-full flex-col rounded-brand-lg bg-white p-5 ring-1 ring-line transition-all duration-300 [transform:perspective(900px)] hover:-translate-y-1 hover:shadow-[0_24px_50px_-28px_rgba(11,45,91,0.45)] hover:ring-ocean/30 hover:[transform:perspective(900px)_rotateX(2deg)] motion-reduce:transform-none ${
-        status === "closed" ? "opacity-75" : ""
-      }`}
-    >
-      <div className="relative z-10 flex items-start justify-between gap-3">
-        <span className="keep-light flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-cloud text-2xl ring-1 ring-line">
-          {s.logo_url ? (
-            // eslint-disable-next-line @next/next/no-img-element -- institution logos come from many hosts
-            <img src={s.logo_url} alt="" loading="lazy" className="h-full w-full object-contain p-1.5" />
-          ) : (
-            <Flag code={s.country_code} className="h-6 w-8" />
-          )}
-        </span>
-        <div className="flex items-center gap-2">
-          <DeadlineBadge lang={lang} opens_at={s.opens_at} deadline_at={s.deadline_at} initial={s.deadline_status} unconfirmed={s.verification !== "verified"} />
+    <article className={`${shell} flex-col ${status === "closed" ? "opacity-75 grayscale-[35%]" : ""}`}>
+      <TicketBand s={s} lang={lang} />
+      <div className="absolute inset-x-4 top-4 z-10 flex items-start justify-between gap-2">
+        <DeadlineBadge lang={lang} opens_at={s.opens_at} deadline_at={s.deadline_at} initial={s.deadline_status} unconfirmed={s.verification !== "verified"} className="!bg-white/95 shadow-sm" />
+        <SaveButton slug={s.slug} lang={lang} />
+      </div>
+
+      <div className="relative flex flex-1 flex-col px-5 pb-5">
+        <div className="-mt-7 flex items-end justify-between gap-3">
+          <Medallion s={s} className="h-14 w-14" />
+          <span className={`mb-1 rounded-full px-3 py-1 text-[0.7rem] font-bold uppercase tracking-wide ${FUNDING_STYLE[s.funding_type]}`}>
+            {t.funding[s.funding_type]}
+          </span>
+        </div>
+
+        <h3 dir="auto" className="mt-3 text-lg font-bold leading-snug text-midnight transition-colors group-hover:text-ocean">
+          <Link href={href} className="after:absolute after:inset-0 focus-visible:outline-none">
+            {s.title}
+          </Link>
+        </h3>
+        <p dir="auto" className="mt-1 line-clamp-1 text-sm text-slate">
+          {s.institution}
+        </p>
+
+        <Caveats s={s} lang={lang} className="mt-3" />
+
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          {s.levels.slice(0, 3).map((l) => (
+            <span key={l} className="inline-flex items-center gap-1 rounded-full bg-cloud px-2.5 py-1 text-xs font-medium text-midnight">
+              <Icon name="cap" className="h-3.5 w-3.5 text-ocean" />
+              {t.level[l]}
+            </span>
+          ))}
+        </div>
+
+        {s.summary && (
+          <p dir="auto" className="mt-3 line-clamp-3 text-sm leading-relaxed text-slate">
+            {s.summary}
+          </p>
+        )}
+
+        <div className="mt-auto">
+          <Perforation />
+          <Countdown s={s} lang={lang} status={status} />
+          <div className="mt-4">
+            <Actions s={s} lang={lang} href={href} status={status} />
+          </div>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+/** Large horizontal ticket for the featured row. */
+export function SpotlightCard({ s, lang }: { s: CardData; lang: Locale }) {
+  const t = getPlatformDict(lang);
+  const status = useLiveStatus(s.opens_at, s.deadline_at, s.deadline_status);
+  const href = `/${lang}/scholarships/${s.slug}`;
+
+  return (
+    <article className={`${shell} flex-col md:grid md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]`}>
+      <div className="relative">
+        <TicketBand s={s} lang={lang} tall />
+        <div className="absolute inset-x-4 top-4 z-10 flex items-start justify-between gap-2">
+          <DeadlineBadge lang={lang} opens_at={s.opens_at} deadline_at={s.deadline_at} initial={s.deadline_status} unconfirmed={s.verification !== "verified"} className="!bg-white/95 shadow-sm" />
           <SaveButton slug={s.slug} lang={lang} />
         </div>
       </div>
 
-      <h3 dir="auto" className="mt-4 text-[1.05rem] font-semibold leading-snug text-midnight">
-        <Link href={href} className="after:absolute after:inset-0 after:rounded-brand-lg focus-visible:outline-none">
-          {s.title}
-        </Link>
-      </h3>
-      <p className="mt-1 text-sm text-slate">
-        {s.institution} · {countryName(s.country_code, lang)}
-      </p>
-
-      <Caveats s={s} lang={lang} className="mt-3" />
-
-      <div className="mt-3 flex flex-wrap gap-1.5">
-        <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ring-inset ${FUNDING_STYLE[s.funding_type]}`}>{t.funding[s.funding_type]}</span>
-        {s.levels.slice(0, 3).map((l) => (
-          <span key={l} className="rounded-full bg-cloud px-2.5 py-0.5 text-xs font-medium text-midnight ring-1 ring-inset ring-line">
-            {t.level[l]}
+      <div className="relative flex flex-1 flex-col p-5 md:p-6">
+        <div className="flex flex-wrap items-center gap-2">
+          <Medallion s={s} className="me-1 h-12 w-12" />
+          <span className={`rounded-full px-3 py-1 text-[0.7rem] font-bold uppercase tracking-wide ${FUNDING_STYLE[s.funding_type]}`}>
+            {t.funding[s.funding_type]}
           </span>
-        ))}
-      </div>
-
-      {s.summary && <p dir="auto" className="mt-3 line-clamp-3 text-sm leading-relaxed text-slate">{s.summary}</p>}
-
-      <div className="mt-auto pt-5">
-        <p className="flex items-center gap-2 text-xs text-slate">
-          <Icon name="pulse" className="h-3.5 w-3.5 text-ocean" />
-          {s.deadline_at ? (
-            <>
-              {t.card.deadline}{lang === "fr" ? " :" : ":"} <strong className="font-semibold text-midnight">{formatDate(s.deadline_at, lang, false, s.deadline_tz ?? undefined)}</strong>
-              {left !== null && <span className="font-semibold text-orange-700">· {t.card.daysLeft(left)}</span>}
-            </>
-          ) : s.verification !== "verified" ? (
-            t.card.dateTbc
-          ) : (
-            t.card.noDeadline
-          )}
-        </p>
-        <div className="relative z-10 mt-4 flex gap-2">
-          <Link href={href} className="flex-1 rounded-full px-4 py-2.5 text-center text-sm font-semibold text-midnight ring-1 ring-midnight/20 transition-colors hover:bg-midnight hover:text-white">
-            {t.card.details}
+          <span className="inline-flex items-center gap-1 rounded-full bg-midnight px-3 py-1 text-[0.7rem] font-bold uppercase tracking-wide text-gold">
+            <Icon name="star" className="h-3.5 w-3.5" />
+            {t.directory.spotlight}
+          </span>
+        </div>
+        <h3 dir="auto" className="mt-4 text-xl font-bold leading-snug text-midnight transition-colors group-hover:text-ocean md:text-2xl">
+          <Link href={href} className="after:absolute after:inset-0 focus-visible:outline-none">
+            {s.title}
           </Link>
-          {applyHref && status !== "closed" && (
-            <a
-              href={applyHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex flex-1 items-center justify-center gap-1.5 rounded-full bg-gold px-4 py-2.5 text-sm font-semibold text-midnight transition-colors hover:bg-amber"
-            >
-              {s.application_url ? t.card.apply : t.card.official}
-              <Icon name="external" className="h-3.5 w-3.5" />
-            </a>
-          )}
+        </h3>
+        <p dir="auto" className="mt-1 text-sm text-slate">
+          {s.institution}
+        </p>
+        <Caveats s={s} lang={lang} className="mt-3" />
+        {s.summary && (
+          <p dir="auto" className="mt-3 line-clamp-3 text-[0.95rem] leading-relaxed text-slate">
+            {s.summary}
+          </p>
+        )}
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          {s.levels.slice(0, 3).map((l) => (
+            <span key={l} className="inline-flex items-center gap-1 rounded-full bg-cloud px-2.5 py-1 text-xs font-medium text-midnight">
+              <Icon name="cap" className="h-3.5 w-3.5 text-ocean" />
+              {t.level[l]}
+            </span>
+          ))}
+        </div>
+        <div className="mt-auto pt-5">
+          <Countdown s={s} lang={lang} status={status} />
+          <div className="mt-4">
+            <Actions s={s} lang={lang} href={href} status={status} />
+          </div>
         </div>
       </div>
     </article>

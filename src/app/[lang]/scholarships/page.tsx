@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { PageHeader } from "@/components/ui/PageHeader";
 import { Directory, DirectorySkeleton } from "@/components/scholarships/Directory";
+import { ScholarshipsHero } from "@/components/scholarships/ScholarshipsHero";
 import { Newsletter } from "@/components/Newsletter";
 import { hasLocale, languageAlternates } from "@/lib/i18n";
 import { getPlatformDict } from "@/lib/platform-i18n";
@@ -38,8 +38,8 @@ export default async function ScholarshipsPage({ params }: PageProps<"/[lang]/sc
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
-      <PageHeader id="scholarships-title" eyebrow={t.eyebrow} title={t.title} lead={t.lead} />
-      <section aria-labelledby="scholarships-title" className="relative z-10 -mt-14 pb-20 md:-mt-16">
+      <ScholarshipsHero lang={lang} items={items} />
+      <section aria-labelledby="scholarships-title" className="relative z-10 -mt-16 pb-20 md:-mt-20">
         <div className="container-brand">
           {/* the filters read the URL, which is only known per request */}
           <Suspense fallback={<DirectorySkeleton />}>

@@ -9,7 +9,7 @@ import { deadlineStatus, LEVELS, type DeadlineStatus } from "@/lib/scholarships"
 import type { Locale } from "@/lib/i18n";
 import type { ListItem } from "@/lib/server/public";
 import { Flag } from "./Flag";
-import { ScholarshipCard } from "./ScholarshipCard";
+import { ScholarshipCard, SpotlightCard } from "./ScholarshipCard";
 import { useSaved } from "./saved";
 
 const KEYS = ["q", "country", "level", "field", "funding", "status", "month", "university", "algeria", "sort", "saved"] as const;
@@ -32,6 +32,7 @@ export function Directory({ items, lang }: { items: ListItem[]; lang: Locale }) 
   const params = useSearchParams();
   const saved = useSaved();
   const [showClosed, setShowClosed] = useState(false);
+  const [advanced, setAdvanced] = useState(false);
   const [f, setF] = useState<Filters>(() => Object.fromEntries(KEYS.map((k) => [k, params.get(k) ?? ""])) as Filters);
 
   const update = (k: Key, v: string) => {
@@ -130,11 +131,26 @@ export function Directory({ items, lang }: { items: ListItem[]; lang: Locale }) 
     );
   }
 
+  // featured opportunities get a showcase row while no filter is applied
+  const spotlight = anyFilter ? [] : active.filter((s) => s.featured).slice(0, 2);
+  const grid = spotlight.length ? active.filter((s) => !spotlight.includes(s)) : active;
+  const savedCount = saved.filter((s) => items.some((i) => i.slug === s)).length;
+
+  const chips: { key: string; label: string; on: boolean; toggle: () => void; icon?: React.ReactNode }[] = [
+    { key: "full", label: t.funding.full, on: f.funding === "full", toggle: () => update("funding", f.funding === "full" ? "" : "full"), icon: <Icon name="star" className="h-3.5 w-3.5" /> },
+    { key: "dz", label: t.directory.quickAlgeria, on: !!f.algeria, toggle: () => update("algeria", f.algeria ? "" : "1"), icon: <Flag code="dz" className="h-3 w-4" /> },
+    { key: "closing", label: t.status.closing, on: f.status === "closing", toggle: () => update("status", f.status === "closing" ? "" : "closing"), icon: <Icon name="pulse" className="h-3.5 w-3.5" /> },
+    ...options.levels
+      .filter((l) => l !== "highschool" && l !== "professional")
+      .map((l) => ({ key: l, label: t.level[l], on: f.level === l, toggle: () => update("level", f.level === l ? "" : l), icon: <Icon name="cap" className="h-3.5 w-3.5" /> })),
+    { key: "saved", label: `${t.directory.saved} (${savedCount})`, on: !!f.saved, toggle: () => update("saved", f.saved ? "" : "1") },
+  ];
+
   return (
-    <div className="space-y-6">
-      <div className="rounded-brand-lg bg-white p-4 shadow-[0_20px_50px_-35px_rgba(11,45,91,0.5)] ring-1 ring-line sm:p-5">
+    <div className="space-y-10">
+      <div className="rounded-[1.75rem] bg-white/95 p-3 shadow-[0_30px_70px_-40px_rgba(11,45,91,0.6)] ring-1 ring-line backdrop-blur sm:p-4">
         <div className="relative">
-          <Icon name="search" className="pointer-events-none absolute start-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate" />
+          <Icon name="search" className="pointer-events-none absolute start-5 top-1/2 h-5 w-5 -translate-y-1/2 text-ocean" />
           <input
             type="search"
             value={f.q}
@@ -142,7 +158,7 @@ export function Directory({ items, lang }: { items: ListItem[]; lang: Locale }) 
             placeholder={t.directory.search}
             aria-label={t.directory.searchLabel}
             list="scholarship-suggestions"
-            className="block w-full rounded-full border border-line bg-cloud py-3.5 pe-4 ps-12 text-base text-ink focus:border-ocean focus:bg-white focus:outline-none focus:ring-2 focus:ring-ocean/20"
+            className="block w-full rounded-2xl border-0 bg-cloud py-4 pe-4 ps-13 text-base text-ink ring-1 ring-transparent transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-ocean/30"
           />
           <datalist id="scholarship-suggestions">
             {suggestions.map((s) => (
@@ -151,15 +167,43 @@ export function Directory({ items, lang }: { items: ListItem[]; lang: Locale }) 
           </datalist>
         </div>
 
-        <details className="group mt-4" open>
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-semibold text-midnight">
-            <span className="flex items-center gap-2">
-              <Icon name="list" className="h-4 w-4 text-ocean" />
-              {t.directory.filters}
-            </span>
-            <Icon name="chevron" className="h-4 w-4 transition-transform group-open:rotate-180" />
-          </summary>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-3 flex flex-wrap items-center gap-2" role="group" aria-label={t.directory.filters}>
+          <button
+            type="button"
+            onClick={clear}
+            aria-pressed={!anyFilter}
+            className={`rounded-full px-4 py-2 text-sm font-semibold transition-all ${!anyFilter ? "bg-midnight text-white shadow-md" : "bg-cloud text-midnight hover:bg-line"}`}
+          >
+            {t.directory.quickAll}
+          </button>
+          {chips.map((c) => (
+            <button
+              key={c.key}
+              type="button"
+              onClick={c.toggle}
+              aria-pressed={c.on}
+              className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-all ${
+                c.on ? "bg-midnight text-white shadow-md" : "bg-cloud text-midnight hover:-translate-y-0.5 hover:bg-line"
+              }`}
+            >
+              {c.icon}
+              {c.label}
+            </button>
+          ))}
+          <button
+            type="button"
+            onClick={() => setAdvanced((v) => !v)}
+            aria-expanded={advanced}
+            className="ms-auto inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-semibold text-ocean hover:bg-cloud"
+          >
+            <Icon name="list" className="h-4 w-4" />
+            {advanced ? t.directory.fewerFilters : t.directory.moreFilters}
+            <Icon name="chevron" className={`h-4 w-4 transition-transform ${advanced ? "rotate-180" : ""}`} />
+          </button>
+        </div>
+
+        {advanced && (
+          <div className="mt-3 grid gap-3 border-t border-line px-1 pt-4 sm:grid-cols-2 lg:grid-cols-4">
             {select("country", t.directory.country, options.countries.map((c) => [c, countryName(c, lang)]))}
             {select("level", t.directory.level, options.levels.map((l) => [l, t.level[l]]))}
             {select("field", t.directory.field, options.fields.map((x) => [x, x]))}
@@ -169,52 +213,68 @@ export function Directory({ items, lang }: { items: ListItem[]; lang: Locale }) 
             {select("university", t.directory.university, options.universities.map((u) => [u, u]))}
             {select("sort", t.directory.sort, Object.entries(t.directory.sorts).filter(([k]) => k !== "deadline") as [string, string][], t.directory.sorts.deadline)}
           </div>
-          <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
-            <label className="flex items-center gap-2 text-midnight">
-              <input type="checkbox" checked={!!f.algeria} onChange={(e) => update("algeria", e.target.checked ? "1" : "")} className="h-4 w-4 accent-midnight" />
-              <Flag code="dz" className="h-3.5 w-5" />
-              {t.directory.algeria}
-            </label>
-            <label className="flex items-center gap-2 text-midnight">
-              <input type="checkbox" checked={!!f.funding && f.funding === "full"} onChange={(e) => update("funding", e.target.checked ? "full" : "")} className="h-4 w-4 accent-midnight" />
-              {t.funding.full}
-            </label>
-            <label className="flex items-center gap-2 text-midnight">
-              <input type="checkbox" checked={!!f.saved} onChange={(e) => update("saved", e.target.checked ? "1" : "")} className="h-4 w-4 accent-midnight" />
-              {t.directory.savedOnly} ({saved.filter((s) => items.some((i) => i.slug === s)).length})
-            </label>
+        )}
+      </div>
+
+      {spotlight.length > 0 && (
+        <section aria-labelledby="spotlight-title">
+          <p className="label-caps flex items-center gap-2 text-gold">
+            <Icon name="star" className="h-4 w-4" />
+            {t.directory.spotlight}
+          </p>
+          <h2 id="spotlight-title" className="mt-1 text-sm text-slate">
+            {t.directory.spotlightLead}
+          </h2>
+          <ul className="mt-5 grid gap-6 lg:grid-cols-2">
+            {spotlight.map((s) => (
+              <li key={s.slug}>
+                <SpotlightCard s={s} lang={lang} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <section aria-labelledby="all-title">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <h2 id="all-title" className="text-xl font-bold text-midnight md:text-2xl">
+            {anyFilter ? t.directory.filters : t.directory.all}
+          </h2>
+          <div className="flex items-center gap-3">
+            <p aria-live="polite" className="rounded-full bg-white px-3 py-1 text-sm font-semibold text-midnight ring-1 ring-line">
+              {t.directory.results(active.length)}
+            </p>
             {anyFilter && (
-              <button type="button" onClick={clear} className="ms-auto font-semibold text-ocean hover:underline">
+              <button type="button" onClick={clear} className="text-sm font-semibold text-ocean hover:underline">
                 {t.directory.clear}
               </button>
             )}
           </div>
-        </details>
-      </div>
-
-      <p aria-live="polite" className="text-sm font-medium text-slate">
-        {t.directory.results(active.length)}
-      </p>
-
-      {active.length ? (
-        <ul className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-          {active.map((s) => (
-            <li key={s.slug}>
-              <ScholarshipCard s={s} lang={lang} />
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <div className="rounded-brand-lg bg-white px-6 py-14 text-center ring-1 ring-line">
-          <p className="font-semibold text-midnight">{t.directory.empty}</p>
-          <p className="mt-1 text-sm text-slate">{t.directory.emptyHint}</p>
-          {anyFilter && (
-            <button type="button" onClick={clear} className="mt-4 rounded-full px-5 py-2.5 text-sm font-semibold text-midnight ring-1 ring-midnight/20 hover:bg-midnight hover:text-white">
-              {t.directory.clear}
-            </button>
-          )}
         </div>
-      )}
+
+        {grid.length ? (
+          <ul className="mt-5 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+            {grid.map((s) => (
+              <li key={s.slug}>
+                <ScholarshipCard s={s} lang={lang} />
+              </li>
+            ))}
+          </ul>
+        ) : active.length ? null : (
+          <div className="mt-5 rounded-brand-lg bg-white px-6 py-14 text-center ring-1 ring-line">
+            <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-cloud text-ocean">
+              <Icon name="search" className="h-6 w-6" />
+            </span>
+            <p className="mt-4 font-semibold text-midnight">{t.directory.empty}</p>
+            <p className="mt-1 text-sm text-slate">{t.directory.emptyHint}</p>
+            {anyFilter && (
+              <button type="button" onClick={clear} className="mt-4 rounded-full px-5 py-2.5 text-sm font-semibold text-midnight ring-1 ring-midnight/20 hover:bg-midnight hover:text-white">
+                {t.directory.clear}
+              </button>
+            )}
+          </div>
+        )}
+      </section>
 
       {closed.length > 0 && (
         <section className="border-t border-line pt-6">
@@ -244,10 +304,10 @@ export function Directory({ items, lang }: { items: ListItem[]; lang: Locale }) 
 export function DirectorySkeleton() {
   return (
     <div className="space-y-6" aria-hidden>
-      <div className="h-40 animate-pulse rounded-brand-lg bg-white ring-1 ring-line" />
+      <div className="h-36 animate-pulse rounded-[1.75rem] bg-white ring-1 ring-line" />
       <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
         {Array.from({ length: 6 }, (_, i) => (
-          <div key={i} className="h-72 animate-pulse rounded-brand-lg bg-white ring-1 ring-line" />
+          <div key={i} className="h-[30rem] animate-pulse rounded-brand-lg bg-white ring-1 ring-line" />
         ))}
       </div>
     </div>

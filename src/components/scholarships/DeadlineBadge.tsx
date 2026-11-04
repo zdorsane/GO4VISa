@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { deadlineStatus, type DeadlineStatus } from "@/lib/scholarships";
+import { daysLeft, deadlineStatus, type DeadlineStatus } from "@/lib/scholarships";
 import { getPlatformDict } from "@/lib/platform-i18n";
 import type { Locale } from "@/lib/i18n";
 
@@ -31,6 +31,15 @@ export function useLiveStatus(opens_at: string | null, deadline_at: string | nul
     noop,
     () => deadlineStatus({ opens_at, deadline_at }),
     () => initial,
+  );
+}
+
+/** Whole days before the deadline, from the visitor's clock; null on the server and when there is none. */
+export function useDaysLeft(deadline_at: string | null) {
+  return useSyncExternalStore(
+    noop,
+    () => daysLeft(deadline_at),
+    () => null,
   );
 }
 
