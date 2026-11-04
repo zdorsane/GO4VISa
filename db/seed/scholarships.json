@@ -459,6 +459,238 @@
       "instructions": null,
       "featured": false,
       "status": "draft"
+    },
+    {
+      "slug": "who-summer-school-2027",
+      "content_lang": "fr",
+      "title": "École d'été de l'OMS 2027 — maladies non transmissibles et vieillissement en bonne santé",
+      "institution": "Bureau régional de l'OMS pour l'Europe — Université Côte d'Azur et Ulysseus",
+      "cover_url": "/scholarships/who-summer-school-2027.webp",
+      "cover_credit": "Photo : Uhooep, CC BY-SA 4.0, via Wikimedia Commons",
+      "cover_credit_url": "https://commons.wikimedia.org/wiki/File:Promenade_des_Anglais_(Nice),_France.jpg",
+      "country_code": "FR",
+      "city": "Nice",
+      "levels": [
+        "master",
+        "phd",
+        "postdoc",
+        "professional"
+      ],
+      "categories": [
+        "summer-school"
+      ],
+      "fields": [
+        "Santé publique",
+        "Médecine",
+        "Politiques de santé"
+      ],
+      "tags": [
+        "oms",
+        "nations unies",
+        "santé"
+      ],
+      "eligible_nationalities": "Aucune restriction de nationalité mentionnée dans l'appel officiel ; le programme porte sur la Région européenne de l'OMS.",
+      "algeria_eligible": "unknown",
+      "qualifications": "Doctorants et professionnels en début ou milieu de carrière : chercheurs, étudiants de troisième cycle, praticiens de santé et décideurs publics intéressés par l'approche systémique. Sélection sur l'expérience professionnelle (santé publique, innovation, vieillissement en bonne santé, prévention des maladies non transmissibles), la formation et une lettre de motivation.",
+      "age_limit": null,
+      "language_requirements": null,
+      "funding_type": "partial",
+      "tuition": "Formation gratuite.",
+      "stipend": null,
+      "accommodation": "À la charge du participant.",
+      "travel": "À la charge du participant.",
+      "insurance": null,
+      "duration": "4 jours : du 20 juillet 2027 (9 h) au 23 juillet 2027 (14 h), à Nice. Déjeuners, pauses café et dîner de bienvenue du 21 juillet offerts.",
+      "opens_at": null,
+      "deadline_at": "2026-11-23T23:59:00+01:00",
+      "deadline_note": "Date limite : 23 novembre 2026 (heure non précisée). Les candidats retenus sont informés au plus tard le 18 décembre 2026.",
+      "deadline_tz": null,
+      "application_url": "https://extranet.who.int/dataformv6/index.php/525327?lang=en",
+      "source_url": "https://www.who.int/europe/news-room/articles/item/call-for-applications--2027-summer-school---systems-thinking-and-innovation-for-the-prevention-of-noncommunicable-diseases-and-a-healthy-ageing-population-in-the-who-european-region",
+      "sources": [
+        {
+          "url": "https://www.who.int/europe/news-room/events/item/2027/07/20/default-calendar/call-for-applications--the-2027-who-summer-school",
+          "label": "Fiche de l'événement (OMS Europe)"
+        }
+      ],
+      "verified_at": "2026-11-04",
+      "verification": "verified",
+      "summary": "4 jours de formation gratuite à Nice avec l'OMS Europe sur la prévention des maladies non transmissibles. 30 places ; voyage et logement à la charge du participant.",
+      "description": "Le Bureau régional de l'OMS pour l'Europe, le centre collaborateur de l'OMS de l'Université Côte d'Azur et l'université européenne Ulysseus organisent une école d'été sur « la pensée systémique et l'innovation pour la prévention des maladies non transmissibles et un vieillissement en bonne santé ».\n\nLa formation est gratuite (déjeuners, pauses café et dîner de bienvenue compris), mais le voyage, l'hébergement et les frais de séjour à Nice restent à la charge des participants. 30 participants sont sélectionnés.",
+      "documents": "Formulaire de candidature en ligne\nLettre de motivation (personal statement)",
+      "instructions": "Remplissez le formulaire de candidature en ligne de l'OMS avant le 23 novembre 2026. Réponse au plus tard le 18 décembre 2026.",
+      "featured": false,
+      "status": "published"
+    },
+    {
+      "slug": "unil-summer-undergraduate-research-2027",
+      "content_lang": "fr",
+      "title": "Programme de recherche d'été UNIL (SUR) 2027",
+      "institution": "Université de Lausanne (UNIL) — Faculté de biologie et de médecine",
+      "cover_url": "/scholarships/unil-summer-undergraduate-research-2027.webp",
+      "cover_credit": "Photo : SlvrKy, CC BY-SA 4.0, via Wikimedia Commons",
+      "cover_credit_url": "https://commons.wikimedia.org/wiki/File:Anthropole_UNIL.jpg",
+      "country_code": "CH",
+      "city": "Lausanne",
+      "levels": [
+        "bachelor"
+      ],
+      "categories": [
+        "summer-school",
+        "research-fellowship"
+      ],
+      "fields": [
+        "Biologie",
+        "Médecine",
+        "Biochimie",
+        "Sciences de la vie"
+      ],
+      "tags": [
+        "recherche",
+        "suisse",
+        "entièrement financé"
+      ],
+      "eligible_nationalities": "Aucune restriction de nationalité indiquée ; le programme accueille des étudiants du monde entier.",
+      "algeria_eligible": "unknown",
+      "qualifications": "Avoir terminé deux années de licence en biologie, médecine ou sciences biologiques, et être inscrit en troisième année pendant le programme. Sélection sur le dossier académique (en général moyenne supérieure à 3,75/4 ou top 5 % de la promotion), la lettre de motivation et les recommandations. Aucune expérience de recherche n'est exigée.",
+      "age_limit": null,
+      "language_requirements": null,
+      "funding_type": "full",
+      "tuition": null,
+      "stipend": "Bourse d'environ 1 500 CHF pour les frais de vie.",
+      "accommodation": "Logement organisé et pris en charge par le programme.",
+      "travel": "Jusqu'à 500 CHF (Europe) ou 1 200 CHF (hors Europe).",
+      "insurance": null,
+      "duration": "8 semaines, du 5 juillet au 27 août 2027. Aucun crédit académique n'est délivré.",
+      "opens_at": null,
+      "deadline_at": "2026-11-15T23:59:00+01:00",
+      "deadline_note": "Date limite : 15 novembre 2026 à 23 h 59 (heure d'Europe centrale).",
+      "deadline_tz": "Europe/Zurich",
+      "application_url": "https://www.unil.ch/fbm/en/home/menuinst/formation/short-continuing-postgraduate-training/sur-programme/application.html",
+      "source_url": "https://www.unil.ch/fbm/en/home/menuinst/formation/short-continuing-postgraduate-training/sur-programme/application.html",
+      "sources": [
+        {
+          "url": "https://www.unil.ch/eb-sur",
+          "label": "Présentation du programme SUR"
+        }
+      ],
+      "verified_at": "2026-11-04",
+      "verification": "verified",
+      "summary": "8 semaines de recherche en laboratoire à Lausanne pour les étudiants en 3e année de biologie ou médecine : bourse d'environ 1 500 CHF, logement et voyage pris en charge.",
+      "description": "Le programme Summer Undergraduate Research (SUR) de l'Université de Lausanne permet à des étudiants de licence du monde entier de mener un projet de recherche dans un laboratoire de la Faculté de biologie et de médecine pendant l'été.\n\nLe programme couvre le logement, verse une bourse d'environ 1 500 CHF et rembourse le voyage jusqu'à 1 200 CHF pour les participants venant de l'extérieur de l'Europe.",
+      "documents": "Questionnaire de candidature (PDF)\nRelevés de notes officiels (PDF non chiffré)\nDeux lettres de recommandation de professeurs",
+      "instructions": "Lisez la procédure de candidature sur la page officielle puis déposez votre dossier sur le portail en ligne avant le 15 novembre 2026 à 23 h 59 (CET). Contact : sur@unil.ch.",
+      "featured": false,
+      "status": "published"
+    },
+    {
+      "slug": "ceps-climate-leadership-programme-2027",
+      "content_lang": "fr",
+      "title": "Programme de leadership climatique du CEPS 2026-2027",
+      "institution": "Centre for European Policy Studies (CEPS) — avec la Heinrich-Böll-Stiftung",
+      "cover_url": "/scholarships/ceps-climate-leadership-programme-2027.webp",
+      "cover_credit": "Photo : KenSwe72, CC BY 4.0, via Wikimedia Commons",
+      "cover_credit_url": "https://commons.wikimedia.org/wiki/File:Berlaymont_building_Brussels.jpg",
+      "country_code": "BE",
+      "city": "Bruxelles",
+      "levels": [
+        "bachelor",
+        "master",
+        "professional"
+      ],
+      "categories": [
+        "leadership"
+      ],
+      "fields": [
+        "Climat",
+        "Politiques publiques",
+        "Environnement"
+      ],
+      "tags": [
+        "climat",
+        "union européenne"
+      ],
+      "eligible_nationalities": "Ressortissants des pays listés dans le formulaire de candidature (liste non consultée).",
+      "algeria_eligible": "unknown",
+      "qualifications": "Avoir entre 20 et 30 ans ; être déjà engagé dans les politiques climatiques, le plaidoyer ou l'entrepreneuriat climat dans son pays ; porter une initiative précise (proposition de politique, campagne…) ; bien maîtriser l'anglais ; être disponible pour toute la partie en ligne et la semaine à Bruxelles.",
+      "age_limit": "20 à 30 ans.",
+      "language_requirements": "Bonne maîtrise de l'anglais.",
+      "funding_type": "unknown",
+      "tuition": null,
+      "stipend": null,
+      "accommodation": null,
+      "travel": null,
+      "insurance": null,
+      "duration": "Masterclasses et formations en ligne de décembre 2026 à février 2027 (présence obligatoire), puis une semaine à Bruxelles du 28 février au 6 mars 2027, avec l'Ideas Lab du CEPS les 4 et 5 mars 2027.",
+      "opens_at": "2026-10-29T00:00:00+01:00",
+      "deadline_at": "2026-11-11T23:59:00+01:00",
+      "deadline_note": "Date limite : 11 novembre 2026 à 23 h 59 (heure de Bruxelles). Réponse fin novembre 2026. Lors de l'édition 2026, le voyage, l'hébergement, les repas et le visa étaient couverts : à confirmer pour 2027 sur la page officielle.",
+      "deadline_tz": "Europe/Brussels",
+      "application_url": "https://www.ceps.eu/ceps-news/call-for-applications-climate-leadership-programme/",
+      "source_url": "https://www.ceps.eu/ceps-news/call-for-applications-climate-leadership-programme/",
+      "sources": [],
+      "verified_at": "2026-11-04",
+      "verification": "needs_verification",
+      "summary": "8 jeunes leaders du climat (20-30 ans) sélectionnés pour une formation en ligne puis une semaine à Bruxelles en mars 2027. Candidatures jusqu'au 11 novembre 2026.",
+      "description": "Le Centre for European Policy Studies (CEPS), avec le soutien de la Heinrich-Böll-Stiftung (bureau Union européenne), recrute huit jeunes leaders du climat pour son programme de leadership climatique, de décembre 2026 à mars 2027.\n\nLe programme combine des masterclasses en ligne (gouvernance climatique de l'UE, diplomatie, rédaction de politiques publiques, communication) et une semaine à Bruxelles, avec la participation à l'Ideas Lab, l'événement phare du CEPS. La prise en charge des frais pour l'édition 2027 reste à confirmer sur la page officielle.",
+      "documents": "Formulaire de candidature officiel\nPrésentation de votre initiative climat",
+      "instructions": "Candidatez uniquement via le formulaire officiel du CEPS avant le 11 novembre 2026 à 23 h 59 (heure de Bruxelles).",
+      "featured": false,
+      "status": "published"
+    },
+    {
+      "slug": "irex-community-solutions-program-2027",
+      "content_lang": "fr",
+      "title": "Community Solutions Program (CSP) 2027",
+      "institution": "IREX — Département d'État américain",
+      "cover_url": "/scholarships/irex-community-solutions-program-2027.webp",
+      "cover_credit": "Photo : Frank Schulenburg, CC BY-SA 4.0, via Wikimedia Commons",
+      "cover_credit_url": "https://commons.wikimedia.org/wiki/File:Golden_Gate_Bridge_as_seen_from_Marshall%E2%80%99s_Beach,_March_2018.jpg",
+      "country_code": "US",
+      "city": null,
+      "levels": [
+        "professional"
+      ],
+      "categories": [
+        "leadership",
+        "exchange"
+      ],
+      "fields": [
+        "Développement communautaire",
+        "Société civile"
+      ],
+      "tags": [
+        "leadership",
+        "ouverte aux algériens",
+        "j-1"
+      ],
+      "eligible_nationalities": "Ressortissants des pays éligibles de la liste officielle, dont l'Algérie (région Moyen-Orient et Afrique du Nord). Les citoyens et résidents permanents des États-Unis ne sont pas éligibles.",
+      "algeria_eligible": "yes",
+      "qualifications": "Avoir entre 27 et 39 ans au moment de la candidature ; au moins cinq ans d'expérience sur des enjeux communautaires ; vivre et travailler dans son pays au moment de la candidature ; s'engager à rentrer dans son pays pendant au moins deux ans après le programme.",
+      "age_limit": "27 à 39 ans au moment de la candidature.",
+      "language_requirements": "Très bon niveau d'anglais, à l'oral et à l'écrit.",
+      "funding_type": "full",
+      "tuition": null,
+      "stipend": "Allocation mensuelle couvrant le logement, les repas et les frais de vie.",
+      "accommodation": "Couvert par l'allocation mensuelle.",
+      "travel": "Voyage aller-retour entre votre ville et les États-Unis.",
+      "insurance": "Couverture accident et maladie ; accompagnement pour le visa J-1.",
+      "duration": "Environ 3 à 4 mois en 2027 : orientation du 2 au 5 août, stage du 9 août au 29 octobre, atelier de clôture du 1er au 4 novembre (dates à confirmer).",
+      "opens_at": null,
+      "deadline_at": null,
+      "deadline_note": "Les candidatures 2027 sont ouvertes, mais la date limite n'est pas indiquée sur la page officielle consultée le 4 novembre 2026.",
+      "deadline_tz": null,
+      "application_url": "https://csp.irex.org",
+      "source_url": "https://www.irex.org/program/community-solutions-program-application-information",
+      "sources": [],
+      "verified_at": "2026-11-04",
+      "verification": "needs_verification",
+      "summary": "Stage de 3 à 4 mois dans une organisation communautaire aux États-Unis pour les leaders de 27 à 39 ans. Algérie éligible ; voyage, allocation et assurance couverts.",
+      "description": "Le Community Solutions Program, financé par le Département d'État américain et géré par IREX, accueille des leaders de la société civile pour un stage pratique au sein d'une organisation communautaire américaine, suivi d'un atelier de clôture.\n\nLe programme prend en charge le visa J-1, le voyage aller-retour, une allocation mensuelle (logement, repas, frais de vie) et une couverture accident et maladie. Les participants s'engagent à rentrer dans leur pays pendant au moins deux ans.",
+      "documents": null,
+      "instructions": "Créez votre compte et déposez votre candidature sur le portail officiel csp.irex.org. Vérifiez la date limite sur la page d'information d'IREX.",
+      "featured": false,
+      "status": "published"
     }
   ]
 }
