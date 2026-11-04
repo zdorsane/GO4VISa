@@ -1,9 +1,7 @@
 import Link from "next/link";
 import { site, whatsappHref, type Dict } from "@/lib/content";
-import type { Destination } from "@/lib/destinations";
 import type { Locale } from "@/lib/i18n";
 import { LogoSymbol, Wordmark } from "./brand/Logo";
-import { Icon } from "./ui/Icon";
 import { CurrentYear } from "./ui/CurrentYear";
 
 export function Footer({
@@ -11,19 +9,17 @@ export function Footer({
   t,
   ui,
   nav,
-  destinations,
 }: {
   lang: Locale;
   t: Dict["footer"];
   ui: Dict["ui"];
   nav: Dict["nav"];
-  destinations: Destination[];
 }) {
   const socials = site.socials.filter((s) => s.href);
   const whatsapp = whatsappHref();
   return (
     <footer className="border-t border-white/10 bg-midnight text-mist">
-      <div className="container-brand grid grid-cols-2 gap-x-6 gap-y-8 py-10 md:py-12 lg:grid-cols-[1.2fr_0.8fr_1.6fr_1.1fr] lg:gap-10">
+      <div className="container-brand grid grid-cols-2 gap-x-6 gap-y-8 py-10 md:py-12 lg:grid-cols-[1.4fr_1fr_1.2fr] lg:gap-12">
         <div className="col-span-2 lg:col-span-1">
           <Link href={`/${lang}`} aria-label={ui.homeLabel} className="inline-flex items-center gap-3">
             <LogoSymbol variant="white" className="h-11 w-auto" />
@@ -50,37 +46,6 @@ export function Footer({
           </ul>
         </nav>
 
-        <div className="col-span-2 order-last lg:order-none lg:col-span-1">
-          <h2 className="text-sm font-semibold text-white">{t.destinations}</h2>
-          <ul className="mt-3 grid grid-cols-2 gap-1.5 sm:grid-cols-3 lg:grid-cols-2">
-            {destinations.map((d) => (
-              <li key={d.slug} className="min-w-0">
-                <Link
-                  href={`/${lang}/destinations/${d.slug}`}
-                  className="group flex items-center gap-2 rounded-full py-1 pe-3 ps-1 text-[0.8rem] ring-1 ring-white/10 transition-all duration-300 hover:bg-white/[0.06] hover:text-white hover:ring-gold/60"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={`/flags/${d.flag}.svg`}
-                    alt=""
-                    width={24}
-                    height={24}
-                    loading="lazy"
-                    className="h-5 w-5 shrink-0 rounded-full object-cover ring-1 ring-white/25 transition-transform duration-300 group-hover:scale-110"
-                  />
-                  <span className="truncate">{d.country}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-          <Link
-            href={`/${lang}/how-it-works#destinations`}
-            className="group mt-3 inline-flex items-center gap-2 py-1 text-sm font-semibold text-gold underline-offset-4 hover:underline"
-          >
-            {t.allDestinations}
-            <Icon name="arrow" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
-          </Link>
-        </div>
 
         <div>
           <h2 className="text-sm font-semibold text-white">{t.contact}</h2>

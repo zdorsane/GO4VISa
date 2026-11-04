@@ -52,7 +52,7 @@ export function Navbar({ lang, ui, nav }: { lang: Locale; ui: Dict["ui"]; nav: D
 
   const solid = scrolled || open;
   const home = `/${lang}`;
-  // A page link is "current" on its own page; anchors into a page (#destinations) never are.
+  // A page link is "current" on its own page; anchors into a page (#services) never are.
   const isCurrent = (path: string) => (path === "" ? pathname === home : !path.includes("#") && pathname === `${home}${path}`);
 
   const linkClass = (current: boolean) =>

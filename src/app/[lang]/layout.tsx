@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Cairo, Montserrat } from "next/font/google";
 import { notFound } from "next/navigation";
 import { getDictionary, site } from "@/lib/content";
-import { getDestinations } from "@/lib/destinations";
 import { hasLocale, isRtl, languageAlternates, locales } from "@/lib/i18n";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -46,15 +45,13 @@ export async function generateMetadata({ params }: LayoutProps<"/[lang]">): Prom
     keywords: [
       "Go4Visa",
       ...KEYWORDS[lang],
-      "Stipendium Hungaricum",
-      "Türkiye Bursları",
-      "Chevening",
+      "Gates Cambridge",
+      "MEPI Tomorrow's Leaders",
+      "Hansen Leadership Institute",
       "Fulbright",
-      "DAAD",
-      "Eiffel",
-      "CSC",
-      "GKS",
-      "MEXT",
+      "WIPO internship",
+      "FAO volunteer",
+      "USTC winter camp",
     ],
     alternates: {
       canonical: `/${lang}`,
@@ -89,7 +86,6 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
   const { lang } = await params;
   if (!hasLocale(lang)) notFound();
   const t = getDictionary(lang);
-  const destinations = getDestinations(lang);
 
   return (
     <html
@@ -107,7 +103,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
         <main id="main" className="flex-1">
           {children}
         </main>
-        <Footer lang={lang} t={t.footer} ui={t.ui} nav={t.nav} destinations={destinations} />
+        <Footer lang={lang} t={t.footer} ui={t.ui} nav={t.nav} />
       </body>
     </html>
   );

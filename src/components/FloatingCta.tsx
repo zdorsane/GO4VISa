@@ -73,7 +73,7 @@ export function FloatingCta({ lang, t }: { lang: Locale; t: Dict["floatingCta"] 
                 className="absolute inset-0 rounded-full bg-gold/60 motion-safe:animate-[g4v-halo_2.6s_ease-out_infinite]"
               />
               <Link
-                href={`/${lang}/how-it-works#destinations`}
+                href={`/${lang}/scholarships`}
                 className="group relative flex items-center gap-3 overflow-hidden rounded-full bg-gold py-2 pe-5 ps-2 font-semibold text-midnight shadow-[0_18px_40px_-12px_rgba(245,179,1,0.75),0_8px_20px_-10px_rgba(11,45,91,0.6)] ring-1 ring-white/40 transition-colors hover:bg-amber"
               >
                 {/* light sweep */}

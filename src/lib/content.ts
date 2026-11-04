@@ -90,7 +90,7 @@ const en = {
     sectionsLabel: "On the home page",
     pages: [
       { label: "Scholarships", path: "/scholarships" },
-      { label: "How it works & destinations", path: "/how-it-works" },
+      { label: "How it works", path: "/how-it-works" },
       { label: "FAQ", path: "/faq" },
     ],
     sections: [
@@ -154,24 +154,6 @@ const en = {
       countries: { value: "15+", label: "countries explored" },
       doctor: "Future doctor",
       traveler: "Passionate traveler",
-    },
-  },
-  destinations: {
-    eyebrow: "Scholarships worldwide",
-    title: "Explore available destinations",
-    select: "Select a country to see its flagship programme and how to apply.",
-    disclaimer: "Deadlines change every year — always confirm on official sites.",
-    footnote: "Programmes and windows reflect the official sources at the time of writing.",
-    flagship: "Flagship programme",
-    fullDetails: "Full details for",
-    officialSite: "Official site",
-    newTab: "(opens in a new tab)",
-    facts: {
-      fundedBy: "Funded by",
-      levels: "Levels",
-      covers: "What it covers",
-      howToApply: "How to apply",
-      when: "When",
     },
   },
   services: {
@@ -274,7 +256,7 @@ const en = {
         label: "Discover",
         title: "Find your next opportunity.",
         text: "Explore opportunities directly on our website and scroll down to discover the programs that best match your goals.",
-        cta: "Explore destinations",
+        cta: "See the scholarships",
       },
       {
         key: "qualify",
@@ -428,8 +410,6 @@ const en = {
   },
   footer: {
     quickLinks: "Quick links",
-    destinations: "Destinations",
-    allDestinations: "Explore all destinations",
     contact: "Contact",
     footerNav: "Footer",
     social: "Social media",
@@ -467,7 +447,7 @@ const en = {
       email: "Email address",
       whatsapp: "WhatsApp number (with country code)",
       opportunity: "Which opportunity would you like to discuss?",
-      opportunityHint: "e.g. Stipendium Hungaricum, Chevening, an exchange programme…",
+      opportunityHint: "e.g. Gates Cambridge, MEPI Tomorrow's Leaders, an exchange programme…",
       reason: "Why are you interested in this opportunity?",
       help: "What do you need the most help with?",
       helpOther: "Please specify",
@@ -497,23 +477,22 @@ const en = {
     home: "Home",
     apply: "Apply with Go4Visa",
     seeServices: "See our services",
-    others: "Other destinations",
     fundedBy: "Funded by",
   },
   pages: {
     howItWorks: {
-      metaTitle: "How it works & destinations",
+      metaTitle: "How it works",
       metaDescription:
-        "How Go4Visa guides you from your first idea to your departure, and the scholarship destinations we help students explore: Hungary, Türkiye, the UK, Germany, Japan and more.",
-      eyebrow: "How it works & destinations",
+        "How Go4Visa guides you step by step, from your first idea to your departure abroad.",
+      eyebrow: "How it works",
       title: "Your journey abroad, step by step",
-      lead: "From your first questions to your departure: here is how we guide you, and the destinations our students explore.",
+      lead: "From your first questions to your departure: here is how we guide you.",
       heroTitleA: "Your journey,",
       heroTitleB: "our guidance.",
       heroLead:
         "From discovering the right opportunity to preparing for your journey abroad, we guide you through every step with personalized support and expert guidance.",
       book: "Book a consultation",
-      explore: "Explore destinations",
+      explore: "See the scholarships",
       cta: {
         title: "Ready to start your journey?",
         text: "Let's explore the opportunities that match your goals and help you take the next step toward your future abroad.",
@@ -562,7 +541,7 @@ const fr: Dict = {
     sectionsLabel: "Sur la page d'accueil",
     pages: [
       { label: "Bourses", path: "/scholarships" },
-      { label: "Parcours & destinations", path: "/how-it-works" },
+      { label: "Votre parcours", path: "/how-it-works" },
       { label: "FAQ", path: "/faq" },
     ],
     sections: [
@@ -626,24 +605,6 @@ const fr: Dict = {
       countries: { value: "15+", label: "pays explorés" },
       doctor: "Futur médecin",
       traveler: "Voyageur passionné",
-    },
-  },
-  destinations: {
-    eyebrow: "Bourses dans le monde",
-    title: "Découvrez les destinations disponibles",
-    select: "Sélectionnez un pays pour découvrir son programme phare et comment postuler.",
-    disclaimer: "Les dates limites changent chaque année — vérifiez toujours sur les sites officiels.",
-    footnote: "Les programmes et calendriers reflètent les sources officielles au moment de la rédaction.",
-    flagship: "Programme phare",
-    fullDetails: "Tous les détails :",
-    officialSite: "Site officiel",
-    newTab: "(s'ouvre dans un nouvel onglet)",
-    facts: {
-      fundedBy: "Financé par",
-      levels: "Niveaux",
-      covers: "Ce qui est couvert",
-      howToApply: "Comment postuler",
-      when: "Quand",
     },
   },
   services: {
@@ -745,7 +706,7 @@ const fr: Dict = {
         label: "Découvrir",
         title: "Trouvez votre prochaine opportunité.",
         text: "Explorez les opportunités directement sur notre site et faites défiler la page pour découvrir les programmes qui correspondent le mieux à vos objectifs.",
-        cta: "Explorer les destinations",
+        cta: "Voir les bourses",
       },
       {
         key: "qualify",
@@ -899,8 +860,6 @@ const fr: Dict = {
   },
   footer: {
     quickLinks: "Liens rapides",
-    destinations: "Destinations",
-    allDestinations: "Voir toutes les destinations",
     contact: "Contact",
     footerNav: "Pied de page",
     social: "Réseaux sociaux",
@@ -938,7 +897,7 @@ const fr: Dict = {
       email: "Adresse e-mail",
       whatsapp: "Numéro WhatsApp (avec l'indicatif du pays)",
       opportunity: "De quelle opportunité souhaitez-vous parler ?",
-      opportunityHint: "ex. Stipendium Hungaricum, Chevening, un programme d'échange…",
+      opportunityHint: "ex. Gates Cambridge, MEPI Tomorrow's Leaders, un programme d'échange…",
       reason: "Pourquoi cette opportunité vous intéresse-t-elle ?",
       help: "Pour quoi avez-vous le plus besoin d'aide ?",
       helpOther: "Précisez",
@@ -968,23 +927,22 @@ const fr: Dict = {
     home: "Accueil",
     apply: "Postuler avec Go4Visa",
     seeServices: "Voir nos services",
-    others: "Autres destinations",
     fundedBy: "Financé par",
   },
   pages: {
     howItWorks: {
-      metaTitle: "Comment ça marche et destinations",
+      metaTitle: "Votre parcours avec Go4Visa",
       metaDescription:
-        "Comment Go4Visa vous accompagne de votre première idée jusqu'au départ, et les destinations de bourses que nous aidons les étudiants à explorer : Hongrie, Türkiye, Royaume-Uni, Allemagne, Japon et plus encore.",
-      eyebrow: "Parcours & destinations",
+        "Comment Go4Visa vous accompagne pas à pas, de votre première idée jusqu'au départ à l'étranger.",
+      eyebrow: "Votre parcours",
       title: "Votre parcours à l'étranger, étape par étape",
-      lead: "De vos premières questions jusqu'au départ : voici comment nous vous accompagnons, et les destinations que nos étudiants explorent.",
+      lead: "De vos premières questions jusqu'au départ : voici comment nous vous accompagnons.",
       heroTitleA: "Votre parcours,",
       heroTitleB: "notre accompagnement.",
       heroLead:
         "De la découverte de la bonne opportunité à la préparation de votre départ, nous vous guidons à chaque étape avec un accompagnement personnalisé et expert.",
       book: "Réserver une consultation",
-      explore: "Explorer les destinations",
+      explore: "Voir les bourses",
       cta: {
         title: "Prêt à commencer votre parcours ?",
         text: "Explorons ensemble les opportunités qui correspondent à vos objectifs et franchissons la prochaine étape vers votre avenir à l'étranger.",
@@ -1031,7 +989,7 @@ const ar: Dict = {
     sectionsLabel: "في الصفحة الرئيسية",
     pages: [
       { label: "المنح", path: "/scholarships" },
-      { label: "كيف نعمل والوجهات", path: "/how-it-works" },
+      { label: "كيف نعمل", path: "/how-it-works" },
       { label: "الأسئلة الشائعة", path: "/faq" },
     ],
     sections: [
@@ -1090,24 +1048,6 @@ const ar: Dict = {
       countries: { value: "+15", label: "بلدًا زرتها" },
       doctor: "طبيب المستقبل",
       traveler: "مسافر شغوف",
-    },
-  },
-  destinations: {
-    eyebrow: "منح حول العالم",
-    title: "اكتشف الوجهات المتاحة",
-    select: "اختر بلدًا لاكتشاف برنامجه الأبرز وطريقة الترشح.",
-    disclaimer: "تتغير الآجال كل سنة — تأكد دائمًا من المواقع الرسمية.",
-    footnote: "تعكس البرامج والآجال المصادر الرسمية وقت كتابة هذا المحتوى.",
-    flagship: "البرنامج الأبرز",
-    fullDetails: "كل التفاصيل حول",
-    officialSite: "الموقع الرسمي",
-    newTab: "(يُفتح في نافذة جديدة)",
-    facts: {
-      fundedBy: "الجهة المموّلة",
-      levels: "المستويات",
-      covers: "ما تشمله المنحة",
-      howToApply: "طريقة الترشح",
-      when: "متى",
     },
   },
   services: {
@@ -1209,7 +1149,7 @@ const ar: Dict = {
         label: "اكتشف",
         title: "اعثر على فرصتك القادمة.",
         text: "استكشف الفرص مباشرة على موقعنا، ومرّر للأسفل لاكتشاف البرامج التي تناسب أهدافك.",
-        cta: "استكشف الوجهات",
+        cta: "تصفح المنح",
       },
       {
         key: "qualify",
@@ -1363,8 +1303,6 @@ const ar: Dict = {
   },
   footer: {
     quickLinks: "روابط سريعة",
-    destinations: "الوجهات",
-    allDestinations: "اكتشف كل الوجهات",
     contact: "تواصل معنا",
     footerNav: "تذييل الصفحة",
     social: "شبكات التواصل الاجتماعي",
@@ -1402,7 +1340,7 @@ const ar: Dict = {
       email: "البريد الإلكتروني",
       whatsapp: "رقم الواتساب (مع رمز البلد)",
       opportunity: "ما هي الفرصة التي تريد مناقشتها؟",
-      opportunityHint: "مثال: Stipendium Hungaricum، Chevening، برنامج تبادل…",
+      opportunityHint: "مثال: Gates Cambridge، MEPI Tomorrow's Leaders، برنامج تبادل…",
       reason: "لماذا تهتم بهذه الفرصة؟",
       help: "في ماذا تحتاج إلى المساعدة أكثر؟",
       helpOther: "يرجى التوضيح",
@@ -1432,22 +1370,21 @@ const ar: Dict = {
     home: "الرئيسية",
     apply: "ترشّح مع Go4Visa",
     seeServices: "اكتشف خدماتنا",
-    others: "وجهات أخرى",
     fundedBy: "الجهة المموّلة",
   },
   pages: {
     howItWorks: {
-      metaTitle: "كيف نعمل والوجهات",
+      metaTitle: "كيف نعمل",
       metaDescription:
-        "كيف ترافقك Go4Visa من فكرتك الأولى حتى السفر، والوجهات التي نساعد الطلبة على استكشاف منحها: المجر، تركيا، المملكة المتحدة، ألمانيا، اليابان وغيرها.",
-      eyebrow: "كيف نعمل والوجهات",
+        "كيف ترافقك Go4Visa خطوة بخطوة، من فكرتك الأولى حتى السفر إلى الخارج.",
+      eyebrow: "كيف نعمل",
       title: "رحلتك إلى الخارج، خطوة بخطوة",
-      lead: "من أسئلتك الأولى إلى يوم سفرك: هكذا نرافقك، وهذه هي الوجهات التي يستكشفها طلبتنا.",
+      lead: "من أسئلتك الأولى إلى يوم سفرك: هكذا نرافقك.",
       heroTitleA: "رحلتك،",
       heroTitleB: "بإرشادنا.",
       heroLead: "من اكتشاف الفرصة المناسبة إلى التحضير للسفر، نرافقك في كل خطوة بدعم شخصي وتوجيه متخصص.",
       book: "احجز استشارة",
-      explore: "استكشف الوجهات",
+      explore: "تصفح المنح",
       cta: {
         title: "مستعد لبدء رحلتك؟",
         text: "لنستكشف معًا الفرص التي تناسب أهدافك ونساعدك على الخطوة التالية نحو مستقبلك في الخارج.",

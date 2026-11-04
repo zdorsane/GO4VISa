@@ -51,7 +51,7 @@ export function JourneyHero({
             <ButtonLink href={`/${lang}/apply`} arrow>
               {t.book}
             </ButtonLink>
-            <ButtonLink href="#destinations" variant="outline-light">
+            <ButtonLink href={`/${lang}/scholarships`} variant="outline-light">
               {t.explore}
             </ButtonLink>
           </div>

@@ -1,6 +1,5 @@
 import type { MetadataRoute } from "next";
 import { site } from "@/lib/content";
-import { destinationSlugs } from "@/lib/destinations";
 import { locales } from "@/lib/i18n";
 import { getPublicScholarships } from "@/lib/server/public";
 
@@ -28,6 +27,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...entry("/how-it-works", 0.9),
     ...entry("/faq", 0.8),
     ...entry("/apply", 0.9),
-    ...destinationSlugs.flatMap((slug) => entry(`/destinations/${slug}`, 0.8)),
   ];
 }

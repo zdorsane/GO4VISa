@@ -4,6 +4,10 @@ const nextConfig: NextConfig = {
   /* config options here */
   cacheComponents: true,
   partialPrefetching: true,
+  // The old destination pages were replaced by the scholarship directory: keep shared links working.
+  async redirects() {
+    return [{ source: "/:lang(en|fr|ar)/destinations/:slug*", destination: "/:lang/scholarships", permanent: true }];
+  },
   experimental: {
     // 404 for unmatched URLs, since the root layout lives under app/[lang]
     globalNotFound: true,

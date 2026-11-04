@@ -197,7 +197,7 @@ export function Hero({ lang, t }: { lang: Locale; t: Dict["hero"] }) {
             {t.subline}
           </motion.p>
           <motion.div {...fade(0.5)} className="mt-8 flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
-            <ButtonLink href={`/${lang}/how-it-works#destinations`} arrow>
+            <ButtonLink href={`/${lang}/scholarships`} arrow>
               {t.primaryCta}
             </ButtonLink>
             <ButtonLink href={`/${lang}#services`} variant="outline-light">
