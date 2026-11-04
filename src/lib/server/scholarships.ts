@@ -35,6 +35,12 @@ export async function getPublishedBySlug(slug: string): Promise<Scholarship | nu
   return row ? normalize(row) : null;
 }
 
+/** Any status: the PDF import updates an existing row instead of duplicating it. */
+export async function getBySlug(slug: string): Promise<Scholarship | null> {
+  const [row] = await db().query(`select ${COLUMNS} from scholarships where slug = $1`, [slug]);
+  return row ? normalize(row) : null;
+}
+
 export async function listAll(): Promise<Scholarship[]> {
   const rows = await db().query(`select ${COLUMNS} from scholarships order by updated_at desc`);
   return rows.map(normalize);
@@ -77,7 +83,7 @@ const localDate = z
   .trim()
   .transform((v) => (v === "" ? null : v))
   .nullable()
-  .refine((v) => v === null || /^d{4}-d{2}-d{2}(Td{2}:d{2})?$/.test(v), { message: "invalid-date" });
+  .refine((v) => v === null || /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2})?$/.test(v), { message: "invalid-date" });
 
 export const ScholarshipInput = z
   .object({
@@ -275,6 +281,14 @@ export async function duplicateScholarship(id: string, userId: string): Promise<
       ${userId}, ${userId}
     from scholarships where id = ${id} returning id`;
   return row?.id ?? null;
+}
+
+/** Archives every published or pending opportunity whose deadline has passed; returns the archived rows. */
+export async function archiveExpired(): Promise<{ id: string; title: string }[]> {
+  return (await db()`
+    update scholarships set status = 'archived', updated_at = now()
+    where deadline_at < now() and status <> 'archived'
+    returning id, title`) as { id: string; title: string }[];
 }
 
 export async function deleteScholarship(id: string) {

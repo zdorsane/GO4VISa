@@ -34,9 +34,14 @@ export default async function ScholarshipsAdmin({ searchParams }: PageProps<"/ad
             {rows.length} sur {all.length} · Brouillon → Relecture → Approuvée → Publiée → Archivée
           </p>
         </div>
-        <Link href="/admin/scholarships/new" className="admin-btn admin-btn-gold">
-          Ajouter une bourse
-        </Link>
+        <div className="flex flex-wrap gap-2">
+          <Link href="/admin/import" className="admin-btn admin-btn-gold">
+            Importer un PDF
+          </Link>
+          <Link href="/admin/scholarships/new" className="admin-btn admin-btn-ghost">
+            Ajouter une bourse
+          </Link>
+        </div>
       </header>
 
       {one("deleted") && <p className="rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-800">La bourse a été supprimée.</p>}

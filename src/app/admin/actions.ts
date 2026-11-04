@@ -15,6 +15,8 @@ import {
   setStatus,
 } from "@/lib/server/scholarships";
 import { deleteMedia, uploadImage, UploadError } from "@/lib/server/media";
+import { importScholarshipsFromPdf, ImportError, MAX_PDF_BYTES, type ImportReport } from "@/lib/server/pdf-import";
+import { del } from "@vercel/blob";
 import { WORKFLOW } from "@/lib/scholarships";
 
 export type FormState = { ok?: boolean; error?: string; fields?: Record<string, string[]>; message?: string } | undefined;
@@ -163,6 +165,41 @@ export async function deleteMediaAction(form: FormData) {
   await deleteMedia(id);
   await logActivity(admin.id, "delete", "media", id);
   redirect("/admin/media");
+}
+
+// ── PDF import ─────────────────────────────────────────────────────────────
+
+export type ImportState = { report?: ImportReport; error?: string } | undefined;
+
+/** PDFs come from the browser's direct upload to this project's Blob store (see /api/admin/pdf-upload). */
+const IMPORT_URL = /^https:\/\/[a-z0-9]+\.public\.blob\.vercel-storage\.com\/imports\/[^/?#]+\.pdf$/i;
+
+export async function importPdfAction(_: ImportState, form: FormData): Promise<ImportState> {
+  const admin = await requireAdmin("edit");
+  const url = String(form.get("url") ?? "");
+  if (!IMPORT_URL.test(url)) return { error: "bad-file" };
+  try {
+    const res = await fetch(url, { cache: "no-store" });
+    if (!res.ok) return { error: "bad-file" };
+    const pdf = Buffer.from(await res.arrayBuffer());
+    if (pdf.length > MAX_PDF_BYTES) return { error: "too-large" };
+    if (pdf.subarray(0, 5).toString("latin1") !== "%PDF-") return { error: "bad-file" };
+
+    // editors' imports wait in "Relecture"; owners and admins publish straight away
+    const report = await importScholarshipsFromPdf(pdf, admin.id, can(admin.role, "publish"));
+    await logActivity(admin.id, "import-pdf", "scholarship", null, {
+      created: String(report.created.length),
+      updated: String(report.updated.length),
+    });
+    refreshScholarships();
+    return { report };
+  } catch (e) {
+    if (e instanceof ImportError) return { error: e.message };
+    console.error("PDF import failed", e);
+    return { error: "failed" };
+  } finally {
+    await del(url).catch(() => {});
+  }
 }
 
 // ── Site cache ─────────────────────────────────────────────────────────────
