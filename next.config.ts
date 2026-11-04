@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   experimental: {
+    agentUpgrade: "security",
     // 404 for unmatched URLs, since the root layout lives under app/[lang]
     globalNotFound: true,
     // Optional: limit build workers on low-memory machines, e.g. NEXT_BUILD_CPUS=1 npm run build
