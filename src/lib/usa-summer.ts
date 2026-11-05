@@ -44,8 +44,8 @@ const en = {
     title: "How we help you",
     items: [
       {
-        title: "Find the right opportunities",
-        text: "We recommend reliable official websites and trusted organizations where you can explore and apply for opportunities that match your profile.",
+        title: "Find the right program for you",
+        text: "We recommend reliable official websites and trusted organizations and sponsors where you can explore and apply for the program that matches your profile.",
       },
       {
         title: "Personalized guidance",
@@ -57,7 +57,7 @@ const en = {
       },
       {
         title: "Interview preparation",
-        text: "We prepare you for interviews with sponsors and potential employers, depending on the opportunity you choose.",
+        text: "We prepare you for interviews with sponsors and potential employers, depending on the program/job offer you choose.",
       },
       {
         title: "Documentation support",
@@ -135,8 +135,8 @@ const fr: UsaSummerDict = {
     title: "Comment nous vous aidons",
     items: [
       {
-        title: "Trouver les bonnes opportunités",
-        text: "Nous vous recommandons des sites officiels fiables et des organismes de confiance où vous pouvez explorer les opportunités adaptées à votre profil et y postuler.",
+        title: "Trouver le programme qui vous correspond",
+        text: "Nous vous recommandons des sites officiels fiables, des organismes et des sponsors de confiance où vous pouvez explorer le programme adapté à votre profil et y postuler.",
       },
       {
         title: "Accompagnement personnalisé",
@@ -148,7 +148,7 @@ const fr: UsaSummerDict = {
       },
       {
         title: "Préparation aux entretiens",
-        text: "Nous vous préparons aux entretiens avec les sponsors et les employeurs potentiels, selon l'opportunité que vous choisissez.",
+        text: "Nous vous préparons aux entretiens avec les sponsors et les employeurs potentiels, selon le programme ou l'offre d'emploi que vous choisissez.",
       },
       {
         title: "Aide pour les documents",
@@ -224,8 +224,8 @@ const ar: UsaSummerDict = {
     title: "كيف نساعدك",
     items: [
       {
-        title: "إيجاد الفرص المناسبة",
-        text: "نرشدك إلى مواقع رسمية موثوقة وهيئات معتمدة يمكنك من خلالها استكشاف الفرص المناسبة لملفك والتقديم عليها.",
+        title: "إيجاد البرنامج المناسب لك",
+        text: "نرشدك إلى مواقع رسمية موثوقة وهيئات وجهات راعية معتمدة يمكنك من خلالها استكشاف البرنامج المناسب لملفك والتقديم عليه.",
       },
       {
         title: "مرافقة شخصية",
@@ -237,7 +237,7 @@ const ar: UsaSummerDict = {
       },
       {
         title: "التحضير للمقابلات",
-        text: "نحضّرك للمقابلات مع الجهات الراعية وأصحاب العمل المحتملين، حسب الفرصة التي تختارها.",
+        text: "نحضّرك للمقابلات مع الجهات الراعية وأصحاب العمل المحتملين، حسب البرنامج أو عرض العمل الذي تختاره.",
       },
       {
         title: "الدعم في الوثائق",
