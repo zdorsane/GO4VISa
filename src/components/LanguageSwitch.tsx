@@ -52,7 +52,7 @@ export function LanguageSwitch({
             onClick={(e) => go(e, l)}
             aria-current={active ? "true" : undefined}
             title={localeNames[l]}
-            className={`rounded-full px-2.5 py-1.5 uppercase tracking-wider transition-colors ${
+            className={`rounded-full px-2.5 py-1.5 max-[359px]:px-2 uppercase tracking-wider transition-colors ${
               active
                 ? "bg-gold text-midnight"
                 : tone === "dark"

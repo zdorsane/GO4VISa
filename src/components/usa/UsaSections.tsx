@@ -137,7 +137,7 @@ export function UsaExperience({ t }: { t: UsaSummerDict["experience"] }) {
                     <span className={`flex h-12 w-12 items-center justify-center rounded-2xl shadow-lg transition-transform duration-500 group-hover/tilt:-rotate-6 group-hover/tilt:scale-110 keep-light ${tile.badge}`}>
                       <Icon name={tile.icon} className="h-6 w-6" />
                     </span>
-                    <span className="rounded-full bg-black/30 px-2.5 py-1 text-[0.6rem] font-bold uppercase tracking-widest text-white/85 backdrop-blur-sm">{tile.place}</span>
+                    <span className="rounded-full bg-black/35 px-2.5 py-1 text-[0.7rem] font-bold uppercase tracking-wider text-white/85 backdrop-blur-sm">{tile.place}</span>
                   </div>
                   <div>
                     <span aria-hidden className="mb-3 block h-1 w-10 rounded-full bg-gold transition-all duration-500 group-hover/tilt:w-20" />

@@ -58,7 +58,7 @@ export function UsaHero({ lang, t }: { lang: Locale; t: UsaSummerDict["hero"] })
             initial={reduce ? false : { opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: EASE }}
-            className="inline-flex items-center gap-2.5 rounded-full bg-white/10 py-1.5 pe-4 ps-2 text-[0.7rem] font-bold uppercase tracking-[0.18em] text-white ring-1 ring-white/20 backdrop-blur-md rtl:tracking-normal"
+            className="inline-flex items-center gap-2.5 rounded-full bg-white/10 py-1.5 pe-4 ps-2 text-xs font-bold uppercase tracking-[0.16em] text-white ring-1 ring-white/20 backdrop-blur-md rtl:tracking-normal"
           >
             <Flag code="us" className="h-4 w-6" />
             {t.label}
@@ -132,7 +132,7 @@ export function UsaHero({ lang, t }: { lang: Locale; t: UsaSummerDict["hero"] })
 
       <a
         href="#experience"
-        className="absolute bottom-6 start-1/2 flex -translate-x-1/2 flex-col items-center gap-2 text-[0.65rem] font-semibold uppercase tracking-[0.3em] text-white/60 hover:text-white rtl:translate-x-1/2"
+        className="absolute bottom-4 start-1/2 flex -translate-x-1/2 flex-col items-center gap-2 px-5 py-2 text-[0.7rem] font-semibold uppercase tracking-[0.3em] text-white/60 hover:text-white rtl:translate-x-1/2"
       >
         {t.scroll}
         <span className="flex h-9 w-5 justify-center rounded-full ring-1 ring-white/40">

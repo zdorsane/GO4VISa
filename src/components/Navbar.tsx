@@ -57,7 +57,7 @@ export function Navbar({ lang, ui, nav }: { lang: Locale; ui: Dict["ui"]; nav: D
   const isCurrent = (path: string) => (path === "" ? pathname === home : !path.includes("#") && pathname === `${home}${path}`);
 
   const linkClass = (current: boolean) =>
-    `relative inline-flex items-center gap-1 whitespace-nowrap rounded-full px-3 py-2 text-sm transition-colors after:absolute after:inset-x-3 2xl:px-3.5 2xl:after:inset-x-3.5 after:bottom-1 after:h-0.5 after:origin-left after:bg-gold after:transition-transform hover:after:scale-x-100 rtl:after:origin-right ${
+    `relative inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-2 text-sm transition-colors after:absolute after:inset-x-2.5 2xl:px-3.5 2xl:after:inset-x-3.5 after:bottom-1 after:h-0.5 after:origin-left after:bg-gold after:transition-transform hover:after:scale-x-100 rtl:after:origin-right ${
       current ? "font-semibold after:scale-x-100" : "font-medium after:scale-x-0"
     } ${solid ? "text-midnight" : "text-white/90 hover:text-white"}`;
 
@@ -73,9 +73,9 @@ export function Navbar({ lang, ui, nav }: { lang: Locale; ui: Dict["ui"]; nav: D
       >
         {ui.skipToContent}
       </a>
-      <nav aria-label={ui.mainNav} className="container-brand flex h-[var(--g4v-header-h)] items-center justify-between gap-3">
+      <nav aria-label={ui.mainNav} className="container-brand flex h-[var(--g4v-header-h)] items-center justify-between gap-3 max-[359px]:gap-1.5 max-[359px]:px-3">
         <Link href={home} aria-label={ui.homeLabel} className="shrink-0 rounded-lg">
-          <LogoLockup variant={solid && !dark ? "color" : "white"} />
+          <LogoLockup variant={solid && !dark ? "color" : "white"} className="max-[359px]:gap-1.5 max-[359px]:[&>*:first-child]:!h-7 max-[359px]:[&>*:last-child]:!text-lg" />
         </Link>
 
         <ul className="hidden items-center gap-0.5 xl:flex">
@@ -146,7 +146,7 @@ export function Navbar({ lang, ui, nav }: { lang: Locale; ui: Dict["ui"]; nav: D
           })}
         </ul>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 max-[359px]:gap-1">
           <LanguageSwitch lang={lang} label={ui.language} tone={solid ? "dark" : "light"} />
           <ThemeToggle toDark={ui.themeDark} toLight={ui.themeLight} tone={solid ? "dark" : "light"} className="max-sm:hidden" />
           <Link href={`${home}/apply`} className={buttonClasses("gold", "whitespace-nowrap !px-5 !py-2.5 max-sm:hidden")}>
@@ -154,7 +154,7 @@ export function Navbar({ lang, ui, nav }: { lang: Locale; ui: Dict["ui"]; nav: D
           </Link>
           <button
             type="button"
-            className={`inline-flex h-11 w-11 items-center justify-center rounded-full xl:hidden ${
+            className={`inline-flex h-11 w-11 items-center justify-center rounded-full max-[359px]:w-9 xl:hidden ${
               solid ? "text-midnight hover:bg-midnight/5" : "text-white hover:bg-white/10"
             }`}
             aria-expanded={open}

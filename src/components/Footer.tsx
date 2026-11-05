@@ -73,7 +73,7 @@ export function Footer({
               .filter((s) => s.handle)
               .map((s) => (
                 <li key={s.name}>
-                  <a href={s.href} target="_blank" rel="noopener noreferrer" className="inline-block py-1 hover:text-gold">
+                  <a href={s.href} target="_blank" rel="noopener noreferrer" className="inline-block break-all py-1 hover:text-gold">
                     {s.name}: <span dir="ltr">{s.handle}</span>
                   </a>
                 </li>
