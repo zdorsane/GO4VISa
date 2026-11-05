@@ -18,8 +18,6 @@ export function ScholarshipsHero({ lang, items }: { lang: Locale; items: PublicS
 
   const stats: { value: number | string; label: string }[] = [
     { value: live.length, label: t.statOpps },
-    { value: live.filter((s) => s.funding_type === "full").length, label: t.statFunded },
-    { value: live.filter((s) => s.algeria_eligible === "yes").length, label: t.statAlgeria },
     { value: next ? formatDate(next.deadline_at, lang, false, next.deadline_tz ?? undefined)! : "—", label: t.statNext },
   ];
 
@@ -48,7 +46,7 @@ export function ScholarshipsHero({ lang, items }: { lang: Locale; items: PublicS
           </ul>
         )}
 
-        <dl className="mx-auto mt-8 grid max-w-3xl grid-cols-2 gap-3 md:grid-cols-4">
+        <dl className="mx-auto mt-8 grid max-w-md grid-cols-2 gap-3">
           {stats.map((s, i) => (
             <div key={s.label} style={{ animationDelay: `${0.5 + i * 0.1}s` }} className="g4v-rise rounded-2xl bg-white/[0.07] px-4 py-4 ring-1 ring-white/15 backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:bg-white/[0.12] hover:ring-gold/40">
               <dt className="sr-only">{s.label}</dt>

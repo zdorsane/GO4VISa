@@ -3,15 +3,13 @@ import type { ReactNode } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { buttonClasses } from "@/components/ui/Button";
 import { countryName } from "@/lib/countries";
-import { formatDate, formatDeadline, getPlatformDict } from "@/lib/platform-i18n";
+import { formatDeadline, getPlatformDict } from "@/lib/platform-i18n";
 import type { Locale } from "@/lib/i18n";
 import { toListItem, type PublicScholarship } from "@/lib/server/public";
-import type { Source } from "@/lib/server/scholarships";
 import { Cover } from "./Cover";
 import { DeadlineBadge } from "./DeadlineBadge";
 import { Flag } from "./Flag";
 import { Caveats, SaveButton, ScholarshipCard } from "./ScholarshipCard";
-import { ShareActions } from "./ShareActions";
 
 function Row({ label, children, empty }: { label: string; children: ReactNode; empty: string }) {
   const missing = children === null || children === undefined || children === "" || (Array.isArray(children) && !children.length);
@@ -23,43 +21,14 @@ function Row({ label, children, empty }: { label: string; children: ReactNode; e
   );
 }
 
-function Block({ title, icon, children }: { title: string; icon: Parameters<typeof Icon>[0]["name"]; children: ReactNode }) {
-  return (
-    <section className="rounded-brand-lg bg-white p-5 ring-1 ring-line sm:p-6">
-      <h2 className="flex items-center gap-2.5 text-lg font-semibold text-midnight">
-        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-cloud text-ocean">
-          <Icon name={icon} className="h-4 w-4" />
-        </span>
-        {title}
-      </h2>
-      <dl className="mt-2 divide-y divide-line">{children}</dl>
-    </section>
-  );
-}
-
-const lines = (v: string | null) =>
-  v ? (
-    <ul className="list-disc space-y-1 ps-5">
-      {v
-        .split(/\n+/)
-        .map((l) => l.replace(/^[-•]\s*/, "").trim())
-        .filter(Boolean)
-        .map((l, i) => (
-          <li key={i}>{l}</li>
-        ))}
-    </ul>
-  ) : null;
-
-/** Full opportunity page body, shared by the public page and the admin preview. */
+/** Opportunity page: name, target audience, eligibility, deadline and official link (public page and admin preview). */
 export function ScholarshipDetail({
   s,
-  sources,
   related = [],
   lang,
   preview = false,
 }: {
   s: PublicScholarship;
-  sources: Source[];
   related?: PublicScholarship[];
   lang: Locale;
   preview?: boolean;
@@ -70,7 +39,7 @@ export function ScholarshipDetail({
   const applyUrl = s.application_url ?? s.source_url;
   const place = [s.city, countryName(s.country_code, lang)].filter(Boolean).join(", ");
   const deadline = formatDeadline(s.deadline_at, s.deadline_tz, lang);
-  const opens = formatDate(s.opens_at, lang, false, s.deadline_tz ?? undefined);
+  const officialUrl = s.source_url ?? s.application_url;
 
   return (
     <>
@@ -110,10 +79,7 @@ export function ScholarshipDetail({
                 )}
               </span>
               <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-2">
-                  <DeadlineBadge lang={lang} opens_at={s.opens_at} deadline_at={s.deadline_at} initial={s.deadline_status} unconfirmed={s.verification !== "verified"} className="!bg-white/95" />
-                  <span className="rounded-full bg-gold px-2.5 py-1 text-[0.7rem] font-bold uppercase tracking-wide text-midnight">{t.funding[s.funding_type]}</span>
-                </div>
+                <DeadlineBadge lang={lang} opens_at={s.opens_at} deadline_at={s.deadline_at} initial={s.deadline_status} unconfirmed={s.verification !== "verified"} className="!bg-white/95" />
                 <h1 dir="auto" className="mt-3 text-2xl font-bold leading-tight text-white md:text-4xl">{s.title}</h1>
                 <p dir="auto" className="mt-2 text-sm text-mist md:text-base">
                   {s.institution}
@@ -137,108 +103,42 @@ export function ScholarshipDetail({
 
       <div className="relative z-10 -mt-14 pb-20">
         <div className="container-brand grid max-w-5xl gap-6 lg:grid-cols-[minmax(0,1fr)_18rem]">
-          <div className="min-w-0 space-y-6">
-            <section className="rounded-brand-lg bg-white p-5 ring-1 ring-line sm:p-6">
-              <h2 className="text-lg font-semibold text-midnight">{t.detail.overview}</h2>
-              {s.description || s.summary ? (
-                <div className="mt-3 space-y-3 text-[0.95rem] leading-relaxed text-slate">
-                  {(s.description ?? s.summary ?? "").split(/\n{2,}/).map((p, i) => (
-                    <p key={i} dir="auto">
-                      {p}
-                    </p>
-                  ))}
-                </div>
-              ) : (
-                <p className="mt-3 text-sm italic text-slate/80">{empty}</p>
-              )}
-              <div className="mt-5">
-                <ShareActions lang={lang} title={s.title} applyUrl={applyUrl} />
-              </div>
-            </section>
-
-            <Block title={t.detail.eligibility} icon="user">
-              <Row label={f.level} empty={empty}>{s.levels.map((l) => t.level[l]).join(", ")}</Row>
-              <Row label={f.nationalities} empty={empty}>{s.eligible_nationalities}</Row>
-              <Row label={f.algeria} empty={empty}>
-                <span className={s.algeria_eligible === "yes" ? "font-semibold text-emerald-700" : s.algeria_eligible === "no" ? "font-semibold text-red-700" : ""}>
-                  <Flag code="dz" className="me-1.5 inline-block h-3.5 w-5 align-[-2px]" />
-                  {t.detail.algeria[s.algeria_eligible]}
-                </span>
+          <section className="min-w-0 rounded-brand-lg bg-white p-5 ring-1 ring-line sm:p-6">
+            <h2 className="text-lg font-semibold text-midnight">{t.detail.essentials}</h2>
+            <dl className="mt-2 divide-y divide-line">
+              <Row label={f.name} empty={empty}>
+                <strong className="text-midnight">{s.title}</strong>
               </Row>
-              <Row label={f.studyFields} empty={empty}>{s.fields.join(", ")}</Row>
-              <Row label={f.qualifications} empty={empty}>{s.qualifications}</Row>
-              <Row label={f.age} empty={empty}>{s.age_limit}</Row>
-              <Row label={f.languages} empty={empty}>{s.language_requirements}</Row>
-            </Block>
-
-            <Block title={t.detail.benefits} icon="wallet">
-              <Row label={f.funding} empty={empty}>{s.funding_type === "unknown" ? null : t.funding[s.funding_type]}</Row>
-              <Row label={f.tuition} empty={empty}>{s.tuition}</Row>
-              <Row label={f.stipend} empty={empty}>{s.stipend}</Row>
-              <Row label={f.accommodation} empty={empty}>{s.accommodation}</Row>
-              <Row label={f.travel} empty={empty}>{s.travel}</Row>
-              <Row label={f.insurance} empty={empty}>{s.insurance}</Row>
-              <Row label={f.duration} empty={empty}>{s.duration}</Row>
-            </Block>
-
-            <Block title={t.detail.howToApply} icon="doc">
-              <Row label={f.documents} empty={empty}>{lines(s.documents)}</Row>
-              <Row label={f.instructions} empty={empty}>{s.instructions}</Row>
-              <Row label={f.applyLink} empty={empty}>
-                {s.application_url && (
-                  <a href={s.application_url} target="_blank" rel="noopener noreferrer" className="break-all font-medium text-ocean underline underline-offset-2">
-                    {s.application_url}
+              <Row label={f.target} empty={empty}>{s.levels.map((l) => t.level[l]).join(", ")}</Row>
+              <Row label={t.detail.eligibility} empty={empty}>
+                <ul className="space-y-1.5">
+                  <li className={s.algeria_eligible === "yes" ? "font-semibold text-emerald-700" : s.algeria_eligible === "no" ? "font-semibold text-red-700" : ""}>
+                    <Flag code="dz" className="me-1.5 inline-block h-3.5 w-5 align-[-2px]" />
+                    {f.algeria} : {t.detail.algeria[s.algeria_eligible]}
+                  </li>
+                  {[s.eligible_nationalities, s.qualifications, s.language_requirements, s.age_limit].filter(Boolean).map((c, i) => (
+                    <li key={i}>{c}</li>
+                  ))}
+                </ul>
+              </Row>
+              <Row label={f.deadline} empty={empty}>
+                <span className="font-semibold text-midnight">{deadline?.official ?? (s.verification !== "verified" ? t.card.dateTbc : t.card.noDeadline)}</span>
+                {deadline?.local && <span className="block text-xs text-slate">{deadline.local}</span>}
+                {s.deadline_note && <span className="mt-1 block text-xs text-slate">{s.deadline_note}</span>}
+              </Row>
+              <Row label={f.officialLink} empty={empty}>
+                {officialUrl && (
+                  <a href={officialUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 font-medium text-ocean underline underline-offset-2">
+                    {new URL(officialUrl).hostname.replace(/^www\./, "")}
+                    <Icon name="external" className="h-3.5 w-3.5" />
                   </a>
                 )}
               </Row>
-            </Block>
-          </div>
+            </dl>
+            {s.verification !== "verified" && <p className="mt-4 rounded-xl bg-amber-50 p-3 text-xs leading-relaxed text-amber-900">{t.detail.unverifiedNote}</p>}
+          </section>
 
-          <aside className="space-y-6 lg:sticky lg:top-[calc(var(--g4v-header-h)+1rem)] lg:self-start">
-            <section className="rounded-brand-lg bg-white p-5 ring-1 ring-line">
-              <h2 className="font-semibold text-midnight">{t.detail.dates}</h2>
-              <dl className="mt-3 space-y-3 text-sm">
-                <div>
-                  <dt className="text-slate">{f.deadline}</dt>
-                  <dd className="mt-0.5 text-base font-semibold text-midnight">{deadline?.official ?? (s.verification !== "verified" ? t.card.dateTbc : t.card.noDeadline)}</dd>
-                  {deadline?.local && <dd className="mt-0.5 text-xs text-slate">{deadline.local}</dd>}
-                </div>
-                <div>
-                  <dt className="text-slate">{f.opens}</dt>
-                  <dd className="mt-0.5 font-medium text-midnight">{opens ?? <span className="italic text-slate/80">{empty}</span>}</dd>
-                </div>
-                {s.deadline_note && <dd dir="auto" className="rounded-xl bg-cloud p-3 text-xs leading-relaxed text-slate">{s.deadline_note}</dd>}
-              </dl>
-            </section>
-
-            <section className="rounded-brand-lg bg-white p-5 ring-1 ring-line">
-              <h2 className="font-semibold text-midnight">{t.detail.sources}</h2>
-              <ul className="mt-3 space-y-2 text-sm">
-                {s.source_url ? (
-                  <li>
-                    <a href={s.source_url} target="_blank" rel="noopener noreferrer" className="break-all font-medium text-ocean underline underline-offset-2">
-                      {f.source}
-                    </a>
-                  </li>
-                ) : (
-                  <li className="italic text-slate/80">{empty}</li>
-                )}
-                {sources.map((src) => (
-                  <li key={src.id}>
-                    <a href={src.url} target="_blank" rel="noopener noreferrer" className="break-all text-ocean underline underline-offset-2">
-                      {src.label || src.url}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-4 text-xs text-slate">
-                {f.verified} : <strong className="text-midnight">{formatDate(s.verified_at, lang) ?? empty}</strong>
-              </p>
-              <p className={`mt-3 rounded-xl p-3 text-xs leading-relaxed ${s.verification === "verified" ? "bg-emerald-50 text-emerald-900" : "bg-amber-50 text-amber-900"}`}>
-                {s.verification === "verified" ? t.detail.verifiedNote : t.detail.unverifiedNote}
-              </p>
-            </section>
-
+          <aside className="lg:sticky lg:top-[calc(var(--g4v-header-h)+1rem)] lg:self-start">
             <section className="rounded-brand-lg bg-midnight p-5 text-white">
               <h2 className="font-semibold">{t.detail.help}</h2>
               <p className="mt-2 text-sm text-mist">{t.detail.helpText}</p>

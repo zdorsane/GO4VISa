@@ -37,14 +37,6 @@ export type CardData = Pick<
   | "featured"
 >;
 
-const FUNDING_STYLE = {
-  full: "bg-gold text-midnight",
-  partial: "bg-white/90 text-sky-900",
-  stipend: "bg-white/90 text-teal-900",
-  unpaid: "bg-white/90 text-zinc-700",
-  unknown: "bg-white/85 text-zinc-600",
-} as const;
-
 /** Days shown on the countdown bar: a deadline further away than this reads as a nearly empty bar. */
 const COUNTDOWN_WINDOW = 90;
 
@@ -264,9 +256,6 @@ export function ScholarshipCard({ s, lang }: { s: CardData; lang: Locale }) {
         </div>
         <div className="absolute inset-x-3 bottom-3 z-20 flex items-end justify-between gap-2">
           <Place s={s} lang={lang} />
-          <span className={`shrink-0 rounded-full px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-wide shadow-sm ${FUNDING_STYLE[s.funding_type]}`}>
-            {t.funding[s.funding_type]}
-          </span>
         </div>
       </div>
 
@@ -342,7 +331,6 @@ export function SpotlightCard({ s, lang, priority = false }: { s: CardData; lang
       <div className="relative z-20 mt-auto p-5 md:p-7">
         <div className="flex flex-wrap items-center gap-2">
           <Place s={s} lang={lang} />
-          <span className={`rounded-full px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-wide ${FUNDING_STYLE[s.funding_type]}`}>{t.funding[s.funding_type]}</span>
         </div>
         <h3 dir="auto" className="mt-3 text-2xl font-bold leading-tight text-white md:text-3xl">
           <Link href={href} className="after:absolute after:inset-0 after:z-10 focus-visible:outline-none">

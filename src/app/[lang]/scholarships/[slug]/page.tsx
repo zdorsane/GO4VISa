@@ -74,7 +74,7 @@ export default async function ScholarshipPage({ params }: PageProps<"/[lang]/sch
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
-      <ScholarshipDetail s={s} sources={data.sources} related={relatedTo(s, all)} lang={lang} />
+      <ScholarshipDetail s={s} related={relatedTo(s, all)} lang={lang} />
     </>
   );
 }
