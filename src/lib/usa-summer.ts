@@ -76,7 +76,7 @@ const en = {
     trust: "We believe that the right information and proper preparation can make all the difference!",
     disclaimerTitle: "Good to know",
     disclaimer:
-      "We don't promise opportunities or visas. We provide the knowledge, guidance, and preparation to help you find and pursue the right international opportunity. You choose and apply directly through the relevant organizations and official channels. Visa decisions are made by the relevant authorities and cannot be guaranteed.",
+      "We don't promise visas. We provide the knowledge, guidance, and preparation to help you find and pursue the right international opportunity.",
   },
   cta: {
     title: "Ready to make this summer different?",
@@ -167,7 +167,7 @@ const fr: UsaSummerDict = {
     trust: "Nous sommes convaincus que la bonne information et une bonne préparation peuvent tout changer !",
     disclaimerTitle: "Bon à savoir",
     disclaimer:
-      "Nous ne promettons ni opportunités ni visas. Nous apportons les connaissances, l'accompagnement et la préparation pour vous aider à trouver et à saisir la bonne opportunité internationale. Vous choisissez et postulez directement auprès des organismes concernés et par les canaux officiels. Les décisions de visa sont prises par les autorités compétentes et ne peuvent pas être garanties.",
+      "Nous ne promettons pas de visas. Nous apportons les connaissances, l'accompagnement et la préparation pour vous aider à trouver et à saisir la bonne opportunité internationale.",
   },
   cta: {
     title: "Prêt à vivre un été différent ?",
@@ -256,7 +256,7 @@ const ar: UsaSummerDict = {
     trust: "نؤمن بأن المعلومة الصحيحة والتحضير الجيد يمكن أن يصنعا الفرق!",
     disclaimerTitle: "معلومة مهمة",
     disclaimer:
-      "لا نَعِد بفرص ولا بتأشيرات. نقدّم المعرفة والمرافقة والتحضير لمساعدتك على إيجاد الفرصة الدولية المناسبة والسعي إليها. أنت من يختار ويتقدّم مباشرة لدى الهيئات المعنية وعبر القنوات الرسمية. قرارات التأشيرة تتخذها السلطات المختصة ولا يمكن ضمانها.",
+      "لا نَعِد بالتأشيرات. نقدّم المعرفة والمرافقة والتحضير لمساعدتك على إيجاد الفرصة الدولية المناسبة والسعي إليها.",
   },
   cta: {
     title: "مستعد لتجعل هذا الصيف مختلفًا؟",
