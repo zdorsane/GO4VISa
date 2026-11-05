@@ -24,6 +24,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...entry("", 1, LAST_UPDATED, "daily"),
     ...entry("/scholarships", 0.95, LAST_UPDATED, "daily"),
     ...scholarships.filter((s) => s.deadline_status !== "closed").flatMap((s) => entry(`/scholarships/${s.slug}`, 0.85, s.updated_at, "weekly")),
+    ...entry("/usa-summer-experience", 0.9),
     ...entry("/how-it-works", 0.9),
     ...entry("/faq", 0.8),
     ...entry("/apply", 0.9),

@@ -8,6 +8,7 @@ import { LogoLockup } from "./brand/Logo";
 import { Icon } from "./ui/Icon";
 import { buttonClasses } from "./ui/Button";
 import { LanguageSwitch } from "./LanguageSwitch";
+import { Flag } from "./scholarships/Flag";
 import { ThemeToggle, useIsDark } from "./ThemeToggle";
 import type { Dict } from "@/lib/content";
 import type { Locale } from "@/lib/i18n";
@@ -56,7 +57,7 @@ export function Navbar({ lang, ui, nav }: { lang: Locale; ui: Dict["ui"]; nav: D
   const isCurrent = (path: string) => (path === "" ? pathname === home : !path.includes("#") && pathname === `${home}${path}`);
 
   const linkClass = (current: boolean) =>
-    `relative inline-flex items-center gap-1 whitespace-nowrap rounded-full px-3.5 py-2 text-sm transition-colors after:absolute after:inset-x-3.5 after:bottom-1 after:h-0.5 after:origin-left after:bg-gold after:transition-transform hover:after:scale-x-100 rtl:after:origin-right ${
+    `relative inline-flex items-center gap-1 whitespace-nowrap rounded-full px-3 py-2 text-sm transition-colors after:absolute after:inset-x-3 2xl:px-3.5 2xl:after:inset-x-3.5 after:bottom-1 after:h-0.5 after:origin-left after:bg-gold after:transition-transform hover:after:scale-x-100 rtl:after:origin-right ${
       current ? "font-semibold after:scale-x-100" : "font-medium after:scale-x-0"
     } ${solid ? "text-midnight" : "text-white/90 hover:text-white"}`;
 
@@ -77,7 +78,7 @@ export function Navbar({ lang, ui, nav }: { lang: Locale; ui: Dict["ui"]; nav: D
           <LogoLockup variant={solid && !dark ? "color" : "white"} />
         </Link>
 
-        <ul className="hidden items-center gap-0.5 lg:flex">
+        <ul className="hidden items-center gap-0.5 xl:flex">
           {/* Home + its sections */}
           <li
             ref={homeRef}
@@ -137,6 +138,7 @@ export function Navbar({ lang, ui, nav }: { lang: Locale; ui: Dict["ui"]; nav: D
             return (
               <li key={item.path}>
                 <Link href={`${home}${item.path}`} className={linkClass(current)} aria-current={current ? "page" : undefined}>
+                  {"flag" in item && item.flag && <Flag code={item.flag} className="me-1.5 inline-block h-3 w-4.5 align-[-1px]" />}
                   {item.label}
                 </Link>
               </li>
@@ -147,12 +149,12 @@ export function Navbar({ lang, ui, nav }: { lang: Locale; ui: Dict["ui"]; nav: D
         <div className="flex items-center gap-2">
           <LanguageSwitch lang={lang} label={ui.language} tone={solid ? "dark" : "light"} />
           <ThemeToggle toDark={ui.themeDark} toLight={ui.themeLight} tone={solid ? "dark" : "light"} className="max-sm:hidden" />
-          <Link href={`${home}/apply`} className={buttonClasses("gold", "!px-5 !py-2.5 max-sm:hidden")}>
+          <Link href={`${home}/apply`} className={buttonClasses("gold", "whitespace-nowrap !px-5 !py-2.5 max-sm:hidden")}>
             {ui.getStarted}
           </Link>
           <button
             type="button"
-            className={`inline-flex h-11 w-11 items-center justify-center rounded-full lg:hidden ${
+            className={`inline-flex h-11 w-11 items-center justify-center rounded-full xl:hidden ${
               solid ? "text-midnight hover:bg-midnight/5" : "text-white hover:bg-white/10"
             }`}
             aria-expanded={open}
@@ -173,7 +175,7 @@ export function Navbar({ lang, ui, nav }: { lang: Locale; ui: Dict["ui"]; nav: D
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="max-h-[calc(100svh-var(--g4v-header-h))] overflow-y-auto border-t border-line bg-white lg:hidden"
+            className="max-h-[calc(100svh-var(--g4v-header-h))] overflow-y-auto border-t border-line bg-white xl:hidden"
           >
             <div className="container-brand py-4">
               <ul className="space-y-1">
@@ -189,7 +191,10 @@ export function Navbar({ lang, ui, nav }: { lang: Locale; ui: Dict["ui"]; nav: D
                           current ? "bg-midnight text-white" : "text-midnight hover:bg-cloud"
                         }`}
                       >
-                        {item.label}
+                        <span className="flex items-center gap-2">
+                          {"flag" in item && item.flag && <Flag code={item.flag} className="h-3.5 w-5" />}
+                          {item.label}
+                        </span>
                         <Icon name="arrow" className={`h-4 w-4 ${current ? "text-gold" : "opacity-40"}`} />
                       </Link>
                     </li>

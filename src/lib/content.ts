@@ -90,6 +90,7 @@ const en = {
     sectionsLabel: "On the home page",
     pages: [
       { label: "Global opportunities", path: "/scholarships" },
+      { label: "USA Summer Experience", path: "/usa-summer-experience", flag: "us" },
       { label: "How it works", path: "/how-it-works" },
       { label: "FAQ", path: "/faq" },
     ],
@@ -541,6 +542,7 @@ const fr: Dict = {
     sectionsLabel: "Sur la page d'accueil",
     pages: [
       { label: "Opportunités internationales", path: "/scholarships" },
+      { label: "USA Summer Experience", path: "/usa-summer-experience", flag: "us" },
       { label: "Votre parcours", path: "/how-it-works" },
       { label: "FAQ", path: "/faq" },
     ],
@@ -989,6 +991,7 @@ const ar: Dict = {
     sectionsLabel: "في الصفحة الرئيسية",
     pages: [
       { label: "فرص دولية", path: "/scholarships" },
+      { label: "تجربة صيف أمريكا", path: "/usa-summer-experience", flag: "us" },
       { label: "كيف نعمل", path: "/how-it-works" },
       { label: "الأسئلة الشائعة", path: "/faq" },
     ],

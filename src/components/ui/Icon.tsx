@@ -34,7 +34,9 @@ export type IconName =
   | "chat"
   | "wallet"
   | "pulse"
-  | "whatsapp";
+  | "whatsapp"
+  | "briefcase"
+  | "map";
 
 /** Line icons in the brand's icon-field style (24px grid, 1.75 stroke). */
 export function Icon({ name, ...props }: { name: IconName } & SVGProps<SVGSVGElement>) {
@@ -267,6 +269,20 @@ export function Icon({ name, ...props }: { name: IconName } & SVGProps<SVGSVGEle
         <svg {...common}>
           <rect x="3" y="3" width="18" height="18" rx="3" />
           <path d="M8 10v7M8 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7" />
+        </svg>
+      );
+    case "briefcase":
+      return (
+        <svg {...common}>
+          <rect x="3" y="7" width="18" height="13" rx="2.5" />
+          <path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7M3 12.5h18M11 12.5v2h2v-2" />
+        </svg>
+      );
+    case "map":
+      return (
+        <svg {...common}>
+          <path d="m3 6.5 6-2.5 6 2.5 6-2.5v13.5l-6 2.5-6-2.5-6 2.5z" />
+          <path d="M9 4v13.5M15 6.5V20" />
         </svg>
       );
   }
