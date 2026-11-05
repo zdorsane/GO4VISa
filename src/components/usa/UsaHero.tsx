@@ -11,6 +11,7 @@ import { useReducedMotion } from "@/lib/motion";
 import type { Locale } from "@/lib/i18n";
 import type { UsaSummerDict } from "@/lib/usa-summer";
 import { photos } from "./photos";
+import { FlightPath } from "./UsaMotion";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -37,6 +38,7 @@ export function UsaHero({ lang, t }: { lang: Locale; t: UsaSummerDict["hero"] })
       </motion.div>
       <div aria-hidden className="absolute inset-0 -z-10 bg-linear-to-r from-midnight/95 via-midnight/70 to-midnight/10 rtl:bg-linear-to-l" />
       <div aria-hidden className="absolute inset-x-0 bottom-0 -z-10 h-48 bg-linear-to-t from-midnight to-transparent" />
+      <FlightPath />
       {/* a few stars twinkling over the sky */}
       <div aria-hidden className="absolute inset-0 -z-10">
         {[

@@ -6,6 +6,11 @@ import santaMonicaStairs from "@/assets/usa/santa-monica-stairs.webp";
 import santaMonicaBeach from "@/assets/usa/santa-monica-beach.webp";
 import goldenGate from "@/assets/usa/golden-gate.webp";
 import route66 from "@/assets/usa/route-66.webp";
+import washingtonSquare from "@/assets/usa/washington-square.webp";
+import lifeguard from "@/assets/usa/lifeguard.webp";
+import boardwalk from "@/assets/usa/boardwalk.webp";
+import liberty from "@/assets/usa/liberty.webp";
+import brooklynNight from "@/assets/usa/brooklyn-night.webp";
 
 /** Photos of the USA Summer Experience page, all from Wikimedia Commons under free licences. */
 export const photos = {
@@ -48,5 +53,30 @@ export const photos = {
     src: route66,
     alt: "Historic Route 66 road marking in the California desert",
     credit: { author: "Dietmar Rabich", license: "CC BY-SA 4.0", url: "https://commons.wikimedia.org/wiki/File:Amboy_(California,_USA)_--_2012_--_5704.jpg" },
+  },
+  washingtonSquare: {
+    src: washingtonSquare,
+    alt: "Summer afternoon around the fountain of Washington Square Park, New York",
+    credit: { author: "Acroterion", license: "CC BY-SA 4.0", url: "https://commons.wikimedia.org/wiki/File:Washington_Square_NY1.jpg" },
+  },
+  lifeguard: {
+    src: lifeguard,
+    alt: "Lifeguard on duty at a colourful lifeguard tower, Miami Beach",
+    credit: { author: "Jorge Royan", license: "CC BY-SA 3.0", url: "https://commons.wikimedia.org/wiki/File:Miami_-_Lifeguard_tower_and_flags_-_0514.jpg" },
+  },
+  boardwalk: {
+    src: boardwalk,
+    alt: "Busy summer day on the Santa Cruz Beach Boardwalk, California",
+    credit: { author: "Nick Amoscato", license: "CC BY 2.0", url: "https://commons.wikimedia.org/wiki/File:Santa_Cruz_Beach_Boardwalk_2018.jpg" },
+  },
+  liberty: {
+    src: liberty,
+    alt: "Statue of Liberty at sunset, New York",
+    credit: { author: "Eric Kilby", license: "CC BY-SA 2.0", url: "https://commons.wikimedia.org/wiki/File:Statue_of_Liberty_Lit_by_Sunset.jpg" },
+  },
+  brooklynNight: {
+    src: brooklynNight,
+    alt: "Lower Manhattan and the Brooklyn Bridge at night",
+    credit: { author: "John Cunniff", license: "CC BY 2.0", url: "https://commons.wikimedia.org/wiki/File:NYC_Downtown_and_Brooklyn_Bridge_Panorama_(Explored)_(19610363205).jpg" },
   },
 } as const;

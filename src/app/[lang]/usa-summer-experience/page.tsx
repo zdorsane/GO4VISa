@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { UsaHero } from "@/components/usa/UsaHero";
 import { UsaRate } from "@/components/usa/UsaRate";
-import { UsaCommitment, UsaExperience, UsaFinalCta, UsaGuide, UsaServices, UsaTicker } from "@/components/usa/UsaSections";
+import { UsaCommitment, UsaExperience, UsaFinalCta, UsaGuide, UsaRibbon, UsaServices, UsaTicker } from "@/components/usa/UsaSections";
 import { photos } from "@/components/usa/photos";
 import { hasLocale, languageAlternates } from "@/lib/i18n";
 import { getUsaSummerDict } from "@/lib/usa-summer";
@@ -37,6 +37,7 @@ export default async function UsaSummerPage({ params }: PageProps<"/[lang]/usa-s
       <UsaExperience t={t.experience} />
       <UsaGuide t={t.guide} />
       <UsaServices t={t.services} />
+      <UsaRibbon />
       <UsaCommitment t={t.commitment} rate={<UsaRate value={80} label={t.commitment.rateLabel} />} />
       <UsaFinalCta lang={lang} t={t.cta} credits={t.credits} />
     </>
