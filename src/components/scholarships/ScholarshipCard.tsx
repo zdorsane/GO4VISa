@@ -156,8 +156,8 @@ function Countdown({ s, lang, status, light = false }: { s: CardData; lang: Loca
   const fill = left === null ? 0 : Math.max(6, Math.min(100, 100 - (left / COUNTDOWN_WINDOW) * 100));
   return (
     <div>
-      <div className="flex items-end justify-between gap-3">
-        <div className="min-w-0">
+      <div className="flex flex-wrap items-end justify-between gap-x-3 gap-y-1.5">
+        <div className="min-w-[7.5rem] flex-1">
           <p className={`text-[0.65rem] font-semibold uppercase tracking-[0.14em] ${light ? "text-white/70" : "text-slate"}`}>{t.deadline}</p>
           <p title={s.deadline_label ?? undefined} className={`mt-0.5 truncate text-sm font-bold ${light ? "text-white" : "text-midnight"}`}>
             {s.deadline_label
@@ -198,10 +198,10 @@ function Actions({ s, lang, href, status, light = false }: { s: CardData; lang: 
   const t = getPlatformDict(lang).card;
   const applyHref = s.application_url ?? s.source_url;
   return (
-    <div className="relative z-20 flex gap-2">
+    <div className="relative z-20 flex flex-wrap gap-2">
       <Link
         href={href}
-        className={`group/btn flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-3 py-2.5 text-center text-[0.8rem] font-semibold sm:px-4 sm:text-sm transition-all ${
+        className={`group/btn flex min-w-[7.5rem] flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-3 py-2.5 text-center text-[0.8rem] font-semibold sm:px-4 sm:text-sm transition-all ${
           light ? "bg-white/15 text-white ring-1 ring-white/30 backdrop-blur hover:bg-white hover:text-midnight" : "text-midnight ring-1 ring-midnight/15 hover:bg-midnight hover:text-white"
         }`}
       >
@@ -213,7 +213,7 @@ function Actions({ s, lang, href, status, light = false }: { s: CardData; lang: 
           href={applyHref}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex flex-1 items-center justify-center gap-1.5 rounded-full bg-gold px-4 py-2.5 text-sm font-semibold text-midnight shadow-[0_10px_24px_-12px_rgba(245,179,1,0.9)] transition-all hover:-translate-y-0.5 hover:bg-amber hover:shadow-[0_16px_30px_-12px_rgba(245,179,1,1)]"
+          className="flex min-w-[7.5rem] flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-gold px-4 py-2.5 text-sm font-semibold text-midnight shadow-[0_10px_24px_-12px_rgba(245,179,1,0.9)] transition-all hover:-translate-y-0.5 hover:bg-amber hover:shadow-[0_16px_30px_-12px_rgba(245,179,1,1)]"
         >
           {s.application_url ? t.apply : t.official}
           <Icon name="external" className="h-3.5 w-3.5" />

@@ -57,6 +57,7 @@ export function Directory({ items, lang }: { items: ListItem[]; lang: Locale }) 
           {active.map((s, i) => (
             <motion.li
               key={s.slug}
+              className="min-w-0"
               initial={reduce ? false : { opacity: 0, y: 36, scale: 0.96 }}
               whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true, margin: "-40px" }}
@@ -84,7 +85,7 @@ export function Directory({ items, lang }: { items: ListItem[]; lang: Locale }) 
               <p className="mt-2 text-sm text-slate">{t.directory.closedLead}</p>
               <ul className="mt-4 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
                 {closed.map((s) => (
-                  <li key={s.slug}>
+                  <li key={s.slug} className="min-w-0">
                     <ScholarshipCard s={s} lang={lang} />
                   </li>
                 ))}

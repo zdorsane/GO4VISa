@@ -156,7 +156,7 @@ export function ScholarshipDetail({
             <h2 className="text-xl font-semibold text-midnight">{t.detail.related}</h2>
             <ul className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {related.map((r) => (
-                <li key={r.slug}>
+                <li key={r.slug} className="min-w-0">
                   <ScholarshipCard s={toListItem(r)} lang={lang} />
                 </li>
               ))}
