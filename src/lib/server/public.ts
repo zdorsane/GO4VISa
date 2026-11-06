@@ -54,7 +54,10 @@ export type ListItem = Pick<
   | "opens_at"
   | "deadline_at"
   | "deadline_tz"
+  | "deadline_label"
   | "deadline_status"
+  | "content_lang"
+  | "translations"
   | "application_url"
   | "source_url"
   | "featured"
@@ -83,7 +86,11 @@ export function toListItem(s: PublicScholarship): ListItem {
     opens_at: s.opens_at,
     deadline_at: s.deadline_at,
     deadline_tz: s.deadline_tz,
+    deadline_label: s.deadline_label,
     deadline_status: s.deadline_status,
+    content_lang: s.content_lang,
+    // the list is localized before this point: no need to send every translation to the browser
+    translations: {},
     application_url: s.application_url,
     source_url: s.source_url,
     featured: s.featured,

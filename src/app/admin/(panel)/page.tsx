@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { can, requireAdmin } from "@/lib/server/auth";
 import { dashboardStats, listAll } from "@/lib/server/scholarships";
-import { refreshSiteAction } from "../actions";
+import { refreshSiteAction, translateMissingAction } from "../actions";
 import { deadlineStatus, publishWarnings } from "@/lib/scholarships";
 import { DEADLINE_LABEL, DEADLINE_STYLE, fmtDate, Pill, WARNING_LABEL } from "../ui/labels";
 
@@ -18,6 +18,7 @@ const ACTION_LABEL: Record<string, string> = {
   "add-source": "a ajouté une source à",
   "remove-source": "a retiré une source de",
   "refresh-cache": "a rafraîchi le site public",
+  translate: "a lancé la traduction des bourses",
 };
 
 export default async function Dashboard({ searchParams }: PageProps<"/admin">) {
@@ -28,6 +29,7 @@ export default async function Dashboard({ searchParams }: PageProps<"/admin">) {
     .sort((a, b) => (a.deadline_at ?? "").localeCompare(b.deadline_at ?? ""));
   const toCheck = all.filter((x) => x.status !== "archived" && publishWarnings(x, now).length).slice(0, 8);
   const maxMonth = Math.max(1, ...s.deadlines.map((d) => d.n));
+  const untranslated = all.filter((x) => x.status !== "archived" && !Object.keys(x.translations ?? {}).length).length;
 
   const cards = [
     { label: "Bourses au total", value: s.total, href: "/admin/scholarships" },
@@ -55,11 +57,25 @@ export default async function Dashboard({ searchParams }: PageProps<"/admin">) {
               </button>
             </form>
           )}
+          {untranslated > 0 && (
+            <form action={translateMissingAction}>
+              <button className="admin-btn admin-btn-ghost" title="Crée la version anglaise et arabe des bourses qui n'en ont pas encore">
+                Traduire en anglais et en arabe ({untranslated})
+              </button>
+            </form>
+          )}
           <Link href="/admin/scholarships/new" className="admin-btn admin-btn-gold">
             Ajouter une bourse
           </Link>
         </div>
       </header>
+
+      {sp.translating && (
+        <p role="status" className="rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+          Traduction en cours ({sp.translating} bourse{Number(sp.translating) > 1 ? "s" : ""}) : les versions anglaise et arabe apparaissent sur le site
+          d&apos;ici une minute environ.
+        </p>
+      )}
 
       {sp.refreshed && (
         <p role="status" className="rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-800">

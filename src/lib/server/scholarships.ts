@@ -5,9 +5,9 @@ import { db } from "./db";
 
 const COLUMNS = `id, slug, content_lang, title, institution, logo_url, cover_url, cover_credit, cover_credit_url, country_code, city, levels, categories, fields, tags,
   eligible_nationalities, algeria_eligible, qualifications, age_limit, language_requirements, funding_type, tuition,
-  stipend, accommodation, travel, insurance, duration, opens_at, deadline_at, deadline_note, deadline_tz, application_url,
+  stipend, accommodation, travel, insurance, duration, opens_at, deadline_at, deadline_note, deadline_label, deadline_tz, application_url,
   source_url, verified_at::text as verified_at, verification, summary, description, documents, instructions, featured, status,
-  published_at, created_at, updated_at`;
+  published_at, created_at, updated_at, translations`;
 
 const toIso = (v: unknown) => (v instanceof Date ? v.toISOString() : (v as string | null));
 
@@ -126,6 +126,7 @@ export const ScholarshipInput = z
     opens_at: localDate,
     deadline_at: localDate,
     deadline_note: text(1000),
+    deadline_label: text(120),
     deadline_tz: z
       .string()
       .trim()
@@ -197,6 +198,7 @@ export function parseScholarshipForm(form: FormData) {
     opens_at: get("opens_at"),
     deadline_at: get("deadline_at"),
     deadline_note: get("deadline_note"),
+    deadline_label: get("deadline_label"),
     deadline_tz: get("deadline_tz"),
     application_url: get("application_url"),
     source_url: get("source_url"),
@@ -223,12 +225,12 @@ export async function saveScholarship(id: string | null, d: ScholarshipData, use
     d.fields, d.tags, d.eligible_nationalities, d.algeria_eligible, d.qualifications, d.age_limit,
     d.language_requirements, d.funding_type, d.tuition, d.stipend, d.accommodation, d.travel, d.insurance,
     d.duration, d.opens_at, d.deadline_at, d.deadline_note, d.application_url, d.source_url, d.verified_at,
-    d.verification, d.summary, d.description, d.documents, d.instructions, d.featured, d.status, d.deadline_tz, d.cover_url, d.cover_credit, d.cover_credit_url, userId,
+    d.verification, d.summary, d.description, d.documents, d.instructions, d.featured, d.status, d.deadline_tz, d.cover_url, d.cover_credit, d.cover_credit_url, d.deadline_label, userId,
   ];
   const cols = `slug, content_lang, title, institution, logo_url, country_code, city, levels, categories, fields, tags,
     eligible_nationalities, algeria_eligible, qualifications, age_limit, language_requirements, funding_type, tuition,
     stipend, accommodation, travel, insurance, duration, opens_at, deadline_at, deadline_note, application_url,
-    source_url, verified_at, verification, summary, description, documents, instructions, featured, status, deadline_tz, cover_url, cover_credit, cover_credit_url`;
+    source_url, verified_at, verification, summary, description, documents, instructions, featured, status, deadline_tz, cover_url, cover_credit, cover_credit_url, deadline_label`;
   const params = values.map((_, i) => `$${i + 1}`);
   if (!id) {
     const [row] = await sql.query(
@@ -245,7 +247,8 @@ export async function saveScholarship(id: string | null, d: ScholarshipData, use
     .map((c, i) => `${c.trim()} = $${i + 1}`)
     .join(", ");
   const [row] = await sql.query(
-    `update scholarships set ${sets}, updated_by = $${values.length}, updated_at = now(),
+    // the French texts may have changed: the translation step refills translations right after
+    `update scholarships set ${sets}, updated_by = $${values.length}, updated_at = now(), translations = '{}'::jsonb,
        published_at = case when $36 = 'published' then coalesce(published_at, now()) else published_at end
      where id = $${values.length + 1} returning id`,
     [...values, id],
@@ -271,12 +274,12 @@ export async function duplicateScholarship(id: string, userId: string): Promise<
     insert into scholarships (
       slug, content_lang, title, institution, logo_url, cover_url, cover_credit, cover_credit_url, country_code, city, levels, categories, fields, tags,
       eligible_nationalities, algeria_eligible, qualifications, age_limit, language_requirements, funding_type, tuition,
-      stipend, accommodation, travel, insurance, duration, opens_at, deadline_at, deadline_note, deadline_tz, application_url,
+      stipend, accommodation, travel, insurance, duration, opens_at, deadline_at, deadline_note, deadline_label, deadline_tz, application_url,
       source_url, verified_at, verification, summary, description, documents, instructions, featured, status,
       created_by, updated_by)
     select ${slug}, content_lang, title || ' (copy)', institution, logo_url, cover_url, cover_credit, cover_credit_url, country_code, city, levels, categories, fields, tags,
       eligible_nationalities, algeria_eligible, qualifications, age_limit, language_requirements, funding_type, tuition,
-      stipend, accommodation, travel, insurance, duration, opens_at, deadline_at, deadline_note, deadline_tz, application_url,
+      stipend, accommodation, travel, insurance, duration, opens_at, deadline_at, deadline_note, deadline_label, deadline_tz, application_url,
       source_url, null, 'needs_verification', summary, description, documents, instructions, false, 'draft',
       ${userId}, ${userId}
     from scholarships where id = ${id} returning id`;

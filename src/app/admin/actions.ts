@@ -1,7 +1,8 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { updateTag } from "next/cache";
+import { after } from "next/server";
+import { revalidateTag, updateTag } from "next/cache";
 import * as z from "zod";
 import { can, login, logActivity, logout, requireAdmin } from "@/lib/server/auth";
 import {
@@ -17,12 +18,28 @@ import {
 import { deleteMedia, uploadImage, UploadError } from "@/lib/server/media";
 import { importScholarshipsFromPdf, ImportError, MAX_PDF_BYTES, type ImportReport } from "@/lib/server/pdf-import";
 import { del } from "@vercel/blob";
+import { translateScholarship, untranslatedIds } from "@/lib/server/translate";
 import { WORKFLOW } from "@/lib/scholarships";
 
 export type FormState = { ok?: boolean; error?: string; fields?: Record<string, string[]>; message?: string } | undefined;
 
 const uuid = z.uuid();
 const refreshScholarships = () => updateTag("scholarships");
+
+/** Translates opportunities into English and Arabic once the response is sent, then refreshes the site. */
+function translateLater(ids: string[]) {
+  if (!ids.length || !process.env.GEMINI_API_KEY) return;
+  after(async () => {
+    for (const id of ids) {
+      try {
+        await translateScholarship(id);
+      } catch (e) {
+        console.error("Translation failed", id, e);
+      }
+    }
+    revalidateTag("scholarships", { expire: 0 });
+  });
+}
 
 // ── Session ────────────────────────────────────────────────────────────────
 
@@ -74,6 +91,7 @@ export async function saveScholarshipAction(_: FormState, form: FormData): Promi
   }
   await logActivity(admin.id, id ? "update" : "create", "scholarship", savedId, { title: data.title, status: data.status });
   refreshScholarships();
+  translateLater([savedId]);
   if (!id) redirect(`/admin/scholarships/${savedId}?saved=1`);
   return { ok: true };
 }
@@ -196,6 +214,7 @@ export async function importPdfAction(_: ImportState, form: FormData): Promise<I
       duplicates: String(report.duplicates.length),
     });
     refreshScholarships();
+    translateLater([...report.created, ...report.updated].map((s) => s.id));
     return { report };
   } catch (e) {
     if (e instanceof ImportError) return { error: e.message };
@@ -204,6 +223,15 @@ export async function importPdfAction(_: ImportState, form: FormData): Promise<I
   } finally {
     await del(url).catch(() => {});
   }
+}
+
+/** Translates every opportunity whose English/Arabic version is missing (button on the dashboard). */
+export async function translateMissingAction() {
+  const admin = await requireAdmin("edit");
+  const ids = await untranslatedIds();
+  translateLater(ids);
+  await logActivity(admin.id, "translate", "scholarship", null, { count: String(ids.length) });
+  redirect(`/admin?translating=${ids.length}`);
 }
 
 // ── Site cache ─────────────────────────────────────────────────────────────

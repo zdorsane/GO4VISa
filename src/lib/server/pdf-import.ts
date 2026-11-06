@@ -1,6 +1,7 @@
 import "server-only";
 import * as z from "zod";
 import { CATEGORIES, FUNDING, isTimeZone, LEVELS, slugify, type Scholarship } from "@/lib/scholarships";
+import { askGemini, GeminiError } from "./gemini";
 import { listAll, ScholarshipInput, saveScholarship } from "./scholarships";
 
 export const MAX_PDF_BYTES = 30 * 1024 * 1024;
@@ -31,6 +32,7 @@ const Extracted = z.object({
   deadline_at: z.string().nullable(),
   deadline_tz: z.string().nullable(),
   deadline_note: z.string().nullable(),
+  deadline_label: z.string().nullable(),
   application_url: z.string().nullable(),
   source_url: z.string().nullable(),
   summary: z.string().nullable(),
@@ -52,7 +54,7 @@ Rules:
 - description: a short presentation (2 to 4 short paragraphs separated by a blank line).
 - documents and instructions: one item per line, when the PDF lists them.
 - country_code: ISO 3166-1 alpha-2 code of the host country (e.g. "FR", "US"). Use the main host country for multi-country programmes.
-- Dates: "YYYY-MM-DD", or "YYYY-MM-DDTHH:mm" when the PDF gives a time. deadline_tz is the IANA time zone only if the PDF states one (e.g. "Europe/Paris" for CET), otherwise null. If the deadline is vague ("early March", "rolling"), set deadline_at to null and explain it in deadline_note.
+- Dates: "YYYY-MM-DD", or "YYYY-MM-DDTHH:mm" when the PDF gives a time. deadline_tz is the IANA time zone only if the PDF states one (e.g. "Europe/Paris" for CET), otherwise null. If the deadline is vague ("early March"), set deadline_at to null, put a short French label in deadline_label ("Début mars 2027") and explain it in deadline_note. If there are several deadlines (by course or track), set deadline_at to the latest one and deadline_label to a short French text listing them ("8 déc. 2026 ou 6 janv. 2027"). Otherwise deadline_label is null.
 - algeria_eligible: "yes" if Algerians are explicitly eligible (or the programme is open to all nationalities), "no" if they are explicitly excluded, otherwise "unknown".
 - Links: copy full http(s) URLs exactly as written in the PDF. source_url is the official programme page; application_url is where to apply.
 - existing_slug: if the opportunity is the same programme as one in the "Already on the site" list (even under a translated or slightly different name), return that slug; otherwise null.`;
@@ -74,74 +76,21 @@ const zone = (v: string | null) => (v && isTimeZone(v) ? v : "");
 /** Wall time typed in the admin form ("YYYY-MM-DD" → read as 23:59 by ScholarshipInput). */
 const day = (v: string | null) => (v && /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2})?$/.test(v) ? v : "");
 
-/** Free tier of Google's Gemini API, tried in order: the free models are often briefly overloaded (503). */
-const GEMINI_MODELS = ["gemini-3.5-flash", "gemini-flash-latest", "gemini-flash-lite-latest"];
-
-async function callGemini(body: string) {
-  let last: Response | null = null;
-  for (const model of GEMINI_MODELS) {
-    last = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-      method: "POST",
-      headers: { "content-type": "application/json", "x-goog-api-key": process.env.GEMINI_API_KEY! },
-      body,
-    });
-    // overloaded, over quota or retired for this key: try the next model
-    if (![404, 429, 500, 503].includes(last.status)) return last;
-  }
-  return last!;
-}
-
 async function extract(pdf: Buffer, existing: Scholarship[]) {
   const known = existing.map((s) => `- ${s.slug}: ${s.title} (${s.institution})`).join("\n") || "(none)";
-  const res = await callGemini(
-    JSON.stringify({
-      systemInstruction: { parts: [{ text: SYSTEM }] },
-      contents: [
-        {
-          role: "user",
-          parts: [
-            { inlineData: { mimeType: "application/pdf", data: pdf.toString("base64") } },
-            {
-              text: `Today is ${new Date().toISOString().slice(0, 10)}.
-
-Already on the site:
-${known}
-
-Extract every opportunity in this PDF.`,
-            },
-          ],
-        },
-      ],
-      generationConfig: {
-        responseMimeType: "application/json",
-        responseJsonSchema: z.toJSONSchema(Extraction),
-        temperature: 0,
-      },
-    }),
-  );
-  if (res.status === 429) throw new ImportError("quota");
-  if (res.status === 503 || res.status === 500) throw new ImportError("busy");
-  if (!res.ok) {
-    console.error("Gemini error", res.status, (await res.text()).slice(0, 500));
-    throw new ImportError(res.status === 400 || res.status === 403 ? "bad-api-key" : "failed");
-  }
-  const body = (await res.json()) as {
-    candidates?: { finishReason?: string; content?: { parts?: { text?: string }[] } }[];
-    promptFeedback?: { blockReason?: string };
-  };
-  const candidate = body.candidates?.[0];
-  if (body.promptFeedback?.blockReason || candidate?.finishReason === "SAFETY") throw new ImportError("refused");
-  if (candidate?.finishReason === "MAX_TOKENS") throw new ImportError("too-long");
-  const text = candidate?.content?.parts?.map((p) => p.text ?? "").join("") ?? "";
-  let json: unknown;
   try {
-    json = JSON.parse(text);
-  } catch {
-    throw new ImportError("unreadable");
+    const { scholarships } = await askGemini(
+      SYSTEM,
+      [
+        { inlineData: { mimeType: "application/pdf", data: pdf.toString("base64") } },
+        { text: `Today is ${new Date().toISOString().slice(0, 10)}.\n\nAlready on the site:\n${known}\n\nExtract every opportunity in this PDF.` },
+      ],
+      Extraction,
+    );
+    return scholarships;
+  } catch (e) {
+    throw e instanceof GeminiError ? new ImportError(e.message) : e;
   }
-  const parsed = Extraction.safeParse(json);
-  if (!parsed.success) throw new ImportError("unreadable");
-  return parsed.data.scholarships;
 }
 
 export class ImportError extends Error {}
@@ -199,7 +148,6 @@ export async function importScholarshipsFromPdf(
   userId: string,
   { publish, updateExisting }: { publish: boolean; updateExisting: boolean },
 ): Promise<ImportReport> {
-  if (!process.env.GEMINI_API_KEY) throw new ImportError("no-api-key");
   const existing = await listAll();
   const found = await extract(pdf, existing);
   const report: ImportReport = { created: [], updated: [], expired: [], failed: [], duplicates: [] };
@@ -284,6 +232,7 @@ function toInput(x: ExtractedScholarship, previous: Scholarship | null, publish:
     opens_at: day(x.opens_at),
     deadline_at: day(x.deadline_at),
     deadline_note: opt(x.deadline_note),
+    deadline_label: opt(x.deadline_label?.slice(0, 120)),
     deadline_tz: zone(x.deadline_tz),
     application_url: opt(link(x.application_url)),
     source_url: opt(source),

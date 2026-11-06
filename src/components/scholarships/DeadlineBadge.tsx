@@ -26,10 +26,10 @@ const DOT: Record<DeadlineStatus, string> = {
 const noop = () => () => {};
 
 /** Status from the dates and the visitor's clock; the server's value is used until hydration. */
-export function useLiveStatus(opens_at: string | null, deadline_at: string | null, initial: DeadlineStatus) {
+export function useLiveStatus(opens_at: string | null, deadline_at: string | null, initial: DeadlineStatus, deadline_label: string | null = null) {
   return useSyncExternalStore(
     noop,
-    () => deadlineStatus({ opens_at, deadline_at }),
+    () => deadlineStatus({ opens_at, deadline_at, deadline_label }),
     () => initial,
   );
 }
@@ -48,6 +48,7 @@ export function DeadlineBadge({
   opens_at,
   deadline_at,
   initial,
+  deadline_label = null,
   unconfirmed = false,
   className = "",
 }: {
@@ -55,11 +56,13 @@ export function DeadlineBadge({
   opens_at: string | null;
   deadline_at: string | null;
   initial: DeadlineStatus;
+  /** Approximate deadline ("early January"): the programme is open, not rolling. */
+  deadline_label?: string | null;
   /** Details not confirmed yet: a missing deadline reads "date to be confirmed", not "no deadline". */
   unconfirmed?: boolean;
   className?: string;
 }) {
-  const status = useLiveStatus(opens_at, deadline_at, initial);
+  const status = useLiveStatus(opens_at, deadline_at, initial, deadline_label);
   if (unconfirmed && status === "rolling") {
     return (
       <span className={`inline-flex items-center gap-1.5 rounded-full bg-amber-500/12 px-2.5 py-1 text-[0.7rem] font-bold uppercase tracking-wide text-amber-800 ring-1 ring-inset ring-amber-600/30 ${className}`}>

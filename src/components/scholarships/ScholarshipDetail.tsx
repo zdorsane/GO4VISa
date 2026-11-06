@@ -79,7 +79,7 @@ export function ScholarshipDetail({
                 )}
               </span>
               <div className="min-w-0">
-                <DeadlineBadge lang={lang} opens_at={s.opens_at} deadline_at={s.deadline_at} initial={s.deadline_status} unconfirmed={s.verification !== "verified"} className="!bg-white/95" />
+                <DeadlineBadge lang={lang} opens_at={s.opens_at} deadline_at={s.deadline_at} deadline_label={s.deadline_label} initial={s.deadline_status} unconfirmed={s.verification !== "verified"} className="!bg-white/95" />
                 <h1 dir="auto" className="mt-3 text-2xl font-bold leading-tight text-white md:text-4xl">{s.title}</h1>
                 <p dir="auto" className="mt-2 text-sm text-mist md:text-base">
                   {s.institution}
@@ -122,8 +122,10 @@ export function ScholarshipDetail({
                 </ul>
               </Row>
               <Row label={f.deadline} empty={empty}>
-                <span className="font-semibold text-midnight">{deadline?.official ?? (s.verification !== "verified" ? t.card.dateTbc : t.card.noDeadline)}</span>
-                {deadline?.local && <span className="block text-xs text-slate">{deadline.local}</span>}
+                <span className="font-semibold text-midnight">
+                  {s.deadline_label ?? deadline?.official ?? (s.verification !== "verified" ? t.card.dateTbc : t.card.noDeadline)}
+                </span>
+                {!s.deadline_label && deadline?.local && <span className="block text-xs text-slate">{deadline.local}</span>}
                 {s.deadline_note && <span className="mt-1 block text-xs text-slate">{s.deadline_note}</span>}
               </Row>
               <Row label={f.officialLink} empty={empty}>

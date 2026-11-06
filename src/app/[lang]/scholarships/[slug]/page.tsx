@@ -6,6 +6,7 @@ import { countryName } from "@/lib/countries";
 import { hasLocale, languageAlternates, locales } from "@/lib/i18n";
 import { getPlatformDict } from "@/lib/platform-i18n";
 import { getPublicScholarship, getPublicScholarships, type PublicScholarship } from "@/lib/server/public";
+import { localize } from "@/lib/scholarships";
 
 // Opportunities published after the build render on their first visit (blocking is fine here).
 export const instant = false;
@@ -22,7 +23,7 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/scholarshi
   if (!hasLocale(lang)) return {};
   const data = await getPublicScholarship(slug);
   if (!data) return {};
-  const s = data.scholarship;
+  const s = localize(data.scholarship, lang);
   const t = getPlatformDict(lang);
   const description = s.summary ?? `${s.institution} · ${countryName(s.country_code, lang)} · ${t.funding[s.funding_type]}`;
   return {
@@ -55,7 +56,7 @@ export default async function ScholarshipPage({ params }: PageProps<"/[lang]/sch
   if (!hasLocale(lang)) notFound();
   const [data, all] = await Promise.all([getPublicScholarship(slug), getPublicScholarships()]);
   if (!data) notFound();
-  const s = data.scholarship;
+  const s = localize(data.scholarship, lang);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -74,7 +75,7 @@ export default async function ScholarshipPage({ params }: PageProps<"/[lang]/sch
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
-      <ScholarshipDetail s={s} related={relatedTo(s, all)} lang={lang} />
+      <ScholarshipDetail s={s} related={relatedTo(s, all).map((x) => localize(x, lang))} lang={lang} />
     </>
   );
 }

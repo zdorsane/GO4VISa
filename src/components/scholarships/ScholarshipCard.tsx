@@ -31,6 +31,7 @@ export type CardData = Pick<
   | "opens_at"
   | "deadline_at"
   | "deadline_tz"
+  | "deadline_label"
   | "deadline_status"
   | "application_url"
   | "source_url"
@@ -158,8 +159,10 @@ function Countdown({ s, lang, status, light = false }: { s: CardData; lang: Loca
       <div className="flex items-end justify-between gap-3">
         <div className="min-w-0">
           <p className={`text-[0.65rem] font-semibold uppercase tracking-[0.14em] ${light ? "text-white/70" : "text-slate"}`}>{t.deadline}</p>
-          <p className={`mt-0.5 truncate text-sm font-bold ${light ? "text-white" : "text-midnight"}`}>
-            {s.deadline_at
+          <p title={s.deadline_label ?? undefined} className={`mt-0.5 truncate text-sm font-bold ${light ? "text-white" : "text-midnight"}`}>
+            {s.deadline_label
+              ? s.deadline_label
+              : s.deadline_at
               ? formatDate(s.deadline_at, lang, false, s.deadline_tz ?? undefined)
               : s.verification !== "verified"
                 ? t.dateTbc
@@ -236,7 +239,7 @@ const shell =
 /** Photo-first opportunity card: cover, status and place on the photo, then details and the countdown. */
 export function ScholarshipCard({ s, lang }: { s: CardData; lang: Locale }) {
   const t = getPlatformDict(lang);
-  const status = useLiveStatus(s.opens_at, s.deadline_at, s.deadline_status);
+  const status = useLiveStatus(s.opens_at, s.deadline_at, s.deadline_status, s.deadline_label);
   const href = `/${lang}/scholarships/${s.slug}`;
 
   return (
@@ -251,7 +254,7 @@ export function ScholarshipCard({ s, lang }: { s: CardData; lang: Locale }) {
         <span aria-hidden className="absolute inset-0 bg-linear-to-t from-midnight/85 via-midnight/10 to-midnight/30" />
         <Shine />
         <div className="absolute inset-x-3 top-3 z-20 flex items-start justify-between gap-2">
-          <DeadlineBadge lang={lang} opens_at={s.opens_at} deadline_at={s.deadline_at} initial={s.deadline_status} unconfirmed={s.verification !== "verified"} className="!bg-white/95 shadow-sm" />
+          <DeadlineBadge lang={lang} opens_at={s.opens_at} deadline_at={s.deadline_at} deadline_label={s.deadline_label} initial={s.deadline_status} unconfirmed={s.verification !== "verified"} className="!bg-white/95 shadow-sm" />
           <SaveButton slug={s.slug} lang={lang} />
         </div>
         <div className="absolute inset-x-3 bottom-3 z-20 flex items-end justify-between gap-2">
@@ -302,7 +305,7 @@ export function ScholarshipCard({ s, lang }: { s: CardData; lang: Locale }) {
 /** Magazine-style featured card: full-bleed photo with the text laid over it. */
 export function SpotlightCard({ s, lang, priority = false }: { s: CardData; lang: Locale; priority?: boolean }) {
   const t = getPlatformDict(lang);
-  const status = useLiveStatus(s.opens_at, s.deadline_at, s.deadline_status);
+  const status = useLiveStatus(s.opens_at, s.deadline_at, s.deadline_status, s.deadline_label);
   const href = `/${lang}/scholarships/${s.slug}`;
 
   return (
@@ -319,7 +322,7 @@ export function SpotlightCard({ s, lang, priority = false }: { s: CardData; lang
 
       <div className="relative z-20 flex items-start justify-between gap-2 p-5">
         <div className="flex flex-wrap items-center gap-2">
-          <DeadlineBadge lang={lang} opens_at={s.opens_at} deadline_at={s.deadline_at} initial={s.deadline_status} unconfirmed={s.verification !== "verified"} className="!bg-white/95 shadow-sm" />
+          <DeadlineBadge lang={lang} opens_at={s.opens_at} deadline_at={s.deadline_at} deadline_label={s.deadline_label} initial={s.deadline_status} unconfirmed={s.verification !== "verified"} className="!bg-white/95 shadow-sm" />
           <span className="inline-flex items-center gap-1 rounded-full bg-gold px-3 py-1 text-[0.7rem] font-bold uppercase tracking-wide text-midnight shadow-lg">
             <Icon name="star" className="h-3.5 w-3.5" />
             {t.directory.spotlight}

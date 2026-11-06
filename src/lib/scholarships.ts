@@ -54,6 +54,8 @@ export type Scholarship = {
   opens_at: string | null;
   deadline_at: string | null;
   deadline_note: string | null;
+  /** Short text shown instead of the date when it is approximate or course-dependent. */
+  deadline_label: string | null;
   /** IANA zone of the official deadline; null when the source does not state one. */
   deadline_tz: string | null;
   application_url: string | null;
@@ -69,7 +71,48 @@ export type Scholarship = {
   published_at: string | null;
   created_at: string;
   updated_at: string;
+  /** English/Arabic versions of the texts written in the content language. */
+  translations: Translations;
 };
+
+/** Texts written by the back-office in French and translated for the other site languages. */
+export const TRANSLATABLE = [
+  "title",
+  "institution",
+  "city",
+  "summary",
+  "description",
+  "eligible_nationalities",
+  "qualifications",
+  "age_limit",
+  "language_requirements",
+  "tuition",
+  "stipend",
+  "accommodation",
+  "travel",
+  "insurance",
+  "duration",
+  "deadline_note",
+  "deadline_label",
+  "documents",
+  "instructions",
+] as const;
+export type TranslatableField = (typeof TRANSLATABLE)[number];
+export type Translation = Partial<Record<TranslatableField, string | null>> & { fields?: string[] };
+export type Translations = Partial<Record<"fr" | "en" | "ar", Translation>>;
+
+/** The opportunity in the visitor's language: translated texts replace the original ones when available. */
+export function localize<T extends Pick<Scholarship, "content_lang" | "translations" | "fields">>(s: T, lang: "fr" | "en" | "ar"): T {
+  const tr = lang === s.content_lang ? undefined : s.translations?.[lang];
+  if (!tr) return s;
+  const out: Record<string, unknown> = { ...s };
+  for (const k of TRANSLATABLE) {
+    const v = tr[k];
+    if (typeof v === "string" && v.trim() && k in s) out[k] = v;
+  }
+  if (tr.fields?.length && tr.fields.length === s.fields.length) out.fields = tr.fields;
+  return out as T;
+}
 
 export const DEADLINE_STATUSES = ["today", "closing", "open", "upcoming", "closed", "rolling"] as const;
 export type DeadlineStatus = (typeof DEADLINE_STATUSES)[number];
@@ -86,12 +129,13 @@ export const CLOSING_SOON_DAYS = 7;
  * Status computed from the dates and the current time, never stored:
  * closed (deadline passed) · today · closing (≤ 7 days) · upcoming (opens later) · open · rolling (no deadline).
  */
-export function deadlineStatus(s: Pick<Scholarship, "opens_at" | "deadline_at">, now = new Date()): DeadlineStatus {
+export function deadlineStatus(s: Pick<Scholarship, "opens_at" | "deadline_at"> & { deadline_label?: string | null }, now = new Date()): DeadlineStatus {
   const deadline = s.deadline_at ? new Date(s.deadline_at) : null;
   const opens = s.opens_at ? new Date(s.opens_at) : null;
   if (deadline && deadline.getTime() < now.getTime()) return "closed";
   if (opens && opens.getTime() > now.getTime()) return "upcoming";
-  if (!deadline) return "rolling";
+  // an approximate deadline ("early January") is still a deadline, not a rolling programme
+  if (!deadline) return s.deadline_label ? "open" : "rolling";
   if (dayKey(deadline) === dayKey(now)) return "today";
   if (deadline.getTime() - now.getTime() <= CLOSING_SOON_DAYS * DAY) return "closing";
   return "open";

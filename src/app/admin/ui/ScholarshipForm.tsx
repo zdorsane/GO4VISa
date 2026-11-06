@@ -267,6 +267,10 @@ export function ScholarshipForm({ scholarship: s, canPublish }: Props) {
             </select>
             <p className="admin-hint">Les dates ci-dessus sont lues dans ce fuseau. Le site affiche aussi l&apos;heure d&apos;Alger.</p>
           </label>
+          {text("deadline_label", "Date affichée (facultatif)", {
+            placeholder: "ex. Début janvier 2027 · 8 déc. 2026 ou 6 janv. 2027",
+            hint: "Remplace la date sur la carte quand elle est approximative ou dépend de la formation. Laissez la date limite vide si elle est inconnue.",
+          })}
           {text("deadline_note", "Précisions sur la date limite", {
             rows: 2,
             hint: "Fuseau officiel, dates différentes selon le cursus, etc.",
