@@ -23,15 +23,22 @@ export async function askGemini<T>(system: string, parts: Part[], schema: z.ZodT
 
   let res: Response | null = null;
   for (const model of GEMINI_MODELS) {
-    res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-      method: "POST",
-      headers: { "content-type": "application/json", "x-goog-api-key": process.env.GEMINI_API_KEY },
-      body,
-    });
+    try {
+      res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+        method: "POST",
+        headers: { "content-type": "application/json", "x-goog-api-key": process.env.GEMINI_API_KEY },
+        body,
+        // a stuck model would otherwise hold the request for minutes
+        signal: AbortSignal.timeout(120_000),
+      });
+    } catch {
+      res = null;
+      continue;
+    }
     // overloaded, over quota or retired for this key: try the next model
     if (![404, 429, 500, 503].includes(res.status)) break;
   }
-  if (!res) throw new GeminiError("failed");
+  if (!res) throw new GeminiError("busy");
   if (res.status === 429) throw new GeminiError("quota");
   if (res.status === 503 || res.status === 500) throw new GeminiError("busy");
   if (!res.ok) {
