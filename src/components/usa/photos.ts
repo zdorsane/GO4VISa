@@ -2,7 +2,6 @@ import nycSunset from "@/assets/usa/nyc-sunset.webp";
 import centralPark from "@/assets/usa/central-park.webp";
 import timesSquare from "@/assets/usa/times-square.webp";
 import santaMonicaPier from "@/assets/usa/santa-monica-pier.webp";
-import santaMonicaStairs from "@/assets/usa/santa-monica-stairs.webp";
 import santaMonicaBeach from "@/assets/usa/santa-monica-beach.webp";
 import goldenGate from "@/assets/usa/golden-gate.webp";
 import route66 from "@/assets/usa/route-66.webp";
@@ -11,6 +10,17 @@ import lifeguard from "@/assets/usa/lifeguard.webp";
 import boardwalk from "@/assets/usa/boardwalk.webp";
 import liberty from "@/assets/usa/liberty.webp";
 import brooklynNight from "@/assets/usa/brooklyn-night.webp";
+import stepEnglish from "@/assets/usa/step-english.webp";
+import stepPeople from "@/assets/usa/step-people.webp";
+import stepWork from "@/assets/usa/step-work.webp";
+import stepCulture from "@/assets/usa/step-culture.webp";
+import stepMoney from "@/assets/usa/step-money.webp";
+import stepTravel from "@/assets/usa/step-travel.webp";
+import summerLasVegas from "@/assets/usa/summer-las-vegas.webp";
+import summerRodeoDrive from "@/assets/usa/summer-rodeo-drive.webp";
+import summerBeverlyHills from "@/assets/usa/summer-beverly-hills.webp";
+import summerHollywood from "@/assets/usa/summer-hollywood.webp";
+import summerTimesSquare from "@/assets/usa/summer-times-square.webp";
 
 /** Photos of the USA Summer Experience page, all from Wikimedia Commons under free licences. */
 export const photos = {
@@ -33,11 +43,6 @@ export const photos = {
     src: santaMonicaPier,
     alt: "Santa Monica Pier and its Ferris wheel at sunset, California",
     credit: { author: "GillyBerlin", license: "CC BY 2.0", url: "https://commons.wikimedia.org/wiki/File:Santa_Monica_Pier_in_Los_Angeles.jpg" },
-  },
-  santaMonicaStairs: {
-    src: santaMonicaStairs,
-    alt: "Young people sitting on the stairs of Santa Monica Pier on a summer day",
-    credit: { author: "Felipe Valduga", license: "CC BY 2.0", url: "https://commons.wikimedia.org/wiki/File:Santa_Monica_Pier_-_21482173155.jpg" },
   },
   santaMonicaBeach: {
     src: santaMonicaBeach,
@@ -80,3 +85,22 @@ export const photos = {
     credit: { author: "John Cunniff", license: "CC BY 2.0", url: "https://commons.wikimedia.org/wiki/File:NYC_Downtown_and_Brooklyn_Bridge_Panorama_(Explored)_(19610363205).jpg" },
   },
 } as const;
+
+/** Images supplied by Go4Visa (not from Wikimedia, so no credit line). */
+export const stepPhotos = {
+  english: stepEnglish,
+  people: stepPeople,
+  work: stepWork,
+  culture: stepCulture,
+  money: stepMoney,
+  travel: stepTravel,
+} as const;
+
+/** Summer photos supplied by Go4Visa, shown in the shuffling gallery. */
+export const summerPhotos = [
+  { src: summerLasVegas, place: "Las Vegas" },
+  { src: summerRodeoDrive, place: "Rodeo Drive" },
+  { src: summerBeverlyHills, place: "Beverly Hills" },
+  { src: summerHollywood, place: "Hollywood" },
+  { src: summerTimesSquare, place: "Times Square" },
+] as const;

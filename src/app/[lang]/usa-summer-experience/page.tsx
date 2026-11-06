@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { UsaHero } from "@/components/usa/UsaHero";
+import { UsaGallery } from "@/components/usa/UsaGallery";
 import { UsaRate } from "@/components/usa/UsaRate";
 import { UsaCommitment, UsaExperience, UsaFinalCta, UsaGuide, UsaRibbon, UsaServices, UsaTicker } from "@/components/usa/UsaSections";
 import { photos } from "@/components/usa/photos";
@@ -37,6 +38,7 @@ export default async function UsaSummerPage({ params }: PageProps<"/[lang]/usa-s
       <UsaExperience t={t.experience} />
       <UsaGuide t={t.guide} />
       <UsaServices t={t.services} />
+      <UsaGallery t={t.gallery} />
       <UsaRibbon />
       <UsaCommitment t={t.commitment} rate={<UsaRate value={80} label={t.commitment.rateLabel} />} />
       <UsaFinalCta lang={lang} t={t.cta} credits={t.credits} />

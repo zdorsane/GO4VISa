@@ -7,19 +7,19 @@ import { Reveal } from "@/components/ui/Reveal";
 import { buttonClasses } from "@/components/ui/Button";
 import type { Locale } from "@/lib/i18n";
 import type { UsaSummerDict } from "@/lib/usa-summer";
-import { photos } from "./photos";
+import { photos, stepPhotos } from "./photos";
 import { Spotlight, SplitWords, Tilt } from "./UsaMotion";
 
 type Benefit = keyof UsaSummerDict["experience"]["benefits"];
 
-/** The six benefits, each on its own photo with the accent colour of its badge. */
-const TILES: { key: Benefit; icon: IconName; photo: (typeof photos)[keyof typeof photos]; badge: string; place: string }[] = [
-  { key: "english", icon: "chat", photo: photos.washingtonSquare, badge: "bg-white text-midnight", place: "Washington Square, NYC" },
-  { key: "people", icon: "globe", photo: photos.santaMonicaStairs, badge: "bg-sky text-midnight", place: "Santa Monica, CA" },
-  { key: "work", icon: "briefcase", photo: photos.lifeguard, badge: "bg-gold text-midnight", place: "Miami Beach, FL" },
-  { key: "culture", icon: "star", photo: photos.timesSquare, badge: "bg-white text-midnight", place: "Times Square, NYC" },
-  { key: "money", icon: "wallet", photo: photos.boardwalk, badge: "bg-gold text-midnight", place: "Santa Cruz, CA" },
-  { key: "travel", icon: "map", photo: photos.route66, badge: "bg-sky text-midnight", place: "Route 66" },
+/** The six benefits in the client's order, each on its own image with the accent colour of its badge. */
+const TILES: { key: Benefit; icon: IconName; badge: string }[] = [
+  { key: "english", icon: "chat", badge: "bg-white text-midnight" },
+  { key: "people", icon: "globe", badge: "bg-sky text-midnight" },
+  { key: "work", icon: "briefcase", badge: "bg-gold text-midnight" },
+  { key: "culture", icon: "star", badge: "bg-white text-midnight" },
+  { key: "money", icon: "wallet", badge: "bg-gold text-midnight" },
+  { key: "travel", icon: "map", badge: "bg-sky text-midnight" },
 ];
 
 const SERVICE_ICONS: IconName[] = ["search", "user", "pen", "chat", "doc", "id"];
@@ -130,14 +130,14 @@ export function UsaExperience({ t }: { t: UsaSummerDict["experience"] }) {
           {TILES.map((tile, i) => (
             <Reveal as="li" key={tile.key} y={50} delay={(i % 3) * 0.1} className="h-60 md:h-72">
               <Tilt className="overflow-hidden rounded-3xl shadow-[0_25px_50px_-30px_rgba(11,45,91,0.6)] ring-1 ring-line">
-                <Image src={tile.photo.src} alt="" fill placeholder="blur" sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" className="object-cover transition-transform duration-[1400ms] ease-out group-hover/tilt:scale-110" />
+                <Image src={stepPhotos[tile.key]} alt="" fill placeholder="blur" sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" className="object-cover transition-transform duration-[1400ms] ease-out group-hover/tilt:scale-110" />
                 <span aria-hidden className="absolute inset-0 bg-linear-to-t from-midnight via-midnight/45 to-midnight/5 transition-opacity duration-500 group-hover/tilt:opacity-90" />
                 <div className="relative z-10 flex h-full flex-col justify-between p-6 text-white [transform:translateZ(40px)]">
                   <div className="flex items-start justify-between gap-3">
                     <span className={`flex h-12 w-12 items-center justify-center rounded-2xl shadow-lg transition-transform duration-500 group-hover/tilt:-rotate-6 group-hover/tilt:scale-110 keep-light ${tile.badge}`}>
                       <Icon name={tile.icon} className="h-6 w-6" />
                     </span>
-                    <span className="rounded-full bg-black/35 px-2.5 py-1 text-[0.7rem] font-bold uppercase tracking-wider text-white/85 backdrop-blur-sm">{tile.place}</span>
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-black/35 text-xs font-bold text-white backdrop-blur-sm">{i + 1}</span>
                   </div>
                   <div>
                     <span aria-hidden className="mb-3 block h-1 w-10 rounded-full bg-gold transition-all duration-500 group-hover/tilt:w-20" />
@@ -245,7 +245,7 @@ export function UsaServices({ t }: { t: UsaSummerDict["services"] }) {
 /** Ribbon of tilted postcards drifting across the page (paused on hover). */
 export function UsaRibbon() {
   return (
-    <div aria-hidden className="group/ribbon overflow-hidden bg-cloud pb-20 pt-4" dir="ltr">
+    <div aria-hidden className="group/ribbon overflow-hidden bg-cloud py-16" dir="ltr">
       <div className="flex w-max gap-6 motion-safe:animate-[g4v-marquee_70s_linear_infinite] group-hover/ribbon:[animation-play-state:paused]">
         {[...RIBBON, ...RIBBON].map((p, i) => (
           <figure

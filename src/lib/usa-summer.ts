@@ -30,6 +30,11 @@ const en = {
       travel: "Travel across the USA",
     },
   },
+  gallery: {
+    eyebrow: "Summer in the USA",
+    title: "The American summer, in pictures",
+    lead: "Las Vegas, Beverly Hills, Hollywood, New York… a summer that takes you to places you have only seen on screen.",
+  },
   guide: {
     eyebrow: "Go4Visa",
     title: "We're here to guide you every step of the way!",
@@ -121,6 +126,11 @@ const fr: UsaSummerDict = {
       travel: "Voyager à travers les États-Unis",
     },
   },
+  gallery: {
+    eyebrow: "L'été aux États-Unis",
+    title: "L'été américain en images",
+    lead: "Las Vegas, Beverly Hills, Hollywood, New York… un été qui vous emmène dans des lieux que vous n'avez vus qu'à l'écran.",
+  },
   guide: {
     eyebrow: "Go4Visa",
     title: "Nous vous accompagnons à chaque étape !",
@@ -209,6 +219,11 @@ const ar: UsaSummerDict = {
       culture: "اكتشف الثقافة الأمريكية",
       travel: "سافر عبر الولايات المتحدة",
     },
+  },
+  gallery: {
+    eyebrow: "الصيف في الولايات المتحدة",
+    title: "الصيف الأمريكي بالصور",
+    lead: "لاس فيغاس، بيفرلي هيلز، هوليوود، نيويورك… صيف يأخذك إلى أماكن لم ترها إلا على الشاشة.",
   },
   guide: {
     eyebrow: "Go4Visa",
