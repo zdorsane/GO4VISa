@@ -3,16 +3,19 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Icon, type IconName } from "@/components/ui/Icon";
+import { useT } from "./AdminLang";
 
 const LINKS: { href: string; label: string; icon: IconName }[] = [
   { href: "/admin", label: "Tableau de bord", icon: "pulse" },
   { href: "/admin/scholarships", label: "Bourses", icon: "cap" },
   { href: "/admin/import", label: "Importer un PDF", icon: "doc" },
+  { href: "/admin/messages", label: "Messages", icon: "mail" },
   { href: "/admin/media", label: "Médias", icon: "star" },
 ];
 
-export function AdminNav() {
+export function AdminNav({ unread = 0 }: { unread?: number }) {
   const path = usePathname();
+  const { t } = useT();
   return (
     <nav aria-label="Back-office" className="-mx-1 flex gap-1 overflow-x-auto lg:mx-0 lg:mt-4 lg:flex-col">
       {LINKS.map((l) => {
@@ -27,7 +30,10 @@ export function AdminNav() {
             }`}
           >
             <Icon name={l.icon} className={`h-4 w-4 ${active ? "text-gold" : ""}`} />
-            {l.label}
+            {t(l.label)}
+            {l.href === "/admin/messages" && unread > 0 && (
+              <span className="ms-auto rounded-full bg-gold px-1.5 text-[0.7rem] font-bold text-midnight">{unread}</span>
+            )}
           </Link>
         );
       })}

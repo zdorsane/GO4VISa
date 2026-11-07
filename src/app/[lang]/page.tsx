@@ -43,7 +43,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
       <Stats t={t.stats} />
       <About lang={lang} t={t.about} />
       <Services lang={lang} t={t.services} />
-      <Feedback t={t.feedback} viewer={t.gallery} items={getFeedback(lang)} visas={getVisas()} />
+      <Feedback lang={lang} t={t.feedback} viewer={t.gallery} items={getFeedback(lang)} visas={getVisas()} />
       <Gallery lang={lang} t={t.gallery} start={t.ui.getStarted} photos={getPhotos(lang)} />
       <FounderContact
         lang={lang}

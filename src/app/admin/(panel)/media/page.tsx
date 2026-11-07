@@ -6,16 +6,20 @@ import { ConfirmButton } from "../../ui/ConfirmButton";
 import { CopyButton } from "../../ui/CopyButton";
 import { MediaUploader } from "../../ui/MediaUploader";
 import { fmtDate } from "../../ui/labels";
+import { getAdminT } from "../../i18n-server";
 
-export const metadata: Metadata = { title: "Médias" };
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getAdminT();
+  return { title: t("Médias") };
+}
 
 export default async function MediaPage() {
-  const [admin, items] = await Promise.all([requireAdmin("media"), listMedia()]);
+  const [admin, items, { lang, t }] = await Promise.all([requireAdmin("media"), listMedia(), getAdminT()]);
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-2xl font-semibold text-midnight">Médiathèque</h1>
-        <p className="mt-1 text-sm text-slate">Logos d&apos;universités et images d&apos;articles. PNG, JPEG, WebP ou GIF, 4 Mo maximum.</p>
+        <h1 className="text-2xl font-semibold text-midnight">{t("Médiathèque")}</h1>
+        <p className="mt-1 text-sm text-slate">{t("Logos d'universités et images d'articles. PNG, JPEG, WebP ou GIF, 4 Mo maximum.")}</p>
       </header>
       <MediaUploader />
       {items.length ? (
@@ -29,15 +33,15 @@ export default async function MediaPage() {
                   {m.pathname.replace("media/", "")}
                 </p>
                 <p className="text-slate">
-                  {Math.round(m.size / 1024)} Ko · {fmtDate(m.created_at)}
+                  {t("{n} Ko", { n: Math.round(m.size / 1024) })} · {fmtDate(m.created_at, false, lang)}
                 </p>
                 <div className="flex items-center justify-between gap-2">
                   <CopyButton text={m.url} />
                   {can(admin.role, "delete") && (
                     <form action={deleteMediaAction}>
                       <input type="hidden" name="id" value={m.id} />
-                      <ConfirmButton message="Supprimer cette image ? Les pages qui l'utilisent ne l'afficheront plus." className="text-slate hover:text-red-700">
-                        Supprimer
+                      <ConfirmButton message={t("Supprimer cette image ? Les pages qui l'utilisent ne l'afficheront plus.")} className="text-slate hover:text-red-700">
+                        {t("Supprimer")}
                       </ConfirmButton>
                     </form>
                   )}
@@ -47,7 +51,7 @@ export default async function MediaPage() {
           ))}
         </ul>
       ) : (
-        <div className="admin-card py-12 text-center text-sm text-slate">Aucune image pour l&apos;instant.</div>
+        <div className="admin-card py-12 text-center text-sm text-slate">{t("Aucune image pour l'instant.")}</div>
       )}
     </div>
   );
