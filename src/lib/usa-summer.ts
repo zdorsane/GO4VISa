@@ -98,11 +98,11 @@ const en = {
 export type UsaSummerDict = typeof en;
 
 const fr: UsaSummerDict = {
-  metaTitle: "USA Summer Experience 2026/2027",
+  metaTitle: "Été aux USA 2026/2027",
   metaDescription:
     "Passez votre été aux États-Unis : améliorez votre anglais, acquérez une expérience professionnelle internationale, gagnez de l'argent et voyagez. Go4Visa vous accompagne à chaque étape.",
   hero: {
-    label: "USA Summer Experience 2026/2027",
+    label: "Expérience d'été aux USA 2026/2027",
     title: ["Votre été.", "Votre aventure.", "Votre Amérique !"],
     lead: "Un seul été peut vous ouvrir les portes d'un tout nouveau monde !",
     primary: "Commencez votre aventure américaine",

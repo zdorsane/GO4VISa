@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useT } from "./AdminLang";
 
-export function CopyButton({ text, label = "Copier l'URL", className = "font-medium text-ocean hover:underline" }: { text: string; label?: string; className?: string }) {
+export function CopyButton({ text, label, className = "font-medium text-ocean hover:underline" }: { text: string; label?: string; className?: string }) {
   const [done, setDone] = useState(false);
+  const { t } = useT();
   return (
     <button
       type="button"
@@ -14,11 +16,11 @@ export function CopyButton({ text, label = "Copier l'URL", className = "font-med
           setDone(true);
           setTimeout(() => setDone(false), 1800);
         } catch {
-          window.prompt("Copiez l'adresse :", text);
+          window.prompt(t("Copiez l'adresse :"), text);
         }
       }}
     >
-      {done ? "Copié ✓" : label}
+      {done ? t("Copié ✓") : (label ?? t("Copier l'URL"))}
     </button>
   );
 }

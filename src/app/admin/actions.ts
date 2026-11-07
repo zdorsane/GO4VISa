@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { cookies, headers } from "next/headers";
 import { after } from "next/server";
 import { revalidateTag, updateTag } from "next/cache";
 import * as z from "zod";
@@ -19,6 +20,8 @@ import { deleteMedia, uploadImage, UploadError } from "@/lib/server/media";
 import { importScholarshipsFromPdf, ImportError, MAX_PDF_BYTES, type ImportReport } from "@/lib/server/pdf-import";
 import { del } from "@vercel/blob";
 import { translateScholarship, untranslatedIds } from "@/lib/server/translate";
+import { deleteMessage, setMessageRead } from "@/lib/server/messages";
+import { ADMIN_LANG_COOKIE } from "./i18n";
 import { WORKFLOW } from "@/lib/scholarships";
 
 export type FormState = { ok?: boolean; error?: string; fields?: Record<string, string[]>; message?: string } | undefined;
@@ -232,6 +235,45 @@ export async function translateMissingAction() {
   translateLater(ids);
   await logActivity(admin.id, "translate", "scholarship", null, { count: String(ids.length) });
   redirect(`/admin?translating=${ids.length}`);
+}
+
+// ── Messages (contact form and feedback box) ───────────────────────────────
+
+export async function markMessageAction(form: FormData) {
+  const id = String(form.get("id"));
+  if (!uuid.safeParse(id).success) return;
+  await requireAdmin("edit");
+  await setMessageRead(id, form.get("read") === "1");
+  redirect(`/admin/messages${form.get("kind") ? `?kind=${form.get("kind")}` : ""}`);
+}
+
+export async function deleteMessageAction(form: FormData) {
+  const id = String(form.get("id"));
+  if (!uuid.safeParse(id).success) return;
+  const admin = await requireAdmin("delete");
+  await deleteMessage(id);
+  await logActivity(admin.id, "delete-message", "message", id);
+  redirect("/admin/messages?deleted=1");
+}
+
+// ── Back-office language ───────────────────────────────────────────────────
+
+/** FR/EN switch: remembers the choice for a year and returns to the same page. */
+export async function setAdminLangAction(form: FormData) {
+  const lang = form.get("lang") === "en" ? "en" : "fr";
+  (await cookies()).set(ADMIN_LANG_COOKIE, lang, {
+    path: "/admin",
+    maxAge: 60 * 60 * 24 * 365,
+    sameSite: "lax",
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+  });
+  let back = "/admin";
+  try {
+    const u = new URL((await headers()).get("referer") ?? "");
+    if (u.pathname.startsWith("/admin")) back = u.pathname + u.search;
+  } catch {}
+  redirect(back);
 }
 
 // ── Site cache ─────────────────────────────────────────────────────────────

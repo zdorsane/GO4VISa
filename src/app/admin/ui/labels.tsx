@@ -77,9 +77,10 @@ export function Pill({ className, children }: { className: string; children: Rea
   return <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ring-inset ${className}`}>{children}</span>;
 }
 
-export const fmtDate = (iso: string | Date | null, withTime = false) =>
+/** Labels above are French source texts: render them through the back-office translator `t()`. */
+export const fmtDate = (iso: string | Date | null, withTime = false, lang: "fr" | "en" = "fr") =>
   iso
-    ? new Intl.DateTimeFormat("fr-FR", {
+    ? new Intl.DateTimeFormat(lang === "en" ? "en-GB" : "fr-FR", {
         timeZone: "Africa/Algiers",
         day: "2-digit",
         month: "short",
