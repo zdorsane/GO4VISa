@@ -542,7 +542,7 @@ const fr: Dict = {
     sectionsLabel: "Sur la page d'accueil",
     pages: [
       { label: "Opportunités internationales", path: "/scholarships" },
-      { label: "USA Summer Experience", path: "/usa-summer-experience", flag: "us" },
+      { label: "Été aux USA", path: "/usa-summer-experience", flag: "us" },
       { label: "Votre parcours", path: "/how-it-works" },
       { label: "FAQ", path: "/faq" },
     ],

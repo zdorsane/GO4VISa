@@ -1,6 +1,8 @@
 "use client";
 
 import Image from "next/image";
+import { FeedbackBox } from "./FeedbackBox";
+import type { Locale } from "@/lib/i18n";
 import { useCallback, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useReducedMotion } from "@/lib/motion";
@@ -257,11 +259,13 @@ function VisaPanel({ t, visas, onOpen }: { t: Dict["feedback"]; visas: VisaItem[
 
 /** Student stories in one unified gallery, then visa support and the visa wall. */
 export function Feedback({
+  lang,
   t,
   viewer,
   items,
   visas,
 }: {
+  lang: Locale;
   t: Dict["feedback"];
   viewer: Dict["gallery"];
   items: FeedbackItem[];
@@ -308,6 +312,8 @@ export function Feedback({
           <Icon name="check" className="mt-px h-3.5 w-3.5 shrink-0 text-gold" />
           {t.note}
         </p>
+
+        <FeedbackBox lang={lang} />
       </div>
 
       <AnimatePresence>
